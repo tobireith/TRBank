@@ -95,7 +95,7 @@ public class KontoServiceImpl implements KontoServiceIF {
 
     @Transactional
     @Override
-    public Collection<Konto> kontenAuflisten(Kunde kunde) {
+    public Collection<Konto> getKontenByKunde(Kunde kunde) {
         return kontoRepository.getKontosByBesitzer(kunde);
     }
 }

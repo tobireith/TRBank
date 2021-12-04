@@ -19,7 +19,7 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Transactional
     @Override
     public Kunde kundeRegistrieren(Kunde k) throws KundeException {
-        if(kundeRepository.findByUsername(k.getUsername()) != null) {
+        if(kundeRepository.getByUsername(k.getUsername()) != null) {
             throw new KundeException(1, "ERROR: Dieser User existiert bereits.");
         }
         //TODO: k.setPassword noch mit Security Utils versehen
@@ -29,7 +29,7 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Transactional
     @Override
     public Kunde kundeAnmelden(Kunde kunde) throws KundeException{
-        kunde = kundeRepository.findByUsernameAndPasswort(kunde.getUsername(), kunde.getPasswort());
+        kunde = kundeRepository.getByUsernameAndPasswort(kunde.getUsername(), kunde.getPasswort());
         if(kunde == null) {
             throw new KundeException(2, "ERROR: Falscher Username oder Passwort");
         }

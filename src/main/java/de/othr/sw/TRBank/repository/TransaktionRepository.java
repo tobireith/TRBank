@@ -13,6 +13,6 @@ import java.util.List;
 public interface TransaktionRepository extends PagingAndSortingRepository<Transaktion, Long> {
     List<Transaktion> getAllByQuellkontoAndDatumBeforeOrderByDatum(Konto quellkonto, Date datum);
     List<Transaktion> getAllByZielkontoAndDatumBeforeOrderByDatum(Konto zielkonto, Date datum);
-    List<Transaktion> findAllByQuellkontoOrZielkontoOrderByDatum(Konto quellkonto, Konto zielkonto);
+    List<Transaktion> getAllByQuellkontoOrZielkontoOrderByDatum(Konto quellkonto, Konto zielkonto);
     List<Transaktion> findAllByQuellkontoOrZielkontoAndDatumAfterOrderByDatum(Konto quellkonto, Konto zielkonto, Date datum);
 }

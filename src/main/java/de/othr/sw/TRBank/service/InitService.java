@@ -54,14 +54,14 @@ public class InitService {
                     int anzahlTransaktionen = new Random().nextInt(5) + 1;
                     for (int k = 1; k <= anzahlTransaktionen; k++) {
                         Konto vonKonto = kontoRepository.getKontosByBesitzer(kunde).get(0);
-                        Kunde zuKunde = kundeRepository.getByVornameAndNachname("Hans " + i, "Huber " + i).get(0);
+                        Kunde zuKunde = kundeRepository.getAllByVornameAndNachname("Hans " + i, "Huber " + i).get(0);
                         Konto zuKonto = kontoRepository.getKontosByBesitzer(zuKunde).get(0);
                         double betrag = Math.round(new Random().nextDouble() * 1000);
                         Date datum = new Date();
                         String verwendungszweck = "Testüberweisung " + k + " von Konto " + vonKonto.getID();
                         try {
                             Transaktion testTransaktion = new Transaktion(vonKonto, zuKonto, betrag, datum, verwendungszweck);
-                            Kunde tempKunde = kundeRepository.findByUsernameAndPasswort("Huber" + i, "passwort" + i);
+                            Kunde tempKunde = kundeRepository.getByUsernameAndPasswort("Huber" + i, "passwort" + i);
                             Transaktion t = transaktionService.transaktionTätigen(tempKunde, testTransaktion);
                             System.out.println("Transaktion erstellt:" + t);
                         } catch (Exception e) {

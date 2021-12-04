@@ -70,7 +70,7 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
 
     @Transactional
     @Override
-    public List<Transaktion> transaktionenAuflisten (Konto konto) {
-        return transaktionRepository.findAllByQuellkontoOrZielkontoOrderByDatum(konto, konto);
+    public List<Transaktion> getAllTransaktionen(Konto konto) {
+        return transaktionRepository.getAllByQuellkontoOrZielkontoOrderByDatum(konto, konto);
     }
 }

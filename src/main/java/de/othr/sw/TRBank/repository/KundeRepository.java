@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 @Repository
 public interface KundeRepository extends CrudRepository<Kunde, String> {
-    List<Kunde> getByVornameAndNachname(String vorname, String nachname);
-    Kunde findByUsername(String username);
-    Kunde findByUsernameAndPasswort(String username, String passwort);
+    List<Kunde> getAllByVornameAndNachname(String vorname, String nachname);
+    Kunde getByUsername(String username);
+    Kunde getByUsernameAndPasswort(String username, String passwort);
 }

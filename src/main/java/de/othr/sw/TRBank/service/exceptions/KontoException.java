@@ -18,17 +18,20 @@ public class KontoException extends Exception{
     }
 
     public KontoException(long fehlerNr, String fehlerNachricht) {
+        super(fehlerNachricht);
         this.fehlerNr = fehlerNr;
         this.fehlerNachricht = fehlerNachricht;
     }
 
     public KontoException(long fehlerNr, String fehlerNachricht, Konto konto) {
+        super(fehlerNachricht);
         this.fehlerNr = fehlerNr;
         this.fehlerNachricht = fehlerNachricht;
         this.konto = konto;
     }
 
     public KontoException(long fehlerNr, String fehlerNachricht, Konto konto, Kontoauszug kontoauszug) {
+        super(fehlerNachricht);
         this.fehlerNr = fehlerNr;
         this.fehlerNachricht = fehlerNachricht;
         this.konto = konto;
