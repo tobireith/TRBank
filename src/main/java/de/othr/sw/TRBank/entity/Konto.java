@@ -7,11 +7,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Entity
-public class Konto extends SingleIdEntity<String> {
+public class Konto extends SingleIdEntity<Long> {
 
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    private String iban;
-
+    private long kontoId;
     //TODO: Cascade Type?
     @ManyToOne
     private Kunde besitzer;
@@ -19,6 +19,8 @@ public class Konto extends SingleIdEntity<String> {
     private Collection<Transaktion> transaktionenRaus;
     @OneToMany(mappedBy = "zielkonto")
     private Collection<Transaktion> transaktionenRein;
+    @Column(unique = true)
+    private String iban;
     private double kontostand;
 
 
@@ -29,6 +31,10 @@ public class Konto extends SingleIdEntity<String> {
         this.iban = iban;
         this.besitzer = besitzer;
         this.kontostand = kontostand;
+    }
+
+    public long getKontoId() {
+        return kontoId;
     }
 
     public Kunde getBesitzer() {
@@ -75,7 +81,7 @@ public class Konto extends SingleIdEntity<String> {
     }
 
     @Override
-    public String getID() {
-        return this.iban;
+    public Long getID() {
+        return this.kontoId;
     }
 }

@@ -7,14 +7,17 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Entity
-public class Kunde extends SingleIdEntity<String> {
+public class Kunde extends SingleIdEntity<Long> {
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    private String username;
-    private String passwort;
+    private long kundeId;
     @Embedded
     private Adresse adresse;
     @OneToMany(mappedBy = "besitzer")
     private Collection<Konto> konten;
+    @Column(unique = true)
+    private String username;
+    private String passwort;
     private String vorname;
     private String nachname;
     private boolean firmenkunde;
@@ -30,6 +33,10 @@ public class Kunde extends SingleIdEntity<String> {
         this.firmenkunde = firmenkunde;
         this.username = username;
         this.passwort = passwort;
+    }
+
+    public long getKundeId() {
+        return kundeId;
     }
 
     public Adresse getAdresse() {
@@ -98,7 +105,7 @@ public class Kunde extends SingleIdEntity<String> {
     }
 
     @Override
-    public String getID() {
-        return this.username;
+    public Long getID() {
+        return this.kundeId;
     }
 }
