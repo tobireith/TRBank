@@ -11,5 +11,6 @@ public interface KontoServiceIF {
     Collection<Konto> getKontenByKunde(Kunde kunde);
     Kontoauszug kontoauszugErstellen(Konto konto) throws KontoException;
     Konto getKontoByIban(String Iban);
+    Konto saveKonto(Konto konto);
 
 }

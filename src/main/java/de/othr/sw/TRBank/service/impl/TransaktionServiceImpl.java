@@ -22,8 +22,6 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
     @Autowired
     private TransaktionRepository transaktionRepository;
     @Autowired
-    private KontoRepository kontoRepository;
-    @Autowired
     private KundeServiceIF kundeService;
     @Autowired
     private KontoServiceIF kontoService;
@@ -62,9 +60,9 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
         }
         // Kontostände anpassen
         von.setKontostand(von.getKontostand() - t.getBetrag());
-        kontoRepository.save(von);
+        kontoService.saveKonto(von);
         zu.setKontostand(zu.getKontostand() + t.getBetrag());
-        kontoRepository.save(zu);
+        kontoService.saveKonto(zu);
         return transaktionRepository.save(t);
     }
 

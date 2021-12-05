@@ -50,6 +50,12 @@ public class KontoServiceImpl implements KontoServiceIF {
 
     @Transactional
     @Override
+    public Konto saveKonto(Konto konto) {
+        return kontoRepository.save(konto);
+    }
+
+    @Transactional
+    @Override
     public Kontoauszug kontoauszugErstellen(Konto konto) throws KontoException {
         Kontoauszug kontoauszug = new Kontoauszug();
 

@@ -7,14 +7,15 @@ import de.othr.sw.TRBank.service.impl.KontoServiceImpl;
 import de.othr.sw.TRBank.service.impl.KundeServiceImpl;
 import de.othr.sw.TRBank.service.impl.TransaktionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.Random;
 
-@Service
-public class InitService {
+@Component
+public class InitData {
     @Autowired
     private KundeServiceImpl kundeService;
     @Autowired
