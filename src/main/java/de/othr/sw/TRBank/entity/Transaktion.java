@@ -20,7 +20,7 @@ public class Transaktion extends SingleIdEntity<Long> {
     private double betrag;
     @Temporal(TemporalType.TIMESTAMP)
     private Date datum;
-    private String verwendgunszweck;
+    private String verwendungszweck;
 
     public Transaktion() {
     }
@@ -30,7 +30,7 @@ public class Transaktion extends SingleIdEntity<Long> {
         this.zielkonto = zuKonto;
         this.betrag = betrag;
         this.datum = datum;
-        this.verwendgunszweck = verwendgunszweck;
+        this.verwendungszweck = verwendgunszweck;
     }
 
     public long getTransaktionId() {
@@ -69,12 +69,12 @@ public class Transaktion extends SingleIdEntity<Long> {
         this.datum = datum;
     }
 
-    public String getVerwendgunszweck() {
-        return verwendgunszweck;
+    public String getVerwendungszweck() {
+        return verwendungszweck;
     }
 
-    public void setVerwendgunszweck(String verwendgunszweck) {
-        this.verwendgunszweck = verwendgunszweck;
+    public void setVerwendungszweck(String verwendungszweck) {
+        this.verwendungszweck = verwendungszweck;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class Transaktion extends SingleIdEntity<Long> {
                 ", zielkonto=" + zielkonto +
                 ", betrag=" + betrag +
                 ", datum=" + datum +
-                ", verwendgunszweck='" + verwendgunszweck + '\'' +
+                ", verwendgunszweck='" + verwendungszweck + '\'' +
                 '}';
     }
 

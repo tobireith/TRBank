@@ -23,8 +23,11 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
     private TransaktionRepository transaktionRepository;
     @Autowired
     private KundeServiceIF kundeService;
+    /*
     @Autowired
     private KontoServiceIF kontoService;
+
+     */
 
     @Override
     @Transactional
@@ -37,11 +40,14 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
         return transaktionRepository.getAllByQuellkontoAndDatumBeforeOrderByDatum(konto, datum);
     }
 
+
     @Transactional
     @Override
     public Transaktion transaktionTätigen(Kunde kunde, Transaktion t) throws TransaktionException, KundeException {
         kundeService.kundeAnmelden(kunde);
 
+        /*
+        //TODO
         // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
         t.setQuellkonto(kontoService.getKontoByIban(t.getQuellkonto().getIban()));
         t.setZielkonto(kontoService.getKontoByIban(t.getZielkonto().getIban()));
@@ -58,17 +64,19 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
         if (von.getKontostand() < t.getBetrag()) {
             throw (new TransaktionException(t, 1, "ERROR: Kontostand zu niedrig"));
         }
+
         // Kontostände anpassen
         von.setKontostand(von.getKontostand() - t.getBetrag());
         kontoService.saveKonto(von);
         zu.setKontostand(zu.getKontostand() + t.getBetrag());
         kontoService.saveKonto(zu);
+         */
         return transaktionRepository.save(t);
     }
 
     @Transactional
     @Override
-    public List<Transaktion> getAllTransaktionen(Konto konto) {
+    public List<Transaktion> getAllTransaktionenForKonto(Konto konto) {
         return transaktionRepository.getAllByQuellkontoOrZielkontoOrderByDatum(konto, konto);
     }
 }

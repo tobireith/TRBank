@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface TransaktionServiceIF {
     Transaktion transaktionTätigen(Kunde kunde, Transaktion transaktion) throws TransaktionException, KundeException;
-    List<Transaktion> getAllTransaktionen(Konto konto);
+    List<Transaktion> getAllTransaktionenForKonto(Konto konto);
     List<Transaktion> getAusgehendeTransaktionenAbDatum(Konto konto, Date datum);
     List<Transaktion> getEinkommendeTransaktionenAbDatum(Konto konto, Date datum);
 }
