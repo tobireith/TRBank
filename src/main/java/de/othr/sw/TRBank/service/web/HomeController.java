@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,20 @@ public class HomeController {
 
         List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(konten, PageRequest.of(0, 5));
         model.addAttribute("transaktionen", transaktionen);
+        return "index";
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)   // /login
+    public String login(Model model) {
+        model.addAttribute("kunde", new Kunde());
+        return "login";
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)    // th:action="@{login}"
+    public String doLogin(
+            @ModelAttribute("kunde") Kunde kunde
+    ) {
+        System.out.println(kunde);
         return "index";
     }
 }

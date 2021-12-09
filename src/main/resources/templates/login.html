@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+
+<head th:replace="common/header :: header" />
+
+<body>
+    <div th:replace="common/header :: navigation"/>
+    <form th:action="@{/login}" th:object="${kunde}" method="post">
+        <div class="mb-3">
+            <label for="inputUsername" class="form-label">Username</label>
+            <input type="text" th:field="*{username}" class="form-control" id="inputUsername" aria-describedby="usernameHelp">
+            <div id="usernameHelp" class="form-text">Please enter your username.</div>
+        </div>
+        <div class="mb-3">
+            <label for="inputPasswort" class="form-label">Password</label>
+            <input type="password" th:field="*{passwort}" class="form-control" id="inputPasswort">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</body>
+</html>
