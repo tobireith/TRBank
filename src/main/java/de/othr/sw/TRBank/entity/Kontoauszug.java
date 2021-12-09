@@ -103,6 +103,7 @@ public class Kontoauszug extends SingleIdEntity<Long> {
     @Override
     public String toString() {
         return "Kontoauszug{" +
+                "kontoauszugId=" + kontoauszugId +
                 ", konto=" + konto +
                 ", transaktionen=" + transaktionen +
                 ", versandId=" + versandId +

@@ -80,11 +80,12 @@ public class Transaktion extends SingleIdEntity<Long> {
     @Override
     public String toString() {
         return "Transaktion{" +
+                "transaktionId=" + transaktionId +
                 ", quellkonto=" + quellkonto +
                 ", zielkonto=" + zielkonto +
                 ", betrag=" + betrag +
                 ", datum=" + datum +
-                ", verwendgunszweck='" + verwendungszweck + '\'' +
+                ", verwendungszweck='" + verwendungszweck + '\'' +
                 '}';
     }
 

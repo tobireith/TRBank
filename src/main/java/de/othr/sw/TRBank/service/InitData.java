@@ -3,9 +3,7 @@ package de.othr.sw.TRBank.service;
 import de.othr.sw.TRBank.entity.*;
 import de.othr.sw.TRBank.repository.KontoRepository;
 import de.othr.sw.TRBank.repository.KundeRepository;
-import de.othr.sw.TRBank.service.impl.BankingServiceImpl;
-import de.othr.sw.TRBank.service.impl.KundeServiceImpl;
-import de.othr.sw.TRBank.service.impl.TransaktionServiceImpl;
+import de.othr.sw.TRBank.service.exceptions.KundeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +27,10 @@ public class InitData {
         try {
             for (int i = 1; i <= 5; i++) {
                 //Adressen erzeugen
-                Adresse adr = new Adresse("Seybothstraße ", String.valueOf(i), "Regensburg", 93053, "Deutschland");
+                Adresse adr = new Adresse("Seybothstrasse ", String.valueOf(i), "Regensburg", 93053, "Deutschland");
                 System.out.println("Adresse erstellt:" + adr);
 
-                //Kunden erzeugen
+                //Kunde erzeugen
                 Kunde testKunde = new Kunde("Huber" + i, "passwort" + i, adr, "Hans " + i, "Huber " + i, true);
                 Kunde kunde = kundeService.kundeRegistrieren(testKunde);
                 System.out.println("Kunde erstellt:" + kunde);
@@ -59,7 +57,8 @@ public class InitData {
                         String verwendungszweck = "Testüberweisung " + k + " von Konto " + vonKonto.getID();
                         try {
                             Transaktion testTransaktion = new Transaktion(vonKonto, zuKonto, betrag, datum, verwendungszweck);
-                            Kunde tempKunde = kundeRepository.getByUsernameAndPasswort("Huber" + i, "passwort" + i);
+                            Kunde tempKunde = new Kunde("Huber" + i, "passwort" + i);
+                            System.out.println("TRANSAKTION:" + testTransaktion + " KUNDE: " + tempKunde);
                             Transaktion t = bankingService.transaktionTaetigen(tempKunde, testTransaktion);
                             System.out.println("Transaktion erstellt:" + t);
                         } catch (Exception e) {
@@ -70,7 +69,11 @@ public class InitData {
 
                 //TODO: Kontoauszüge erstellen
             }
-        } catch (Exception e) {
+        } catch (KundeException e) {
+            System.out.println(e.fehlerNr + " " + e.fehlerNachricht);
+        }
+
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

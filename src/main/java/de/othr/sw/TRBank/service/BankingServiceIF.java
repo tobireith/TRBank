@@ -22,15 +22,9 @@ public interface BankingServiceIF {
     Konto kontoAnlegen(Konto k);
 
     Konto getKontoByIban(String Iban);
-    Konto saveKonto(Konto konto);
+    Konto kontoSpeichern(Konto konto);
     Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TransaktionException, KundeException;
 
     @Transactional
     List<Transaktion> getTransaktionenForKonten(List<Konto> konten, Pageable pageable);
-
-    @Transactional
-    List<Transaktion> getEinkommendeTransaktionenAbDatum(Konto konto, Date datum);
-
-    @Transactional
-    List<Transaktion> getAusgehendeTransaktionenAbDatum(Konto konto, Date datum);
 }

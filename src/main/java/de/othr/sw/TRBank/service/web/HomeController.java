@@ -29,10 +29,9 @@ public class HomeController {
     public String home(Model model) {
         //TODO: Change this to get the current logged in Kunde
         Kunde aktuellerKunde = kundeService.getAllKunden().get(0);
-        List<Konto> konten = bankingService.getKontenByKunde(aktuellerKunde);
-        model.addAttribute("konten", konten);
+        model.addAttribute("konten", aktuellerKunde.getKonten());
 
-        List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(konten, PageRequest.of(0, 5));
+        List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(aktuellerKunde.getKonten(), PageRequest.of(0, 5));
         model.addAttribute("transaktionen", transaktionen);
         return "index";
     }
@@ -45,9 +44,7 @@ public class HomeController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)    // th:action="@{login}"
     public String doLogin(
-            @ModelAttribute("kunde") Kunde kunde
     ) {
-        System.out.println(kunde);
         return "index";
     }
 }

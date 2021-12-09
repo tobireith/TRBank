@@ -5,6 +5,7 @@ import de.othr.sw.TRBank.entity.util.SingleIdEntity;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 public class Konto extends SingleIdEntity<Long> {
@@ -16,9 +17,9 @@ public class Konto extends SingleIdEntity<Long> {
     @ManyToOne
     private Kunde besitzer;
     @OneToMany(mappedBy = "quellkonto")
-    private Collection<Transaktion> transaktionenRaus;
+    private List<Transaktion> transaktionenRaus;
     @OneToMany(mappedBy = "zielkonto")
-    private Collection<Transaktion> transaktionenRein;
+    private List<Transaktion> transaktionenRein;
     @Column(unique = true)
     private String iban;
     private double kontostand;
@@ -45,12 +46,20 @@ public class Konto extends SingleIdEntity<Long> {
         this.besitzer = besitzer;
     }
 
-    public Collection<Transaktion> getTransaktionenRaus() {
-        return Collections.unmodifiableCollection(transaktionenRaus);
+    public List<Transaktion> getTransaktionenRaus() {
+        return Collections.unmodifiableList(transaktionenRaus);
     }
 
-    public Collection<Transaktion> getTransaktionenRein() {
-        return Collections.unmodifiableCollection(transaktionenRein);
+    public List<Transaktion> getTransaktionenRein() {
+        return Collections.unmodifiableList(transaktionenRein);
+    }
+
+    public void setTransaktionenRaus(List<Transaktion> transaktionenRaus) {
+        this.transaktionenRaus = transaktionenRaus;
+    }
+
+    public void setTransaktionenRein(List<Transaktion> transaktionenRein) {
+        this.transaktionenRein = transaktionenRein;
     }
 
     public double getKontostand() {
@@ -72,11 +81,12 @@ public class Konto extends SingleIdEntity<Long> {
     @Override
     public String toString() {
         return "Konto{" +
+                "kontoId=" + kontoId +
                 ", besitzer=" + besitzer +
-                ", ausgehend=" + transaktionenRaus +
-                ", einkommend=" + transaktionenRein +
-                ", kontostand=" + kontostand +
+                ", transaktionenRaus=" + transaktionenRaus +
+                ", transaktionenRein=" + transaktionenRein +
                 ", iban='" + iban + '\'' +
+                ", kontostand=" + kontostand +
                 '}';
     }
 

@@ -3,7 +3,6 @@ package de.othr.sw.TRBank.service.web;
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.BankingServiceIF;
-import de.othr.sw.TRBank.service.TransaktionServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;

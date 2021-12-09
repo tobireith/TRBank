@@ -9,7 +9,6 @@ import de.othr.sw.TRBank.repository.KontoauszugRepository;
 import de.othr.sw.TRBank.repository.TransaktionRepository;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
-import de.othr.sw.TRBank.service.TransaktionServiceIF;
 import de.othr.sw.TRBank.service.exceptions.KontoException;
 import de.othr.sw.TRBank.service.exceptions.KundeException;
 import de.othr.sw.TRBank.service.exceptions.TransaktionException;
@@ -55,7 +54,11 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional
     @Override
-    public Konto saveKonto(Konto konto) {
+    public Konto kontoSpeichern(Konto konto) {
+        Kunde kunde = konto.getBesitzer();
+        kunde.getKonten().remove(konto);
+        kunde.getKonten().add(konto);
+        kundeService.kundeSpeichern(kunde);
         return kontoRepository.save(konto);
     }
 
@@ -67,6 +70,10 @@ public class BankingServiceImpl implements BankingServiceIF {
         transaktion.setQuellkonto(this.getKontoByIban(transaktion.getQuellkonto().getIban()));
         transaktion.setZielkonto(this.getKontoByIban(transaktion.getZielkonto().getIban()));
 
+        transaktion.setDatum(new Date());
+
+        // TODO: Firmenkunde überprüfung durch Authorities
+        //  Für Lastschriften ein eigenes Formular!
         if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
             throw new TransaktionException(transaktion, 2, "ERROR: Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
         } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) || !kunde.getKonten().contains(transaktion.getZielkonto())) {
@@ -85,11 +92,18 @@ public class BankingServiceImpl implements BankingServiceIF {
 
         // Kontostände anpassen
         von.setKontostand(von.getKontostand() - transaktion.getBetrag());
-        this.saveKonto(von);
+        this.kontoSpeichern(von);
         zu.setKontostand(zu.getKontostand() + transaktion.getBetrag());
-        this.saveKonto(zu);
+        this.kontoSpeichern(zu);
 
         return t;
+    }
+
+    private List<Transaktion> transaktionenAbDatum(List<Transaktion> transaktionen, Date datum) {
+        return transaktionen
+                .stream()
+                .filter(transaktion -> transaktion.getDatum().compareTo(datum) > 0)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -97,20 +111,32 @@ public class BankingServiceImpl implements BankingServiceIF {
     public Kontoauszug kontoauszugErstellen(Konto konto) throws KontoException {
         Kontoauszug kontoauszug = new Kontoauszug();
 
+
+        Kontoauszug letzterKontoauszug;
+        Transaktion letzteTransaktion;
+        List<Transaktion> neueAusgehendeTransaktionen;
+        List<Transaktion> neueEingehendeTransaktionen;
+        double kontostandEnde = 0;
+
+        // Letzten Kontoauszug laden, um startKontostand & die letzte Transaktion zu erhalten
         List<Kontoauszug> kontoauszuege = kontoauszugRepository.getAllByKontoOrderByDatumBis(konto);
-        Kontoauszug letzterKontoauszug = kontoauszuege.get(kontoauszuege.size() - 1);
-        kontoauszug.setKontostandAnfang(letzterKontoauszug.getKontostandEnde());
+        if(kontoauszuege.size() >= 1) {
+            letzterKontoauszug = kontoauszuege.get(kontoauszuege.size() - 1);
+            kontoauszug.setKontostandAnfang(letzterKontoauszug.getKontostandEnde());
+            letzteTransaktion = letzterKontoauszug.getTransaktionen().get(letzterKontoauszug.getTransaktionen().size() - 1);
+            kontostandEnde = letzterKontoauszug.getKontostandEnde();
 
-        List<Transaktion> transaktionen =
-                kontoauszugRepository.transaktionenVonKontoauszugSortiertNachDatum(letzterKontoauszug.getKontoauszugId());
+            // Liste mit NUR neuen Einkommenden & Ausgehenden Transaktionen laden
+            neueAusgehendeTransaktionen = transaktionenAbDatum(konto.getTransaktionenRaus(), letzteTransaktion.getDatum());
+            neueEingehendeTransaktionen = transaktionenAbDatum(konto.getTransaktionenRein(), letzteTransaktion.getDatum());
 
-        Transaktion letzteTransaktion = transaktionen.get(transaktionen.size() - 1);
+        } else {
+            kontoauszug.setKontostandAnfang(0);
+            neueAusgehendeTransaktionen = konto.getTransaktionenRaus();
+            neueEingehendeTransaktionen = konto.getTransaktionenRein();
+        }
 
-        List<Transaktion> neueAusgehendeTransaktionen =
-                this.getAusgehendeTransaktionenAbDatum(konto, letzteTransaktion.getDatum());
-        List<Transaktion> neueEingehendeTransaktionen =
-                this.getEinkommendeTransaktionenAbDatum(konto, letzteTransaktion.getDatum());
-
+        // Alle Transaktionen zusammen mischen & nach Datum sortieren
         List<Transaktion> neueTransaktionen = Stream.of(neueAusgehendeTransaktionen, neueEingehendeTransaktionen)
                 .flatMap(Collection::stream)
                 .sorted((Comparator.comparing(Transaktion::getDatum)))
@@ -119,8 +145,11 @@ public class BankingServiceImpl implements BankingServiceIF {
 
         double summeEingehend = transaktionenSummieren(neueEingehendeTransaktionen);
         double summeAusgehend = transaktionenSummieren(neueAusgehendeTransaktionen);
-        double kontostandEnde = letzterKontoauszug.getKontostandEnde() + summeEingehend - summeAusgehend;
+        kontostandEnde += summeEingehend - summeAusgehend;
         kontoauszug.setKontostandEnde(kontostandEnde);
+        if(kontoauszug.getKontostandEnde() != konto.getKontostand()) {
+            throw new KontoException(1, "ERROR: Kontostand stimmt nicht mit dem berechneten Wert des aktuellen Kontoauszuges überein", konto, kontoauszug);
+        }
 
         kontoauszug.setDatumVon(neueTransaktionen.get(0).getDatum());
         kontoauszug.setDatumBis(neueTransaktionen.get(neueTransaktionen.size()-1).getDatum());
@@ -129,10 +158,6 @@ public class BankingServiceImpl implements BankingServiceIF {
         // Versandunternehmen beauftragen
         //TODO: Aufruf zur externen Schnittstelle des Versandunternehmens
         kontoauszug.setVersandId(new Random().nextInt(10000));
-
-        if(kontoauszug.getKontostandEnde() != konto.getKontostand()) {
-            throw new KontoException(1, "ERROR: Kontostand stimmt nicht mit dem berechneten Wert überein", konto, kontoauszug);
-        }
 
         return kontoauszugRepository.save(kontoauszug);
     }
@@ -150,7 +175,8 @@ public class BankingServiceImpl implements BankingServiceIF {
         // Alle Konten durchiterieren
         for(Konto konto : konten) {
             // Alle Transaktionen zu dem aktuellen Konto finden
-            List<Transaktion> transaktionenFuerKonto = transaktionRepository.getAllByQuellkontoOrZielkontoOrderByDatum(konto, konto, pageable);
+            List<Transaktion> transaktionenFuerKonto = new ArrayList<>();
+            Stream.of(konto.getTransaktionenRaus(), konto.getTransaktionenRein()).forEach(transaktionenFuerKonto::addAll);
             for(Transaktion transaktion : transaktionenFuerKonto) {
                 // Nur Transaktionen hinzufügen, die noch nicht bereits in der Liste sind
                 if(!transaktionenTotal.contains(transaktion)) {
@@ -163,16 +189,5 @@ public class BankingServiceImpl implements BankingServiceIF {
         transaktionenTotal.sort(Comparator.comparing(Transaktion::getDatum));
 
         return transaktionenTotal;
-    }
-
-    @Override
-    @Transactional
-    public List<Transaktion> getEinkommendeTransaktionenAbDatum(Konto konto, Date datum) {
-        return transaktionRepository.getAllByZielkontoAndDatumBeforeOrderByDatum(konto, datum);
-    }
-    @Override
-    @Transactional
-    public List<Transaktion> getAusgehendeTransaktionenAbDatum(Konto konto, Date datum) {
-        return transaktionRepository.getAllByQuellkontoAndDatumBeforeOrderByDatum(konto, datum);
     }
 }

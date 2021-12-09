@@ -1,20 +1,23 @@
 package de.othr.sw.TRBank.entity;
 
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
-public class Kunde extends SingleIdEntity<Long> {
+public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private long kundeId;
     @Embedded
     private Adresse adresse;
     @OneToMany(mappedBy = "besitzer")
-    private Collection<Konto> konten;
+    private List<Konto> konten;
     @Column(unique = true)
     private String username;
     private String passwort;
@@ -24,6 +27,11 @@ public class Kunde extends SingleIdEntity<Long> {
 
     public Kunde() {
 
+    }
+
+    public Kunde(String username, String passwort) {
+        this.username = username;
+        this.passwort = passwort;
     }
 
     public Kunde(String username, String passwort, Adresse adresse, String vorname, String nachname, boolean firmenkunde) {
@@ -47,8 +55,12 @@ public class Kunde extends SingleIdEntity<Long> {
         this.adresse = adresse;
     }
 
-    public Collection<Konto> getKonten() {
-        return Collections.unmodifiableCollection(konten);
+    public List<Konto> getKonten() {
+        return Collections.unmodifiableList(konten);
+    }
+
+    public void setKonten(List<Konto> konten) {
+        this.konten = konten;
     }
 
     public boolean isFirmenkunde() {
@@ -75,8 +87,39 @@ public class Kunde extends SingleIdEntity<Long> {
         this.nachname = nachname;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        //TODO! (Firmenkunde & normaler Benutzer)
+        return List.of((GrantedAuthority) () -> "STANDARD");
+    }
+
+    @Override
+    public String getPassword() {
+        return passwort;
+    }
+
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setUsername(String username) {
@@ -94,13 +137,14 @@ public class Kunde extends SingleIdEntity<Long> {
     @Override
     public String toString() {
         return "Kunde{" +
+                "kundeId=" + kundeId +
                 ", adresse=" + adresse +
                 ", konten=" + konten +
+                ", username='" + username + '\'' +
+                ", passwort='" + passwort + '\'' +
                 ", vorname='" + vorname + '\'' +
                 ", nachname='" + nachname + '\'' +
                 ", firmenkunde=" + firmenkunde +
-                ", username='" + username + '\'' +
-                ", passwort='" + passwort + '\'' +
                 '}';
     }
 

@@ -5,6 +5,9 @@ import de.othr.sw.TRBank.repository.KundeRepository;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exceptions.KundeException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,21 +19,30 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Autowired
     private KundeRepository kundeRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Transactional
     @Override
     public Kunde kundeRegistrieren(Kunde k) throws KundeException {
         if(kundeRepository.getByUsername(k.getUsername()) != null) {
             throw new KundeException(1, "ERROR: Dieser User existiert bereits.");
         }
-        //TODO: k.setPassword noch mit Security Utils versehen
+        k.setPasswort(passwordEncoder.encode(k.getPassword()));
+        return kundeSpeichern(k);
+    }
+
+    @Transactional
+    @Override
+    public Kunde kundeSpeichern(Kunde k){
         return kundeRepository.save(k);
     }
 
     @Transactional
     @Override
-    public Kunde kundeAnmelden(Kunde kunde) throws KundeException{
-        kunde = kundeRepository.getByUsernameAndPasswort(kunde.getUsername(), kunde.getPasswort());
-        if(kunde == null) {
+    public Kunde kundeAnmelden(Kunde anmeldedaten) throws KundeException{
+        Kunde kunde = kundeRepository.getByUsername(anmeldedaten.getUsername());
+        if(kunde == null || !passwordEncoder.matches(anmeldedaten.getPassword(), kunde.getPassword())) {
             throw new KundeException(2, "ERROR: Falscher Username oder Passwort");
         }
         return kunde;
@@ -42,5 +54,11 @@ public class KundeServiceImpl implements KundeServiceIF {
         List<Kunde> kunden = new ArrayList<>();
         kundeRepository.findAll().forEach(kunden::add);
         return kunden;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        //TODO get oder find hier? -> TESTEN
+        return kundeRepository.getByUsername(username);
     }
 }
