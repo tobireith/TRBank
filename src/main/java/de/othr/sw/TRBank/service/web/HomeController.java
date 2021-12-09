@@ -2,8 +2,7 @@ package de.othr.sw.TRBank.service.web;
 
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Transaktion;
-import de.othr.sw.TRBank.service.KontoServiceIF;
-import de.othr.sw.TRBank.service.TransaktionServiceIF;
+import de.othr.sw.TRBank.service.BankingServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,18 +14,15 @@ import java.util.List;
 public class HomeController {
 
     @Autowired
-    private TransaktionServiceIF transaktionService;
-
-    @Autowired
-    private KontoServiceIF kontoService;
+    private BankingServiceIF bankingService;
 
     @RequestMapping(value = "/")
     public String home(Model model) {
         //TODO
         String iban = "DE12345678900822331220";
-        Konto konto = kontoService.getKontoByIban(iban);
+        Konto konto = bankingService.getKontoByIban(iban);
         model.addAttribute("konto", konto);
-        List<Transaktion> transaktionen = transaktionService.getAllTransaktionenForKonto(konto);
+        List<Transaktion> transaktionen = bankingService.getAllTransaktionenForKonto(konto);
         model.addAttribute("transaktionen", transaktionen);
         return "index";
     }

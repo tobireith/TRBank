@@ -6,29 +6,33 @@ import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.repository.KontoRepository;
 import de.othr.sw.TRBank.repository.KontoauszugRepository;
-import de.othr.sw.TRBank.service.KontoServiceIF;
+import de.othr.sw.TRBank.repository.TransaktionRepository;
+import de.othr.sw.TRBank.service.BankingServiceIF;
+import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.TransaktionServiceIF;
 import de.othr.sw.TRBank.service.exceptions.KontoException;
+import de.othr.sw.TRBank.service.exceptions.KundeException;
+import de.othr.sw.TRBank.service.exceptions.TransaktionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class KontoServiceImpl implements KontoServiceIF {
+public class BankingServiceImpl implements BankingServiceIF {
     @Autowired
     private KontoRepository kontoRepository;
     @Autowired
     private KontoauszugRepository kontoauszugRepository;
     @Autowired
-    private TransaktionServiceIF transaktionService;
+    private TransaktionRepository transaktionRepository;
+    @Autowired
+    private KundeServiceIF kundeService;
 
+    @Override
     @Transactional
     public Konto kontoAnlegen(Konto k) {
         return kontoRepository.save(k);
@@ -54,6 +58,39 @@ public class KontoServiceImpl implements KontoServiceIF {
         return kontoRepository.save(konto);
     }
 
+    @Override
+    public Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TransaktionException, KundeException {
+        kundeService.kundeAnmelden(kunde);
+
+        // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
+        transaktion.setQuellkonto(this.getKontoByIban(transaktion.getQuellkonto().getIban()));
+        transaktion.setZielkonto(this.getKontoByIban(transaktion.getZielkonto().getIban()));
+
+        if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
+            throw new TransaktionException(transaktion, 2, "ERROR: Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
+        } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) || !kunde.getKonten().contains(transaktion.getZielkonto())) {
+            throw new TransaktionException(transaktion, 3, "ERROR: Quell- und Zielkonto gehören nicht dem Kunden!");
+        }
+
+        Konto von = transaktion.getQuellkonto();
+        Konto zu = transaktion.getZielkonto();
+        // Prüfen, ob genug Geld auf dem Quellkonto ist
+        if (von.getKontostand() < transaktion.getBetrag()) {
+            throw (new TransaktionException(transaktion, 1, "ERROR: Kontostand zu niedrig"));
+        }
+
+        // Transaktion durchführen
+        Transaktion t = transaktionRepository.save(transaktion);
+
+        // Kontostände anpassen
+        von.setKontostand(von.getKontostand() - transaktion.getBetrag());
+        this.saveKonto(von);
+        zu.setKontostand(zu.getKontostand() + transaktion.getBetrag());
+        this.saveKonto(zu);
+
+        return t;
+    }
+
     @Transactional
     @Override
     public Kontoauszug kontoauszugErstellen(Konto konto) throws KontoException {
@@ -69,9 +106,9 @@ public class KontoServiceImpl implements KontoServiceIF {
         Transaktion letzteTransaktion = transaktionen.get(transaktionen.size() - 1);
 
         List<Transaktion> neueAusgehendeTransaktionen =
-                transaktionService.getAusgehendeTransaktionenAbDatum(konto, letzteTransaktion.getDatum());
+                this.getAusgehendeTransaktionenAbDatum(konto, letzteTransaktion.getDatum());
         List<Transaktion> neueEingehendeTransaktionen =
-                transaktionService.getEinkommendeTransaktionenAbDatum(konto, letzteTransaktion.getDatum());
+                this.getEinkommendeTransaktionenAbDatum(konto, letzteTransaktion.getDatum());
 
         List<Transaktion> neueTransaktionen = Stream.of(neueAusgehendeTransaktionen, neueEingehendeTransaktionen)
                 .flatMap(Collection::stream)
@@ -103,5 +140,22 @@ public class KontoServiceImpl implements KontoServiceIF {
     @Override
     public Collection<Konto> getKontenByKunde(Kunde kunde) {
         return kontoRepository.getKontosByBesitzer(kunde);
+    }
+
+    @Transactional
+    @Override
+    public List<Transaktion> getAllTransaktionenForKonto(Konto konto) {
+        return transaktionRepository.getAllByQuellkontoOrZielkontoOrderByDatum(konto, konto);
+    }
+
+    @Override
+    @Transactional
+    public List<Transaktion> getEinkommendeTransaktionenAbDatum(Konto konto, Date datum) {
+        return transaktionRepository.getAllByZielkontoAndDatumBeforeOrderByDatum(konto, datum);
+    }
+    @Override
+    @Transactional
+    public List<Transaktion> getAusgehendeTransaktionenAbDatum(Konto konto, Date datum) {
+        return transaktionRepository.getAllByQuellkontoAndDatumBeforeOrderByDatum(konto, datum);
     }
 }

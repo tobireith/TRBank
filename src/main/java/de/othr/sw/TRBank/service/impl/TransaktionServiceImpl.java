@@ -3,9 +3,7 @@ package de.othr.sw.TRBank.service.impl;
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
-import de.othr.sw.TRBank.repository.KontoRepository;
 import de.othr.sw.TRBank.repository.TransaktionRepository;
-import de.othr.sw.TRBank.service.KontoServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.TransaktionServiceIF;
 import de.othr.sw.TRBank.service.exceptions.KundeException;
@@ -18,7 +16,10 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class TransaktionServiceImpl implements TransaktionServiceIF {
+public class TransaktionServiceImpl /*implements TransaktionServiceIF */ {
+    /*
+
+
     @Autowired
     private TransaktionRepository transaktionRepository;
     @Autowired
@@ -27,7 +28,6 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
     @Autowired
     private KontoServiceIF kontoService;
 
-     */
 
     @Override
     @Transactional
@@ -46,7 +46,6 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
     public Transaktion transaktionTätigen(Kunde kunde, Transaktion t) throws TransaktionException, KundeException {
         kundeService.kundeAnmelden(kunde);
 
-        /*
         //TODO
         // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
         t.setQuellkonto(kontoService.getKontoByIban(t.getQuellkonto().getIban()));
@@ -70,7 +69,6 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
         kontoService.saveKonto(von);
         zu.setKontostand(zu.getKontostand() + t.getBetrag());
         kontoService.saveKonto(zu);
-         */
         return transaktionRepository.save(t);
     }
 
@@ -79,4 +77,6 @@ public class TransaktionServiceImpl implements TransaktionServiceIF {
     public List<Transaktion> getAllTransaktionenForKonto(Konto konto) {
         return transaktionRepository.getAllByQuellkontoOrZielkontoOrderByDatum(konto, konto);
     }
+
+    */
 }

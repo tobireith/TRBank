@@ -3,12 +3,11 @@ package de.othr.sw.TRBank.service;
 import de.othr.sw.TRBank.entity.*;
 import de.othr.sw.TRBank.repository.KontoRepository;
 import de.othr.sw.TRBank.repository.KundeRepository;
-import de.othr.sw.TRBank.service.impl.KontoServiceImpl;
+import de.othr.sw.TRBank.service.impl.BankingServiceImpl;
 import de.othr.sw.TRBank.service.impl.KundeServiceImpl;
 import de.othr.sw.TRBank.service.impl.TransaktionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -17,11 +16,9 @@ import java.util.Random;
 @Component
 public class InitData {
     @Autowired
-    private KundeServiceImpl kundeService;
+    private KundeServiceIF kundeService;
     @Autowired
-    private KontoServiceImpl kontoService;
-    @Autowired
-    private TransaktionServiceImpl transaktionService;
+    private BankingServiceIF bankingService;
     @Autowired
     private KontoRepository kontoRepository;
     @Autowired
@@ -46,7 +43,7 @@ public class InitData {
                     double kontostand = 1000 + Math.round(new Random().nextDouble() * 10000);
                     String iban = "DE" + "1234567890" + String.format("%010d", new Random().nextInt(1000000000));
                     Konto testKonto = new Konto(iban, kunde, kontostand);
-                    Konto konto = kontoService.kontoAnlegen(testKonto);
+                    Konto konto = bankingService.kontoAnlegen(testKonto);
                     System.out.println("Konto erstellt:" + konto);
                 }
 
@@ -63,7 +60,7 @@ public class InitData {
                         try {
                             Transaktion testTransaktion = new Transaktion(vonKonto, zuKonto, betrag, datum, verwendungszweck);
                             Kunde tempKunde = kundeRepository.getByUsernameAndPasswort("Huber" + i, "passwort" + i);
-                            Transaktion t = transaktionService.transaktionTätigen(tempKunde, testTransaktion);
+                            Transaktion t = bankingService.transaktionTaetigen(tempKunde, testTransaktion);
                             System.out.println("Transaktion erstellt:" + t);
                         } catch (Exception e) {
                             e.printStackTrace();
