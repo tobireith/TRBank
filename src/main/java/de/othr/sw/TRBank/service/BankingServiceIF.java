@@ -7,6 +7,7 @@ import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.exceptions.KontoException;
 import de.othr.sw.TRBank.service.exceptions.KundeException;
 import de.othr.sw.TRBank.service.exceptions.TransaktionException;
+import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
@@ -25,7 +26,7 @@ public interface BankingServiceIF {
     Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TransaktionException, KundeException;
 
     @Transactional
-    List<Transaktion> getAllTransaktionenForKonto(Konto konto);
+    List<Transaktion> getTransaktionenForKonten(List<Konto> konten, Pageable pageable);
 
     @Transactional
     List<Transaktion> getEinkommendeTransaktionenAbDatum(Konto konto, Date datum);

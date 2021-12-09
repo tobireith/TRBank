@@ -14,6 +14,7 @@ import de.othr.sw.TRBank.service.exceptions.KontoException;
 import de.othr.sw.TRBank.service.exceptions.KundeException;
 import de.othr.sw.TRBank.service.exceptions.TransaktionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -142,10 +143,26 @@ public class BankingServiceImpl implements BankingServiceIF {
         return kontoRepository.getKontosByBesitzer(kunde);
     }
 
-    @Transactional
     @Override
-    public List<Transaktion> getAllTransaktionenForKonto(Konto konto) {
-        return transaktionRepository.getAllByQuellkontoOrZielkontoOrderByDatum(konto, konto);
+    @Transactional
+    public List<Transaktion> getTransaktionenForKonten(List<Konto> konten, Pageable pageable) {
+        List<Transaktion> transaktionenTotal = new ArrayList<>();
+        // Alle Konten durchiterieren
+        for(Konto konto : konten) {
+            // Alle Transaktionen zu dem aktuellen Konto finden
+            List<Transaktion> transaktionenFuerKonto = transaktionRepository.getAllByQuellkontoOrZielkontoOrderByDatum(konto, konto, pageable);
+            for(Transaktion transaktion : transaktionenFuerKonto) {
+                // Nur Transaktionen hinzufügen, die noch nicht bereits in der Liste sind
+                if(!transaktionenTotal.contains(transaktion)) {
+                    transaktionenTotal.add(transaktion);
+                }
+            }
+        }
+
+        // Transaktionen standardmäßig nach Datum sortieren
+        transaktionenTotal.sort(Comparator.comparing(Transaktion::getDatum));
+
+        return transaktionenTotal;
     }
 
     @Override
