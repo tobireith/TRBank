@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface KontoRepository extends CrudRepository<Konto, String> {
-    List<Konto> getKontosByBesitzer(Kunde k);
+    List<Konto> getKontosByBesitzerOrderByKontoId(Kunde k);
     Konto getKontoByIban(String iban);
 }

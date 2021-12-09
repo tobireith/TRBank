@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+<head th:replace="common/header :: header" />
 
+<body>
+    <div th:replace="common/header :: navigation"/>
+    <h1>Willkommen bei deinem Konto!</h1>
+    <h3 th:text="${konto.getIban()}"></h3>
 </body>
 </html>

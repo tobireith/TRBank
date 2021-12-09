@@ -51,9 +51,9 @@ public class InitData {
                 if (i <= 4) {
                     int anzahlTransaktionen = new Random().nextInt(5) + 1;
                     for (int k = 1; k <= anzahlTransaktionen; k++) {
-                        Konto vonKonto = kontoRepository.getKontosByBesitzer(kunde).get(0);
+                        Konto vonKonto = kontoRepository.getKontosByBesitzerOrderByKontoId(kunde).get(0);
                         Kunde zuKunde = kundeRepository.getAllByVornameAndNachname("Hans " + i, "Huber " + i).get(0);
-                        Konto zuKonto = kontoRepository.getKontosByBesitzer(zuKunde).get(0);
+                        Konto zuKonto = kontoRepository.getKontosByBesitzerOrderByKontoId(zuKunde).get(0);
                         double betrag = Math.round(new Random().nextDouble() * 1000);
                         Date datum = new Date();
                         String verwendungszweck = "Testüberweisung " + k + " von Konto " + vonKonto.getID();

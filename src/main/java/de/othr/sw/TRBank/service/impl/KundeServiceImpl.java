@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 @Service
 public class KundeServiceImpl implements KundeServiceIF {
@@ -38,8 +38,8 @@ public class KundeServiceImpl implements KundeServiceIF {
 
     @Transactional
     @Override
-    public Collection<Kunde> getAllKunden() {
-        Collection<Kunde> kunden = new ArrayList<>();
+    public List<Kunde> getAllKunden() {
+        List<Kunde> kunden = new ArrayList<>();
         kundeRepository.findAll().forEach(kunden::add);
         return kunden;
     }

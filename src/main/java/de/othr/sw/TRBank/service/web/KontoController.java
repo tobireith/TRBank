@@ -9,6 +9,7 @@ public class KontoController {
 
     @RequestMapping
     public String konto(Model model) {
+        //TODO?
         return "konto";
     }
 }

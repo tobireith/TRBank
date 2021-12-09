@@ -139,8 +139,8 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional
     @Override
-    public Collection<Konto> getKontenByKunde(Kunde kunde) {
-        return kontoRepository.getKontosByBesitzer(kunde);
+    public List<Konto> getKontenByKunde(Kunde kunde) {
+        return kontoRepository.getKontosByBesitzerOrderByKontoId(kunde);
     }
 
     @Override

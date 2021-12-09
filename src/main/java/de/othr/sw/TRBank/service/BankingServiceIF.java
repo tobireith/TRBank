@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface BankingServiceIF {
-    Collection<Konto> getKontenByKunde(Kunde kunde);
+    List<Konto> getKontenByKunde(Kunde kunde);
     Kontoauszug kontoauszugErstellen(Konto konto) throws KontoException;
 
     @Transactional
