@@ -18,9 +18,6 @@ public interface BankingServiceIF {
     List<Konto> getKontenByKunde(Kunde kunde);
     Kontoauszug kontoauszugErstellen(Konto konto) throws KontoException;
 
-    @Transactional
-    Konto kontoAnlegen(Konto k);
-
     Konto getKontoByIban(String Iban);
     Konto kontoSpeichern(Konto konto);
     Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TransaktionException, KundeException;

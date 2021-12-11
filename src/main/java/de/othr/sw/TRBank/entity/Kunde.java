@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     @Embedded
     private Adresse adresse;
     @OneToMany(mappedBy = "besitzer")
-    private List<Konto> konten;
+    private List<Konto> konten = new ArrayList<>();
     @Column(unique = true)
     private String username;
     private String passwort;
@@ -61,6 +62,16 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
 
     public void setKonten(List<Konto> konten) {
         this.konten = konten;
+    }
+
+    //TODO: Wirklich so? Oder gibts es eine bessere Lösung?????
+
+    public boolean addKonto(Konto konto) {
+        return this.konten.add(konto);
+    }
+
+    public boolean removeKonto(Konto konto) {
+        return this.konten.remove(konto);
     }
 
     public boolean isFirmenkunde() {

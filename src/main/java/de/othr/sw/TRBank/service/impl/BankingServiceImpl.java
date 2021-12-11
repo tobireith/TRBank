@@ -32,12 +32,6 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Autowired
     private KundeServiceIF kundeService;
 
-    @Override
-    @Transactional
-    public Konto kontoAnlegen(Konto k) {
-        return kontoRepository.save(k);
-    }
-
     public double transaktionenSummieren(List<Transaktion> transaktionen){
         double sum = 0;
         for(Transaktion element : transaktionen) {
@@ -55,16 +49,21 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Transactional
     @Override
     public Konto kontoSpeichern(Konto konto) {
+        // Erst Konto Speichern, dann Referenz im Kunden updaten!
+        Konto savedKonto = kontoRepository.save(konto);
         Kunde kunde = konto.getBesitzer();
-        kunde.getKonten().remove(konto);
-        kunde.getKonten().add(konto);
+        if(kunde.getKonten().size() >= 1) {
+            kunde.removeKonto(konto);
+        }
+        kunde.addKonto(konto);
         kundeService.kundeSpeichern(kunde);
-        return kontoRepository.save(konto);
+        return savedKonto;
     }
 
+    @Transactional
     @Override
     public Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TransaktionException, KundeException {
-        kundeService.kundeAnmelden(kunde);
+        kunde = kundeService.kundeAnmelden(kunde);
 
         // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
         transaktion.setQuellkonto(this.getKontoByIban(transaktion.getQuellkonto().getIban()));
@@ -76,7 +75,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         //  Für Lastschriften ein eigenes Formular!
         if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
             throw new TransaktionException(transaktion, 2, "ERROR: Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
-        } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) || !kunde.getKonten().contains(transaktion.getZielkonto())) {
+        } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) && !kunde.getKonten().contains(transaktion.getZielkonto())) {
             throw new TransaktionException(transaktion, 3, "ERROR: Quell- und Zielkonto gehören nicht dem Kunden!");
         }
 

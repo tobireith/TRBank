@@ -82,7 +82,7 @@ public class Konto extends SingleIdEntity<Long> {
     public String toString() {
         return "Konto{" +
                 "kontoId=" + kontoId +
-                ", besitzer=" + besitzer +
+                ", besitzerID=" + (besitzer != null ? besitzer.getID() : null) +
                 ", transaktionenRaus=" + transaktionenRaus +
                 ", transaktionenRein=" + transaktionenRein +
                 ", iban='" + iban + '\'' +

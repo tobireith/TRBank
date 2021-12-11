@@ -16,6 +16,7 @@ public class TransaktionException extends Exception{
     }
 
     public TransaktionException(Transaktion transaktion, long fehlerNr, String fehlerNachricht) {
+        super(fehlerNr + fehlerNachricht + transaktion);
         this.transaktion = transaktion;
         this.fehlerNr = fehlerNr;
         this.fehlerNachricht = fehlerNachricht;
