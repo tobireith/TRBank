@@ -3,7 +3,7 @@ package de.othr.sw.TRBank.service.impl;
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.repository.KundeRepository;
 import de.othr.sw.TRBank.service.KundeServiceIF;
-import de.othr.sw.TRBank.service.exceptions.KundeException;
+import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,9 +24,9 @@ public class KundeServiceImpl implements KundeServiceIF {
 
     @Transactional
     @Override
-    public Kunde kundeRegistrieren(Kunde k) throws KundeException {
+    public Kunde kundeRegistrieren(Kunde k) throws TRBankException {
         if(kundeRepository.getByUsername(k.getUsername()) != null) {
-            throw new KundeException(1, "ERROR: Dieser User existiert bereits.");
+            throw new TRBankException("ERROR: Dieser User existiert bereits.");
         }
         k.setPasswort(passwordEncoder.encode(k.getPassword()));
         return kundeSpeichern(k);
@@ -40,10 +40,10 @@ public class KundeServiceImpl implements KundeServiceIF {
 
     @Transactional
     @Override
-    public Kunde kundeAnmelden(Kunde anmeldedaten) throws KundeException{
+    public Kunde kundeAnmelden(Kunde anmeldedaten) throws TRBankException{
         Kunde kunde = kundeRepository.getByUsername(anmeldedaten.getUsername());
         if(kunde == null || !passwordEncoder.matches(anmeldedaten.getPassword(), kunde.getPassword())) {
-            throw new KundeException(2, "ERROR: Falscher Username oder Passwort");
+            throw new TRBankException("ERROR: Falscher Username oder Passwort");
         }
         return kunde;
     }

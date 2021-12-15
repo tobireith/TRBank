@@ -12,6 +12,7 @@ import java.util.List;
 
 @Repository
 public interface TransaktionRepository extends PagingAndSortingRepository<Transaktion, Long> {
+    //TODO: Find vs Get!
     List<Transaktion> getAllByQuellkontoAndDatumBeforeOrderByDatum(Konto quellkonto, Date datum);
     List<Transaktion> getAllByZielkontoAndDatumBeforeOrderByDatum(Konto zielkonto, Date datum);
     List<Transaktion> getAllByQuellkontoOrZielkontoOrderByDatum(Konto quellkonto, Konto zielkonto, Pageable pageable);

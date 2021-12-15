@@ -9,9 +9,7 @@ import de.othr.sw.TRBank.repository.KontoauszugRepository;
 import de.othr.sw.TRBank.repository.TransaktionRepository;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
-import de.othr.sw.TRBank.service.exceptions.KontoException;
-import de.othr.sw.TRBank.service.exceptions.KundeException;
-import de.othr.sw.TRBank.service.exceptions.TransaktionException;
+import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -52,17 +50,21 @@ public class BankingServiceImpl implements BankingServiceIF {
         // Erst Konto Speichern, dann Referenz im Kunden updaten!
         Konto savedKonto = kontoRepository.save(konto);
         Kunde kunde = konto.getBesitzer();
-        if(kunde.getKonten().size() >= 1) {
-            kunde.removeKonto(konto);
+        List<Konto> konten = new ArrayList<>(kunde.getKonten());
+        if(konten.size() >= 1) {
+            konten.remove(konto);
         }
-        kunde.addKonto(konto);
+        konten.add(konto);
+        kunde.setKonten(konten);
+
         kundeService.kundeSpeichern(kunde);
+        System.out.println("Kunde mit neuen Konten gespeichert: " + kunde.getKonten());
         return savedKonto;
     }
 
     @Transactional
     @Override
-    public Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TransaktionException, KundeException {
+    public Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TRBankException {
         kunde = kundeService.kundeAnmelden(kunde);
 
         // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
@@ -74,24 +76,31 @@ public class BankingServiceImpl implements BankingServiceIF {
         // TODO: Firmenkunde überprüfung durch Authorities
         //  Für Lastschriften ein eigenes Formular!
         if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
-            throw new TransaktionException(transaktion, 2, "ERROR: Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
+            throw new TRBankException("ERROR: Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
         } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) && !kunde.getKonten().contains(transaktion.getZielkonto())) {
-            throw new TransaktionException(transaktion, 3, "ERROR: Quell- und Zielkonto gehören nicht dem Kunden!");
+            throw new TRBankException("ERROR: Quell- und Zielkonto gehören nicht dem Kunden!");
         }
 
         Konto von = transaktion.getQuellkonto();
         Konto zu = transaktion.getZielkonto();
         // Prüfen, ob genug Geld auf dem Quellkonto ist
         if (von.getKontostand() < transaktion.getBetrag()) {
-            throw (new TransaktionException(transaktion, 1, "ERROR: Kontostand zu niedrig"));
+            throw (new TRBankException("ERROR: Kontostand zu niedrig"));
         }
 
         // Transaktion durchführen
         Transaktion t = transaktionRepository.save(transaktion);
 
-        // Kontostände anpassen
+        // Transaktionen Liste im Konto anpassen und Kontostände anpassen
+        List<Transaktion> transaktionenRaus = new ArrayList<>(von.getTransaktionenRaus());
+        transaktionenRaus.add(t);
+        von.setTransaktionenRaus(transaktionenRaus);
         von.setKontostand(von.getKontostand() - transaktion.getBetrag());
         this.kontoSpeichern(von);
+
+        List<Transaktion> transaktionenRein = new ArrayList<>(von.getTransaktionenRein());
+        transaktionenRein.add(t);
+        zu.setTransaktionenRein(transaktionenRein);
         zu.setKontostand(zu.getKontostand() + transaktion.getBetrag());
         this.kontoSpeichern(zu);
 
@@ -107,7 +116,7 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional
     @Override
-    public Kontoauszug kontoauszugErstellen(Konto konto) throws KontoException {
+    public Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException {
         Kontoauszug kontoauszug = new Kontoauszug();
 
 
@@ -147,7 +156,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         kontostandEnde += summeEingehend - summeAusgehend;
         kontoauszug.setKontostandEnde(kontostandEnde);
         if(kontoauszug.getKontostandEnde() != konto.getKontostand()) {
-            throw new KontoException(1, "ERROR: Kontostand stimmt nicht mit dem berechneten Wert des aktuellen Kontoauszuges überein", konto, kontoauszug);
+            throw new TRBankException("ERROR: Kontostand stimmt nicht mit dem berechneten Wert des aktuellen Kontoauszuges überein");
         }
 
         kontoauszug.setDatumVon(neueTransaktionen.get(0).getDatum());

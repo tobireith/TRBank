@@ -64,16 +64,6 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
         this.konten = konten;
     }
 
-    //TODO: Wirklich so? Oder gibts es eine bessere Lösung?????
-
-    public boolean addKonto(Konto konto) {
-        return this.konten.add(konto);
-    }
-
-    public boolean removeKonto(Konto konto) {
-        return this.konten.remove(konto);
-    }
-
     public boolean isFirmenkunde() {
         return firmenkunde;
     }

@@ -3,8 +3,7 @@ package de.othr.sw.TRBank.service;
 import de.othr.sw.TRBank.entity.*;
 import de.othr.sw.TRBank.repository.KontoRepository;
 import de.othr.sw.TRBank.repository.KundeRepository;
-import de.othr.sw.TRBank.service.exceptions.KundeException;
-import de.othr.sw.TRBank.service.exceptions.TransaktionException;
+import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +22,10 @@ public class InitData {
     @Autowired
     private KundeRepository kundeRepository;
 
+    // TODO: Initialize with real data!
+
     @Transactional
-    public void initData() throws KundeException, TransaktionException {
+    public void initData() throws TRBankException {
         for (int i = 1; i <= 5; i++) {
             //Adressen erzeugen
             Adresse adr = new Adresse("Seybothstrasse ", String.valueOf(i), "Regensburg", 93053, "Deutschland");
@@ -44,7 +45,6 @@ public class InitData {
                 Konto konto = bankingService.kontoSpeichern(testKonto);
                 System.out.println("Konto erstellt:" + konto);
             }
-            //TODO: Kontoauszüge erstellen
         }
         //Transaktionen erzeugen (1-5 pro Kunde), beim Letzten kunden nicht
         for(int i = 1; i <= 4; i++) {
@@ -68,5 +68,6 @@ public class InitData {
                 System.out.println("Transaktion erstellt:" + t);
             }
         }
+        //TODO: Kontoauszüge erstellen
     }
 }

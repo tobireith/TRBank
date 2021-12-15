@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface KontoauszugRepository extends JpaRepository<Kontoauszug, Long> {
+    //TODO: Find vs Get!
     List<Kontoauszug> getAllByKontoOrderByDatumBis(Konto konto);
 
     @Query("SELECT a.transaktionen " +
