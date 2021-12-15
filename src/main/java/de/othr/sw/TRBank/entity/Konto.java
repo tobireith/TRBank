@@ -3,6 +3,7 @@ package de.othr.sw.TRBank.entity;
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -17,9 +18,9 @@ public class Konto extends SingleIdEntity<Long> {
     @ManyToOne
     private Kunde besitzer;
     @OneToMany(mappedBy = "quellkonto")
-    private List<Transaktion> transaktionenRaus;
+    private List<Transaktion> transaktionenRaus = new ArrayList<>();
     @OneToMany(mappedBy = "zielkonto")
-    private List<Transaktion> transaktionenRein;
+    private List<Transaktion> transaktionenRein = new ArrayList<>();
     @Column(unique = true)
     private String iban;
     private double kontostand;

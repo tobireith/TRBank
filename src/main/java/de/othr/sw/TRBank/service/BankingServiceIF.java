@@ -11,10 +11,10 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 public interface BankingServiceIF {
-    List<Konto> getKontenByKunde(Kunde kunde);
+    List<Konto> getKontenByKunde(Kunde kunde) throws TRBankException;
     Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException;
 
-    Konto getKontoByIban(String Iban);
+    Konto getKontoByIban(String Iban) throws TRBankException;
     Konto kontoSpeichern(Konto konto);
     Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TRBankException;
 

@@ -25,7 +25,7 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Transactional
     @Override
     public Kunde kundeRegistrieren(Kunde k) throws TRBankException {
-        if(kundeRepository.getByUsername(k.getUsername()) != null) {
+        if(kundeRepository.findByUsername(k.getUsername()).isPresent()) {
             throw new TRBankException("ERROR: Dieser User existiert bereits.");
         }
         k.setPasswort(passwordEncoder.encode(k.getPassword()));
@@ -41,8 +41,8 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Transactional
     @Override
     public Kunde kundeAnmelden(Kunde anmeldedaten) throws TRBankException{
-        Kunde kunde = kundeRepository.getByUsername(anmeldedaten.getUsername());
-        if(kunde == null || !passwordEncoder.matches(anmeldedaten.getPassword(), kunde.getPassword())) {
+        Kunde kunde = kundeRepository.findByUsername(anmeldedaten.getUsername()).orElseThrow(() -> new TRBankException("ERROR: Falscher Username"));
+        if(!passwordEncoder.matches(anmeldedaten.getPassword(), kunde.getPassword())) {
             throw new TRBankException("ERROR: Falscher Username oder Passwort");
         }
         return kunde;
@@ -56,9 +56,11 @@ public class KundeServiceImpl implements KundeServiceIF {
         return kunden;
     }
 
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //TODO get oder find hier? -> TESTEN
-        return kundeRepository.getByUsername(username);
+        return kundeRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("ERROR: Falscher Username"));
     }
+
+
 }

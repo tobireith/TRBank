@@ -9,12 +9,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TransaktionRepository extends PagingAndSortingRepository<Transaktion, Long> {
-    //TODO: Find vs Get!
-    List<Transaktion> getAllByQuellkontoAndDatumBeforeOrderByDatum(Konto quellkonto, Date datum);
-    List<Transaktion> getAllByZielkontoAndDatumBeforeOrderByDatum(Konto zielkonto, Date datum);
-    List<Transaktion> getAllByQuellkontoOrZielkontoOrderByDatum(Konto quellkonto, Konto zielkonto, Pageable pageable);
-    List<Transaktion> findAllByQuellkontoOrZielkontoAndDatumAfterOrderByDatum(Konto quellkonto, Konto zielkonto, Date datum);
+    Optional<List<Transaktion>> findAllByQuellkontoAndDatumBeforeOrderByDatum(Konto quellkonto, Date datum);
+    Optional<List<Transaktion>> findAllByZielkontoAndDatumBeforeOrderByDatum(Konto zielkonto, Date datum);
+    Optional<List<Transaktion>> findAllByQuellkontoOrZielkontoOrderByDatum(Konto quellkonto, Konto zielkonto, Pageable pageable);
+    Optional<List<Transaktion>> findAllByQuellkontoOrZielkontoAndDatumAfterOrderByDatum(Konto quellkonto, Konto zielkonto, Date datum);
 }

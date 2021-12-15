@@ -17,10 +17,6 @@ public class InitData {
     private KundeServiceIF kundeService;
     @Autowired
     private BankingServiceIF bankingService;
-    @Autowired
-    private KontoRepository kontoRepository;
-    @Autowired
-    private KundeRepository kundeRepository;
 
     // TODO: Initialize with real data!
 
@@ -50,14 +46,10 @@ public class InitData {
         for(int i = 1; i <= 4; i++) {
             int anzahlTransaktionen = new Random().nextInt(5) + 1;
             for (int k = 1; k <= anzahlTransaktionen; k++) {
-                System.out.println("1");
-                Kunde vonKunde = kundeRepository.getAllByVornameAndNachname("Hans " + i, "Huber " + i).get(0);
-                Konto vonKonto = kontoRepository.getKontosByBesitzerOrderByKontoId(vonKunde).get(0);
-                System.out.println("2");
-                Kunde zuKunde = kundeRepository.getAllByVornameAndNachname("Hans " + (i+1), "Huber " + (i+1)).get(0);
-                System.out.println("KONTEN VON " + zuKunde.getVorname() + " | " + zuKunde.getKonten());
-                Konto zuKonto = kontoRepository.getKontosByBesitzerOrderByKontoId(zuKunde).get(0);
-                System.out.println("3");
+                Kunde vonKunde = kundeService.getAllKunden().get(i-1);
+                Konto vonKonto = vonKunde.getKonten().get(0);
+                Kunde zuKunde = kundeService.getAllKunden().get(i);
+                Konto zuKonto = zuKunde.getKonten().get(0);
                 double betrag = Math.round(new Random().nextDouble() * 1000);
                 Date datum = new Date();
                 String verwendungszweck = "Testüberweisung " + k + " von Konto " + vonKonto.getID();

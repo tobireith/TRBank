@@ -6,10 +6,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KontoRepository extends CrudRepository<Konto, String> {
-    //TODO: Find vs Get!
-    List<Konto> getKontosByBesitzerOrderByKontoId(Kunde k);
-    Konto getKontoByIban(String iban);
+    Optional<List<Konto>> findKontosByBesitzerOrderByKontoId(Kunde k);
+    Optional<Konto> findKontoByIban(String iban);
 }

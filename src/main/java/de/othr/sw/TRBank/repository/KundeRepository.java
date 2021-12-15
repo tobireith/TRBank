@@ -6,10 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface KundeRepository extends CrudRepository<Kunde, String> {
-    //TODO: Find vs Get!
-    List<Kunde> getAllByVornameAndNachname(String vorname, String nachname);
-    Kunde getByUsername(String username);
-    Kunde getByUsernameAndPasswort(String username, String passwort);
+    Optional<List<Kunde>> findAllByVornameAndNachname(String vorname, String nachname);
+    Optional<Kunde> findByUsername(String username);
+    Optional<Kunde> findByUsernameAndPasswort(String username, String passwort);
 }

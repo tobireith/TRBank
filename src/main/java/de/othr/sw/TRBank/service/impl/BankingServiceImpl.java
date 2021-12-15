@@ -40,8 +40,8 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Override
     @Transactional
-    public Konto getKontoByIban(String Iban) {
-        return kontoRepository.getKontoByIban(Iban);
+    public Konto getKontoByIban(String Iban) throws TRBankException {
+        return kontoRepository.findKontoByIban(Iban).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
     }
 
     @Transactional
@@ -127,7 +127,9 @@ public class BankingServiceImpl implements BankingServiceIF {
         double kontostandEnde = 0;
 
         // Letzten Kontoauszug laden, um startKontostand & die letzte Transaktion zu erhalten
-        List<Kontoauszug> kontoauszuege = kontoauszugRepository.getAllByKontoOrderByDatumBis(konto);
+        Optional<List<Kontoauszug>> optionalKontoauszugList = kontoauszugRepository.findAllByKontoOrderByDatumBis(konto);
+
+        List<Kontoauszug> kontoauszuege = optionalKontoauszugList.orElse(new ArrayList<>());
         if(kontoauszuege.size() >= 1) {
             letzterKontoauszug = kontoauszuege.get(kontoauszuege.size() - 1);
             kontoauszug.setKontostandAnfang(letzterKontoauszug.getKontostandEnde());
@@ -172,8 +174,8 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional
     @Override
-    public List<Konto> getKontenByKunde(Kunde kunde) {
-        return kontoRepository.getKontosByBesitzerOrderByKontoId(kunde);
+    public List<Konto> getKontenByKunde(Kunde kunde) throws TRBankException {
+        return kontoRepository.findKontosByBesitzerOrderByKontoId(kunde).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden der Konten!"));
     }
 
     @Override

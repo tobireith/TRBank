@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KontoauszugRepository extends JpaRepository<Kontoauszug, Long> {
-    //TODO: Find vs Get!
-    List<Kontoauszug> getAllByKontoOrderByDatumBis(Konto konto);
+    Optional<List<Kontoauszug>> findAllByKontoOrderByDatumBis(Konto konto);
 
     @Query("SELECT a.transaktionen " +
             "FROM Kontoauszug AS a " +
@@ -20,5 +20,5 @@ public interface KontoauszugRepository extends JpaRepository<Kontoauszug, Long> 
             "JOIN Konto AS konto " +
             "WHERE a.kontoauszugId = ?1 " +
             "ORDER BY t.datum")
-    List<Transaktion> transaktionenVonKontoauszugSortiertNachDatum(Long konzoauszugId);
+    Optional<List<Transaktion>> transaktionenVonKontoauszugSortiertNachDatum(Long konzoauszugId);
 }
