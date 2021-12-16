@@ -1,21 +1,40 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="common/header :: header" />
+<head th:replace="common/header :: header">
+</head>
 
 <body>
-    <div th:replace="common/header :: navigation"/>
-    <form th:action="@{/login}" method="post">
-        <div class="mb-3">
-            <label for="inputUsername" class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" id="inputUsername" aria-describedby="usernameHelp">
-            <div id="usernameHelp" class="form-text">Please enter your username.</div>
-        </div>
-        <div class="mb-3">
-            <label for="inputPasswort" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" id="inputPasswort">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    <div style="
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;">
+        <div th:replace="common/header :: navigation"></div>
+        <section class="w-75" style="margin: auto">
+            <div class="container d-flex justify-content-center align-items-center" >
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card bg-dark text-white rounded-borders">
+                        <div class="card-body text-center p-5">
+                            <div class="mb-md-5 mt-md-4 pb-5">
+                                <h2 class="fw-bold mb-5 text-uppercase">Login</h2>
+                                <form th:action="@{/login}" method="post" class="form-white form-outline">
+                                    <div class="col-auto mb-4">
+                                        <input type="text" name="username" class="form-control form-control-lg" placeholder="Username" id="inputUsername">
+                                    </div>
+                                    <div class="col-auto mb-4">
+                                        <input type="password" name="password" class="form-control form-control-lg" placeholder="Passwort" id="inputPasswort">
+                                    </div>
+                                    <button type="submit" class="btn btn-outline-light">Anmelden</button>
+                                </form>
+                            </div>
+                            <div>
+                                <p class="mb-0">Du bist Neukunde? <a href="/register" class="text-white-50 fw-bold">Registriere dich!</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </body>
 </html>

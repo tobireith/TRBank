@@ -25,7 +25,7 @@ public class TRBankSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
-            "/css/**", "/image/**", "/fonts/**", "/js/**", "/login", "/register"
+            "/static/css/**", "/image/**", "/fonts/**", "/js/**", "/login", "/register", "/static/**", "/resources/**", "/css/**"
     };
 
     @Override

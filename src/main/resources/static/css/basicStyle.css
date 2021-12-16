@@ -1,0 +1,7 @@
+body {
+    background-color: lightgrey;
+}
+
+.rounded-borders {
+    border-radius: 2rem;
+}
