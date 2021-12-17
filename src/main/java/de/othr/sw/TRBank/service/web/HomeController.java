@@ -31,7 +31,10 @@ public class HomeController {
         Kunde aktuellerKunde = kundeService.getAllKunden().get(0);
         model.addAttribute("konten", aktuellerKunde.getKonten());
 
-        List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(aktuellerKunde.getKonten(), PageRequest.of(0, 5));
+        List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(aktuellerKunde.getKonten());
+        if(transaktionen.size() > 5) {
+            transaktionen = transaktionen.subList(0, 4);
+        }
         model.addAttribute("transaktionen", transaktionen);
         return "index";
     }

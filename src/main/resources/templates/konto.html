@@ -1,10 +1,39 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="common/header :: header" />
 
 <body>
     <div th:replace="common/header :: navigation"/>
-    <h1>Willkommen bei deinem Konto!</h1>
-    <h3 th:text="${konto.getIban()}"></h3>
+    <h1 class="text-center">Willkommen bei Ihrem Konto!</h1>
+
+
+    <div class="container d-flex justify-content-center align-items-center  w-100 p-2" >
+        <div class="card rounded-borders w-100">
+            <div class="card-body text-center">
+                <h3>Kontoumsätze</h3>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Datum</th>
+                        <th scope="col">Verwendungszweck</th>
+                        <th scope="col">Quell-IBAN</th>
+                        <th scope="col">Ziel-IBAN</th>
+                        <th scope="col">Betrag</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="transaktion : ${transaktionen}">
+                        <td><label th:text="${transaktion.getDatum()}"></label></td>
+                        <td><label th:text="${transaktion.getVerwendungszweck()}"></label></td>
+                        <td><label th:text="${transaktion.getQuellkonto().getIban()}"></label></td>
+                        <td><label th:text="${transaktion.getZielkonto().getIban()}"></label></td>
+                        <td><label th:text="${transaktion.getBetrag()}"></label></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

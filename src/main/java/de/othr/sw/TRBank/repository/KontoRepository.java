@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface KontoRepository extends CrudRepository<Konto, String> {
+public interface KontoRepository extends CrudRepository<Konto, Long> {
     Optional<List<Konto>> findKontosByBesitzerOrderByKontoId(Kunde k);
     Optional<Konto> findKontoByIban(String iban);
 }

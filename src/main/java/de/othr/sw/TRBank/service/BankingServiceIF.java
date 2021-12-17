@@ -15,9 +15,11 @@ public interface BankingServiceIF {
     Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException;
 
     Konto getKontoByIban(String Iban) throws TRBankException;
+    Konto getKontoById (long kontoId)  throws TRBankException;
+
     Konto kontoSpeichern(Konto konto);
     Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TRBankException;
 
     @Transactional
-    List<Transaktion> getTransaktionenForKonten(List<Konto> konten, Pageable pageable);
+    List<Transaktion> getTransaktionenForKonten(List<Konto> konten);
 }

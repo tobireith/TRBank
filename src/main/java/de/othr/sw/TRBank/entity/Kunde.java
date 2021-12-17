@@ -91,7 +91,14 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //TODO! (Firmenkunde & normaler Benutzer)
-        return List.of((GrantedAuthority) () -> "STANDARD");
+        return List.of((GrantedAuthority) () -> {
+            if(isFirmenkunde()) {
+                return "BUSINESS";
+            }
+            else {
+                return "STANDARD";
+            }
+        });
     }
 
     @Override

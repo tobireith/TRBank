@@ -26,8 +26,8 @@
                         <th scope="row"><label th:text="${konto.getKontoId()}"></label></th>
                         <td><label th:text="${konto.getIban()}"></label></td>
                         <td><label th:text="${konto.getKontostand()}"></label></td>
-                        <td><form action="@{/konto/${}}">
-                            <button type="button" class="btn btn-primary">Details</button>
+                        <td><form th:action="@{/konto/{id}(id=${konto.getID()})}">
+                            <button type="submit" class="btn btn-primary">Details</button>
                         </form></td>
                     </tr>
                 </table>

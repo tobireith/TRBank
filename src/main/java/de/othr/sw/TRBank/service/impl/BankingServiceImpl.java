@@ -44,6 +44,12 @@ public class BankingServiceImpl implements BankingServiceIF {
         return kontoRepository.findKontoByIban(Iban).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
     }
 
+    @Override
+    @Transactional
+    public Konto getKontoById(long kontoId) throws TRBankException {
+        return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
+    }
+
     @Transactional
     @Override
     public Konto kontoSpeichern(Konto konto) {
@@ -180,7 +186,7 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Override
     @Transactional
-    public List<Transaktion> getTransaktionenForKonten(List<Konto> konten, Pageable pageable) {
+    public List<Transaktion> getTransaktionenForKonten(List<Konto> konten) {
         List<Transaktion> transaktionenTotal = new ArrayList<>();
         // Alle Konten durchiterieren
         for(Konto konto : konten) {

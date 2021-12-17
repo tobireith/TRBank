@@ -31,7 +31,10 @@ public class TransaktionenController {
         }
         model.addAttribute("konto", konto);
         //TODO: Make Buttons for the next 10 Transactions! (Next Page...)
-        List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(List.of(konto), PageRequest.of(0, 10));
+        List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(List.of(konto));
+        if(transaktionen.size() > 10) {
+            transaktionen = transaktionen.subList(0, 9);
+        }
         model.addAttribute("transaktionen", transaktionen);
         return "transaktionen";
     }
