@@ -91,6 +91,7 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //TODO! (Firmenkunde & normaler Benutzer)
+        //FIXME! This doesn't work yet
         return List.of((GrantedAuthority) () -> {
             if(isFirmenkunde()) {
                 return "BUSINESS";

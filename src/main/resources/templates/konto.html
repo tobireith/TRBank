@@ -1,12 +1,50 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:replace="common/header :: header" />
 
 <body>
     <div th:replace="common/header :: navigation"/>
-    <h1 class="text-center">Willkommen bei Ihrem Konto!</h1>
 
+    <div class="container py-5">
+        <div class="card rounded-borders">
+            <div class="card-body text-center">
+                <div class="row gx-5 justify-content-center align-items-center">
+                    <div class="col-2">
+                        <label>Kontonummer</label>
+                        <p th:text="${konto.getID()}" class="mb-0"></p>
+                    </div>
+                    <div class="col-3">
+                        <label>IBAN</label>
+                        <p th:text="${konto.getIban()}" class="mb-0"></p>
+                    </div>
+                    <div class="col-3">
+                        <label>Kontostand</label>
+                        <p th:text="${#numbers.formatCurrency(konto.getKontostand())}" class="mb-0"></p>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col">
+                                <form th:action="@{/konto/{id}(id=${konto.getID()})}">
+                                    <button type="submit" class="btn btn-primary">Geld senden</button>
+                                </form>
+                            </div>
+                            <div class="col" sec:authorize="hasAuthority('FIRMENKUNDE')">
+                                <form th:action="@{/konto/{id}(id=${konto.getID()})}">
+                                    <button type="submit" class="btn btn-primary">Geld anfordern</button>
+                                </form>
+                            </div>
+                            <div class="col">
+                                <form th:action="@{/konto/{id}(id=${konto.getID()})}">
+                                    <button type="submit" class="btn btn-secondary">Kontoauszug erstellen</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container d-flex justify-content-center align-items-center  w-100 p-2" >
         <div class="card rounded-borders w-100">
