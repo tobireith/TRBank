@@ -7,6 +7,32 @@
     <div th:replace="common/header :: navigation"/>
     <h1 class="text-center">Willkommen bei TRBank!</h1>
 
+    <div class="container p-2">
+        <div class="row gx-5">
+            <div class="col">
+                <div class="card rounded-borders">
+                    <div class="card-body text-center">
+                        <h3>Ihr Gesamtkontostand</h3>
+                        <label th:text="${#numbers.formatCurrency(kontostandTotal)}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card rounded-borders">
+                    <div class="card-body text-center">
+                        <p th:text="${kunde.getVorname()} + ' ' + ${kunde.getNachname()}"  class="mb-0"></p>
+                        <div th:switch="${kunde.isFirmenkunde()}">
+                            <p th:case="${true}"  class="mb-0">Firmenkunde</p>
+                        </div>
+                        <p th:text="${kunde.getAdresse().getStrasse() + ' ' + kunde.getAdresse().getHausnummer()}" class="mb-0"></p>
+                        <p th:text="${kunde.getAdresse().getPlz() + ' ' + kunde.getAdresse().getStadt()}"  class="mb-0"></p>
+                        <p th:text="${kunde.getAdresse().getLand()}"  class="mb-0"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="container d-flex justify-content-center align-items-center  w-100 p-2" >
         <div class="card rounded-borders w-100">
@@ -25,7 +51,7 @@
                     <tr th:each="konto : ${konten}">
                         <th scope="row"><label th:text="${konto.getKontoId()}"></label></th>
                         <td><label th:text="${konto.getIban()}"></label></td>
-                        <td><label th:text="${konto.getKontostand()}"></label></td>
+                        <td><label th:text="${#numbers.formatCurrency(konto.getKontostand())}"></label></td>
                         <td><form th:action="@{/konto/{id}(id=${konto.getID()})}">
                             <button type="submit" class="btn btn-primary">Details</button>
                         </form></td>
@@ -39,26 +65,7 @@
         <div class="card rounded-borders w-100">
             <div class="card-body text-center">
                 <h3>Neueste Kontoumsätze</h3>
-                <table class="table table-striped table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">Datum</th>
-                        <th scope="col">Verwendungszweck</th>
-                        <th scope="col">Quell-IBAN</th>
-                        <th scope="col">Ziel-IBAN</th>
-                        <th scope="col">Betrag</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="transaktion : ${transaktionen}">
-                        <td><label th:text="${transaktion.getDatum()}"></label></td>
-                        <td><label th:text="${transaktion.getVerwendungszweck()}"></label></td>
-                        <td><label th:text="${transaktion.getQuellkonto().getIban()}"></label></td>
-                        <td><label th:text="${transaktion.getZielkonto().getIban()}"></label></td>
-                        <td><label th:text="${transaktion.getBetrag()}"></label></td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div th:replace="common/transaktionTable :: transaktionTable(${transaktionen})"> </div>
             </div>
         </div>
     </div>

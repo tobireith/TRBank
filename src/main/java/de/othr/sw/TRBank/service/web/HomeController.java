@@ -29,7 +29,11 @@ public class HomeController {
     public String home(Model model) {
         //TODO: Change this to get the current logged in Kunde
         Kunde aktuellerKunde = kundeService.getAllKunden().get(0);
+        model.addAttribute("kunde", aktuellerKunde);
         model.addAttribute("konten", aktuellerKunde.getKonten());
+
+        double kontostandTotal = aktuellerKunde.getKonten().stream().mapToDouble(Konto::getKontostand).sum();
+        model.addAttribute("kontostandTotal", kontostandTotal);
 
         List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(aktuellerKunde.getKonten());
         if(transaktionen.size() > 5) {
