@@ -25,12 +25,14 @@
                     <div class="col-4">
                         <div class="row">
                             <div class="col">
-                                <form th:action="@{/konto/{id}/zahlen(id=${konto.getID()})}">
+                                <form th:action="@{/konto/{id}/transaktion(id=${konto.getID()})}">
+                                    <input type="hidden" th:value="${true}" name="isSender"/>
                                     <button type="submit" class="btn btn-primary">Geld senden</button>
                                 </form>
                             </div>
                             <div class="col" sec:authorize="hasAuthority('FIRMENKUNDE')">
-                                <form th:action="@{/konto/{id}/anfordern(id=${konto.getID()})}">
+                                <form th:action="@{/konto/{id}/transaktion(id=${konto.getID()})}">
+                                    <input type="hidden" th:value="${false}" name="isSender"/>
                                     <button type="submit" class="btn btn-primary">Geld anfordern</button>
                                 </form>
                             </div>

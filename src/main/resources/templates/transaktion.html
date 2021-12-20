@@ -10,15 +10,17 @@
 <div class="container d-flex justify-content-center align-items-center  w-100 p-2" >
     <div class="card rounded-borders w-50">
         <div class="card-body">
-            <h3 class="text-center">Geld senden</h3>
+            <h3 th:value="${isSender} ? 'Geld senden' : 'Geld anfordern'" class="text-center">Geld senden</h3>
+
             <p class="text-center">Sobald Sie die Zahlung bestätigen, wird diese sofort durchgeführt.</p>
-            <form th:action="@{/konto/{id}/zahlen(id=${konto.getID()})}" method="post" class="form-white form-outline text-dark">
+            <form th:action="@{/konto/{id}/transaktion(id=${konto.getID()})}" method="post" class="form-white form-outline text-dark">
                 <div class="row gx-5 mb-2 align-items-center">
                     <div class="col-3">
                         <label>Empfänger IBAN</label>
                     </div>
                     <div class="col-9">
-                        <input type="text" name="ibanTo" class="form-control" placeholder="DE12345678901234567890" id="inputIbanTo">
+                        <input type="text" name="ibanTo" class="form-control" th:readonly="${!isSender}"
+                               th:value="${isSender} ? '' : ${konto.getIban()}" placeholder="DE12345678901234567890" id="inputIbanTo">
                     </div>
                 </div>
                 <div class="row gx-5 mb-2 align-items-center">
@@ -34,7 +36,8 @@
                         <label>Sender IBAN</label>
                     </div>
                     <div class="col-9">
-                        <input type="text" name="ibanFrom" class="form-control" placeholder="DE12345678901234567890" id="inputIbanFrom">
+                        <input type="text" name="ibanFrom" class="form-control" th:readonly="${isSender}"
+                               th:value="${isSender} ? ${konto.getIban()} : ''" placeholder="DE12345678901234567890" id="inputIbanFrom">
                     </div>
                 </div>
                 <div class="row gx-5 mb-2 align-items-center">
@@ -45,8 +48,8 @@
                         <textarea class="form-control" id="verwendungszweckTextarea" name="verwendungszweck" rows="3"></textarea>
                     </div>
                 </div>
-                <button th:href="@{/konto/{id}(id=${konto.getID()})}" class="btn btn-danger">Abbrechen</button>
-                <button type="submit" class="btn btn-success float-end">Zahlung Bestätigen</button>
+                <button th:href="@{/konto/{id}(id=${konto.getID()})}" name="submit" value="Cancel" class="btn btn-danger float-start">Abbrechen</button>
+                <button type="submit" name="submit" value="Submit" class="btn btn-success float-end">Zahlung Bestätigen</button>
             </form>
         </div>
     </div>
