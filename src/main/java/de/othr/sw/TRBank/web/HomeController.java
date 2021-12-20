@@ -1,4 +1,4 @@
-package de.othr.sw.TRBank.service.web;
+package de.othr.sw.TRBank.web;
 
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kunde;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class HomeController {
 
         List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(aktuellerKunde.getKonten());
         if(transaktionen.size() > 5) {
-            transaktionen = transaktionen.subList(0, 4);
+            transaktionen = transaktionen.subList(0, 5);
         }
         model.addAttribute("transaktionen", transaktionen);
         return "index";
@@ -54,4 +55,14 @@ public class HomeController {
     ) {
         return "index";
     }
+
+    /*
+    //TODO: Session Values!
+    @RequestMapping({"/"})
+    String index(HttpSession session) {
+        session.setAttribute("mySessionAttribute", "someValue");
+        return "index";
+    }
+    <p th:text="${#session.getAttribute('mySessionAttribute')}" th:unless="${session == null}">[...]</p>
+     */
 }

@@ -25,17 +25,17 @@
                     <div class="col-4">
                         <div class="row">
                             <div class="col">
-                                <form th:action="@{/konto/{id}(id=${konto.getID()})}">
+                                <form th:action="@{/konto/{id}/zahlen(id=${konto.getID()})}">
                                     <button type="submit" class="btn btn-primary">Geld senden</button>
                                 </form>
                             </div>
                             <div class="col" sec:authorize="hasAuthority('FIRMENKUNDE')">
-                                <form th:action="@{/konto/{id}(id=${konto.getID()})}">
+                                <form th:action="@{/konto/{id}/anfordern(id=${konto.getID()})}">
                                     <button type="submit" class="btn btn-primary">Geld anfordern</button>
                                 </form>
                             </div>
                             <div class="col">
-                                <form th:action="@{/konto/{id}(id=${konto.getID()})}">
+                                <form th:action="@{/konto/{id}/kontoauszug(id=${konto.getID()})}">
                                     <button type="submit" class="btn btn-secondary">Kontoauszug erstellen</button>
                                 </form>
                             </div>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/header :: header"></head>
+
+<body>
+<div th:replace="common/header :: navigation"></div>
+
+<div th:replace="common/kontoDetails :: kontoDetails(${konto})"></div>
+
+<div class="container d-flex justify-content-center align-items-center  w-100 p-2" >
+    <div class="card rounded-borders w-50">
+        <div class="card-body">
+            <h3 class="text-center">Geld senden</h3>
+            <p class="text-center">Sobald Sie die Zahlung bestätigen, wird diese sofort durchgeführt.</p>
+            <form th:action="@{/konto/{id}/zahlen(id=${konto.getID()})}" method="post" class="form-white form-outline text-dark">
+                <div class="row gx-5 mb-2 align-items-center">
+                    <div class="col-3">
+                        <label>Empfänger IBAN</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="text" name="ibanTo" class="form-control" placeholder="DE12345678901234567890" id="inputIbanTo">
+                    </div>
+                </div>
+                <div class="row gx-5 mb-2 align-items-center">
+                    <div class="col-3">
+                        <label>Betrag in €</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="number" name="betrag" class="form-control" id="inputBetrag" step="any" min="0">
+                    </div>
+                </div>
+                <div class="row gx-5 mb-2 align-items-center">
+                    <div class="col-3">
+                        <label>Sender IBAN</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="text" name="ibanFrom" class="form-control" placeholder="DE12345678901234567890" id="inputIbanFrom">
+                    </div>
+                </div>
+                <div class="row gx-5 mb-2 align-items-center">
+                    <div class="col-3">
+                        <label>Verwendungszweck</label>
+                    </div>
+                    <div class="col-9">
+                        <textarea class="form-control" id="verwendungszweckTextarea" name="verwendungszweck" rows="3"></textarea>
+                    </div>
+                </div>
+                <button th:href="@{/konto/{id}(id=${konto.getID()})}" class="btn btn-danger">Abbrechen</button>
+                <button type="submit" class="btn btn-success float-end">Zahlung Bestätigen</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
