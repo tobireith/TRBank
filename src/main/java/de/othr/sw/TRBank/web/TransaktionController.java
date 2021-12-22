@@ -5,6 +5,7 @@ import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Date;
 import java.util.List;
 
-@RequestMapping("/konto/{kontoId}")
 @Controller
+@Scope("singleton")
+@RequestMapping("/konto/{kontoId}")
 public class TransaktionController {
 
     @Autowired
@@ -27,7 +29,6 @@ public class TransaktionController {
             @PathVariable long kontoId,
             @ModelAttribute("isSender") boolean isSender,
             Model model) throws TRBankException {
-        //model.addAttribute("isSender", isSender);
         // TODO: Render Error-Page!
         Konto konto = bankingService.getKontoById(kontoId);
         model.addAttribute("konto", konto);

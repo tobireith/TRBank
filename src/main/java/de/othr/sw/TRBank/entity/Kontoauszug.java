@@ -3,7 +3,7 @@ package de.othr.sw.TRBank.entity;
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
 
 import javax.persistence.*;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class Kontoauszug extends SingleIdEntity<Long> {
     private Konto konto;
     //TODO: Cascade Type?
     @ManyToMany
-    private List<Transaktion> transaktionen;
+    private List<Transaktion> transaktionen = new ArrayList<>();
     private long versandId;
     private double kontostandAnfang;
     private double kontostandEnde;
@@ -53,7 +53,7 @@ public class Kontoauszug extends SingleIdEntity<Long> {
     }
 
     public List<Transaktion> getTransaktionen() {
-        return Collections.unmodifiableList(transaktionen);
+        return transaktionen;
     }
 
     public void setTransaktionen(List<Transaktion> transaktionen) {

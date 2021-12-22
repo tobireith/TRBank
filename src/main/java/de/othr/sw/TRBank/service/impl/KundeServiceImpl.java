@@ -50,6 +50,12 @@ public class KundeServiceImpl implements KundeServiceIF {
 
     @Transactional
     @Override
+    public Kunde getKundeByUsername(String username) throws TRBankException{
+        return kundeRepository.findByUsername(username).orElseThrow(() -> new TRBankException("ERROR: Unbekannter Username"));
+    }
+
+    @Transactional
+    @Override
     public List<Kunde> getAllKunden() {
         List<Kunde> kunden = new ArrayList<>();
         kundeRepository.findAll().forEach(kunden::add);

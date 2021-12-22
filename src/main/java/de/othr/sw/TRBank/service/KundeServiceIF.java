@@ -14,5 +14,9 @@ public interface KundeServiceIF extends UserDetailsService {
     Kunde kundeSpeichern(Kunde k);
 
     Kunde kundeAnmelden(Kunde kunde) throws TRBankException;
+
+    @Transactional
+    Kunde getKundeByUsername(String username) throws TRBankException;
+
     List<Kunde> getAllKunden();
 }
