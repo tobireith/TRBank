@@ -52,7 +52,7 @@
         <div class="card rounded-borders w-100">
             <div class="card-body text-center">
                 <h3>Kontoumsätze</h3>
-                <div th:replace="common/transaktionTable :: transaktionTable(${transaktionen})"> </div>
+                <div th:replace="common/transaktionTable :: transaktionTable(${konto}, ${transaktionen})"> </div>
             </div>
         </div>
     </div>

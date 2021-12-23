@@ -48,7 +48,7 @@
                         <textarea class="form-control" id="verwendungszweckTextarea" name="verwendungszweck" rows="3"></textarea>
                     </div>
                 </div>
-                <button th:href="@{/konto/{id}(id=${konto.getID()})}" name="submit" value="Cancel" class="btn btn-danger float-start">Abbrechen</button>
+                <button type="submit" name="submit" value="Cancel" class="btn btn-danger float-start">Abbrechen</button>
                 <button type="submit" name="submit" value="Submit" class="btn btn-success float-end">Zahlung Bestätigen</button>
             </form>
         </div>

@@ -62,7 +62,7 @@ public class TransaktionController {
         }
 
 
-        return "redirect:/";
+        return "redirect:/konto/{kontoId}";
     }
 
 }

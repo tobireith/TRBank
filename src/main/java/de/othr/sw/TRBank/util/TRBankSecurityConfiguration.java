@@ -47,7 +47,6 @@ public class TRBankSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .formLogin()
                     .loginPage("/login").permitAll()
-                //TODO successHandler or defaultSuccessURL?
                     .successHandler(new AuthenticationSuccessHandler() {
                         @Override
                         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -55,7 +54,6 @@ public class TRBankSecurityConfiguration extends WebSecurityConfigurerAdapter {
                             redirectStrategy.sendRedirect(request, response, "/login/success");
                         }
                     })
-                    //.defaultSuccessUrl("/login/success")
                     .failureUrl("/login?error")
                 .and()
                     .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

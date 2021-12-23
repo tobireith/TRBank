@@ -27,8 +27,6 @@ public class HomeController {
     public String home(Model model) {
         System.out.println("GET /");
 
-        //TODO: Change this to get the current logged in Kunde
-        //Kunde aktuellerKunde = kundeService.getAllKunden().get(0);
         Kunde aktuellerKunde = loginController.getKunde();
         model.addAttribute("kunde", aktuellerKunde);
         model.addAttribute("konten", aktuellerKunde.getKonten());
