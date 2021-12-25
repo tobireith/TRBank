@@ -162,12 +162,10 @@ public class BankingServiceImpl implements BankingServiceIF {
     public Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException {
         Kontoauszug kontoauszug = new Kontoauszug();
 
-
         Kontoauszug letzterKontoauszug;
         Transaktion letzteTransaktion;
         List<Transaktion> neueAusgehendeTransaktionen;
         List<Transaktion> neueEingehendeTransaktionen;
-        double kontostandEnde = 0;
 
         // Letzten Kontoauszug laden, um startKontostand & die letzte Transaktion zu erhalten
         Optional<List<Kontoauszug>> optionalKontoauszugList = kontoauszugRepository.findAllByKontoOrderByDatumBis(konto);
@@ -177,7 +175,6 @@ public class BankingServiceImpl implements BankingServiceIF {
             letzterKontoauszug = kontoauszuege.get(kontoauszuege.size() - 1);
             kontoauszug.setKontostandAnfang(letzterKontoauszug.getKontostandEnde());
             letzteTransaktion = letzterKontoauszug.getTransaktionen().get(letzterKontoauszug.getTransaktionen().size() - 1);
-            kontostandEnde = letzterKontoauszug.getKontostandEnde();
 
             // Liste mit NUR neuen Einkommenden & Ausgehenden Transaktionen laden
             neueAusgehendeTransaktionen = transaktionenAbDatum(konto.getTransaktionenRaus(), letzteTransaktion.getDatum());
@@ -198,10 +195,21 @@ public class BankingServiceImpl implements BankingServiceIF {
 
         double summeEingehend = transaktionenSummieren(neueEingehendeTransaktionen);
         double summeAusgehend = transaktionenSummieren(neueAusgehendeTransaktionen);
-        kontostandEnde += summeEingehend - summeAusgehend;
-        kontoauszug.setKontostandEnde(kontostandEnde);
+        double kontostandAnfang = konto.getKontostand() - (summeEingehend - summeAusgehend);
+        kontoauszug.setKontostandAnfang(kontostandAnfang);
+        kontoauszug.setKontostandEnde(konto.getKontostand());
+
+        //TODO: Check this!
+        /*
         if(kontoauszug.getKontostandEnde() != konto.getKontostand()) {
             throw new TRBankException("ERROR: Kontostand stimmt nicht mit dem berechneten Wert des aktuellen Kontoauszuges überein");
+        }
+         */
+
+        System.out.println("KONTOSTAND WIRD ERSTELLT: " + neueTransaktionen);
+
+        if(neueTransaktionen.size() < 1) {
+            throw new TRBankException("Keine neuen Transaktionen seit dem letzten Kontoauszug");
         }
 
         kontoauszug.setDatumVon(neueTransaktionen.get(0).getDatum());
