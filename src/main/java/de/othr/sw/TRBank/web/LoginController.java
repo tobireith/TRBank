@@ -21,6 +21,8 @@ public class LoginController {
 
     private Kunde kunde;
 
+    private String username;
+
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login(Model model) {
         System.out.println("GET /login");
@@ -38,11 +40,17 @@ public class LoginController {
     ) throws TRBankException {
         System.out.println("SETTING Kunde for this session...");
         this.kunde = kundeService.getKundeByUsername(principal.getName());
+        this.username = principal.getName();
         System.out.println("SET Kunde for this session: " + this.kunde);
         return "redirect:/";
     }
 
     public Kunde getKunde() {
-        return kunde;
+        try {
+            return kundeService.getKundeByUsername(username);
+        } catch (TRBankException e) {
+            e.printStackTrace();
+            return kunde;
+        }
     }
 }
