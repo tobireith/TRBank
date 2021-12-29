@@ -50,9 +50,17 @@ public class BankingServiceImpl implements BankingServiceIF {
         return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
     }
 
+    @Override
+    @Transactional
+    public Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException {
+        return kunde.getKonten().stream().filter(konto -> konto.getID() == kontoId).findFirst().orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos! Das Konto gehört ggf. nicht zum Kunden!"));
+        //return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
+    }
+
     @Transactional
     @Override
     public Konto kontoSpeichern(Konto konto) {
+        /*
         // Erst Konto Speichern, dann Referenz im Kunden updaten!
         Konto savedKonto = kontoRepository.save(konto);
         Kunde kunde = konto.getBesitzer();
@@ -66,6 +74,14 @@ public class BankingServiceImpl implements BankingServiceIF {
         kundeService.kundeSpeichern(kunde);
         System.out.println("Kunde mit neuen Konten gespeichert: " + kunde.getKonten());
         return savedKonto;
+         */
+
+        //konto = kontoRepository.save(konto);
+        Kunde kunde = konto.getBesitzer();
+        kunde.addKonto(konto);
+        kundeService.kundeSpeichern(kunde);
+        System.out.println("Kunde mit Konten gespeichert: " + kunde.getKonten());
+        return konto;
     }
 
     @Transactional
@@ -119,8 +135,8 @@ public class BankingServiceImpl implements BankingServiceIF {
     public Transaktion transaktionTaetigen(Transaktion transaktion) throws TRBankException {
 
         // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
-        transaktion.setQuellkonto(this.getKontoByIban(transaktion.getQuellkonto().getIban()));
-        transaktion.setZielkonto(this.getKontoByIban(transaktion.getZielkonto().getIban()));
+        transaktion.setQuellkonto(getKontoByIban(transaktion.getQuellkonto().getIban()));
+        transaktion.setZielkonto(getKontoByIban(transaktion.getZielkonto().getIban()));
 
         transaktion.setDatum(new Date());
 

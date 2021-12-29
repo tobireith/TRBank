@@ -30,7 +30,7 @@ public class KontoauszugController {
 
         model.addAttribute("datum", new Date());
 
-        Konto konto = bankingService.getKontoById(kontoId);
+        Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
 
         Kontoauszug kontoauszug = bankingService.kontoauszugErstellen(konto);
         model.addAttribute("kontoauszug", kontoauszug);

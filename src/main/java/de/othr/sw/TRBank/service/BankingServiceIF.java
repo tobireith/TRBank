@@ -21,6 +21,9 @@ public interface BankingServiceIF {
     Konto getKontoByIban(String Iban) throws TRBankException;
     Konto getKontoById (long kontoId)  throws TRBankException;
 
+    @Transactional
+    Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException;
+
     Konto kontoSpeichern(Konto konto);
     Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TRBankException;
 

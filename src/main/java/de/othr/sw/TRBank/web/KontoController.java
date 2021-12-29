@@ -21,12 +21,16 @@ public class KontoController {
     @Autowired
     private BankingServiceIF bankingService;
 
+    @Autowired
+    private LoginController loginController;
+
     @RequestMapping(value = "/{kontoId}")
     public String konto(
             @PathVariable long kontoId,
             Model model) throws TRBankException {
         // TODO: Render Error-Page!
-        Konto konto = bankingService.getKontoById(kontoId);
+        // TODO: Kundenobjekt an diese Seite übergeben anstatt es zu laden!
+        Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde() ,kontoId);
         model.addAttribute("konto", konto);
 
         List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(List.of(konto));

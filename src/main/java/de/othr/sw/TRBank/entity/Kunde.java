@@ -17,7 +17,7 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     private long kundeId;
     @Embedded
     private Adresse adresse;
-    @OneToMany(mappedBy = "besitzer")
+    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Konto> konten = new ArrayList<>();
     @Column(unique = true)
     private String username;
@@ -62,6 +62,18 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
 
     public void setKonten(List<Konto> konten) {
         this.konten = konten;
+    }
+
+    public Kunde addKonto(Konto konto) {
+        konten.add(konto);
+        konto.setBesitzer(this);
+        return this;
+    }
+
+    public Kunde removeKonto(Konto konto) {
+        konten.remove(konto);
+        konto.setBesitzer(null);
+        return this;
     }
 
     public boolean isFirmenkunde() {
