@@ -36,7 +36,7 @@ public class InitData {
             int anzahlKontos = new Random().nextInt(3) + 1;
             for (int j = 1; j <= anzahlKontos; j++) {
                 double kontostand = 1000 + Math.round(new Random().nextDouble() * 10000);
-                String iban = "DE" + "1234567890" + String.format("%010d", new Random().nextInt(1000000000));
+                String iban = bankingService.generateRandomIban("DE");
                 Konto testKonto = new Konto(iban, testKunde, kontostand);
                 Konto konto = bankingService.kontoSpeichern(testKonto);
                 System.out.println("Konto erstellt:" + konto);

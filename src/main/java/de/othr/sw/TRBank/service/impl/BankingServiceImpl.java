@@ -267,4 +267,9 @@ public class BankingServiceImpl implements BankingServiceIF {
 
         return transaktionenTotal;
     }
+
+    @Override
+    public String generateRandomIban(String prefix) {
+        return prefix+"1234567890" + String.format("%010d", new Random().nextInt(1000000000));
+    }
 }

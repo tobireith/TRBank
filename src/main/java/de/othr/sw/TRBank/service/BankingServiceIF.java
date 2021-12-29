@@ -29,4 +29,6 @@ public interface BankingServiceIF {
 
     @Transactional
     List<Transaktion> getTransaktionenForKonten(List<Konto> konten);
+
+    String generateRandomIban(String prefix);
 }

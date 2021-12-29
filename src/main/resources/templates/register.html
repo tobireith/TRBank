@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/header :: header"></head>
+
+<body>
+<div style="
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;">
+    <div th:replace="common/header :: navigation"></div>
+
+    <section style="margin: auto">
+        <div class="container d-flex justify-content-center align-items-center  w-100 p-2">
+            <div class="card bg-dark text-white rounded-borders w-100">
+                <div class="card-body text-center p-5">
+                    <h2 class="fw-bold mb-4">Registriere dich für das TRBank Onlinebanking!</h2>
+                    <form th:action="@{/register}" th:object="${kunde}" method="post" class="form-white form-outline text-white text-start">
+                        <div class="row mb-4">
+                            <div class="form col-6">
+                                <label for="inputUsername">Username</label>
+                                <input type="text" th:field="*{username}" name="username" class="form-control" placeholder="Username" id="inputUsername">
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="form col-6">
+                                <label for="inputPasswort">Passwort</label>
+                                <input type="password" th:field="*{passwort}" name="password" class="form-control" placeholder="Passwort" id="inputPasswort">
+                            </div>
+                            <div class="form col-6">
+                                <label for="inputPasswortWiederholen">Passwort wiederholen</label>
+                                <input type="password" name="passwordWiederholen" class="form-control" placeholder="Passwort" id="inputPasswortWiederholen">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-4 align-items-center">
+                            <div class="form col-4">
+                                <label for="inputVorname">Vorname</label>
+                                <input type="text" th:field="*{vorname}" name="vorname" class="form-control" placeholder="Vorname" id="inputVorname">
+                            </div>
+                            <div class="form col-4">
+                                <label for="inputNachname">Nachname</label>
+                                <input type="text" th:field="*{nachname}" name="nachname" class="form-control" placeholder="Nachname" id="inputNachname">
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label" for="inputFirmenkunde">Firmenkunde</label>
+                                    <input type="checkbox" th:field="*{firmenkunde}" name="firmenkunde" class="form-check-input" id="inputFirmenkunde">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-4">
+                            <div class="form col-5">
+                                <label for="inputStadt">Stadt</label>
+                                <input type="text" th:field="*{adresse.stadt}" name="stadt" class="form-control" placeholder="Stadt" id="inputStadt">
+                            </div>
+                            <div class="form col-4">
+                                <label for="inputLand">Land</label>
+                                <input type="text" th:field="*{adresse.land}" name="land" class="form-control" placeholder="Land" id="inputLand">
+                            </div>
+                            <div class="form col-3">
+                                <label for="inputPlz">Postleitzahl</label>
+                                <input type="number" th:field="*{adresse.plz}" name="plz" class="form-control" placeholder="12345" id="inputPlz">
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="form col-6">
+                                <label for="inputStrasse">Straße</label>
+                                <input type="text" th:field="*{adresse.strasse}" name="strasse" class="form-control" placeholder="Strasse" id="inputStrasse">
+                            </div>
+                            <div class="form col-6">
+                                <label for="inputHausnummer">Hausnummer</label>
+                                <input type="text" th:field="*{adresse.hausnummer}" name="hausnummer" class="form-control" placeholder="Hausnummer" id="inputHausnummer">
+                            </div>
+                        </div>
+
+                        <div class="container text-center mb-4">
+                            <button type="submit" class="btn btn-outline-light">Registrieren</button>
+                        </div>
+                        <p class="mb-0 text-center">Du bist bereits Kunde? <a href="/login" class="text-center text-white-50 fw-bold">Melde dich an!</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
