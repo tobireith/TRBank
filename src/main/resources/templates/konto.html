@@ -18,11 +18,11 @@
                         <label>IBAN</label>
                         <p th:text="${konto.getIban()}" class="mb-0"></p>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label>Kontostand</label>
                         <p th:text="${#numbers.formatCurrency(konto.getKontostand())}" class="mb-0"></p>
                     </div>
-                    <div class="col-4">
+                    <div class="col-5">
                         <div class="row">
                             <div class="col">
                                 <form th:action="@{/konto/{id}/transaktion(id=${konto.getID()})}">
@@ -39,6 +39,11 @@
                             <div class="col">
                                 <form th:action="@{/konto/{id}/kontoauszug(id=${konto.getID()})}">
                                     <button type="submit" class="btn btn-secondary">Kontoauszug erstellen</button>
+                                </form>
+                            </div>
+                            <div class="col">
+                                <form th:action="@{/konto/{id}/close-account(id=${konto.getID()})}">
+                                    <button type="submit" class="btn btn-outline-danger">Konto auflösen</button>
                                 </form>
                             </div>
                         </div>

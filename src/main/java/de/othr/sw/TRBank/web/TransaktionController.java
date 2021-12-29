@@ -44,6 +44,7 @@ public class TransaktionController {
 
     @RequestMapping(value = "/transaktion", method = RequestMethod.POST)    // th:action="@{login}"
     public String postTransaktion(
+            //TODO: Write directly into a Transaktion Object!
             @PathVariable long kontoId,
             @ModelAttribute("ibanTo") String inputIbanTo,
             @ModelAttribute("betrag") String betrag,

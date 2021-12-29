@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="common/header :: header" />
+
+<body>
+<div th:replace="common/header :: navigation"/>
+
+<div th:replace="common/kontoDetails :: kontoDetails(${konto})"></div>
+
+<div class="container d-flex justify-content-center align-items-center py-2">
+    <div class="card rounded-borders">
+        <div class="card-body text-center">
+            <h3>Konto auflösen - Bestätigung</h3>
+            <p>Sind sie sicher, dass sie Ihr Konto auflösen möchten?</p>
+            <form th:action="@{/konto/{id}/close-account(id=${konto.getID()})}" method="post">
+                <button type="submit" name="submitCloseKonto" value="Cancel" class="btn btn-danger float-start">Abbrechen</button>
+                <button type="submit" name="submitCloseKonto" value="Submit" class="btn btn-success float-end">Konto auflösen</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
