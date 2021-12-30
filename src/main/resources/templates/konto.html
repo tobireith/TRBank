@@ -52,7 +52,35 @@
         <div class="card rounded-borders w-100">
             <div class="card-body text-center">
                 <h3>Kontoumsätze</h3>
-                <div th:replace="common/transaktionTable :: transaktionTable(${konto}, ${transaktionen})"> </div>
+                <div th:if="${transaktionen.size() > 10}">
+                    <div th:replace="common/transaktionTable :: transaktionTable(${konto}, ${transaktionen.subList(0, 10)})"> </div>
+                    <nav aria-label="Konto page navigation">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link" th:href="@{/konto/{id}(id=${konto.getID()}, pageNumber=${pageNumber - 1})}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <div th:each="i: ${#numbers.sequence(1, transaktionen.size(), 10)}">
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       th:value="${i / 10 + 1}" th:text="${i / 10 + 1}"
+                                       th:href="@{/konto/{id}/(id=${konto.getID()}, pageNumber=${i / 10 + 1})}"
+                                       th:classappend="${pageNumber == (i / 10 + 1) } ? 'active' : ''"
+                                    ></a>
+                                </li>
+                            </div>
+                            <li class="page-item">
+                                <a class="page-link" th:href="@{/konto/{id}(id=${konto.getID()}, pageNumber=${pageNumber + 1})}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div th:unless="${transaktionen.size() > 10}">
+                    <div th:replace="common/transaktionTable :: transaktionTable(${konto}, ${transaktionen})"> </div>
+                </div>
             </div>
         </div>
     </div>

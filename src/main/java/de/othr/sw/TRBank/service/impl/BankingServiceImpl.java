@@ -97,7 +97,6 @@ public class BankingServiceImpl implements BankingServiceIF {
         transaktion.setDatum(new Date());
 
         // TODO: Firmenkunde überprüfung durch Authorities
-        //  Für Lastschriften ein eigenes Formular!
         if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
             throw new TRBankException("ERROR: Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
         } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) && !kunde.getKonten().contains(transaktion.getZielkonto())) {
