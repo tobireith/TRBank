@@ -65,7 +65,7 @@
         <div class="card rounded-borders w-100">
             <div class="card-body text-center">
                 <h3>Neueste Kontoumsätze</h3>
-                <div th:replace="common/transaktionTable :: transaktionTableNoColor(${transaktionen})"> </div>
+                <div th:replace="common/transaktionTable :: transaktionTableMultipleKonten(${konten}, ${transaktionen})"> </div>
             </div>
         </div>
     </div>

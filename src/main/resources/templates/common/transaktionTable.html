@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common/header :: header" />
+<head th:replace="common/header :: header"></head>
 <div th:fragment="transaktionTable (konto, transaktionen)">
-    <table class="table table-striped table-hover">
+    <table th:if="${!transaktionen.isEmpty()}" class="table table-striped table-hover">
         <thead>
         <tr>
             <th scope="col">Datum</th>
@@ -25,10 +25,11 @@
         </tr>
         </tbody>
     </table>
+    <h3 th:if="${transaktionen.isEmpty()}" class="text-danger">Keine Transaktionen vorhanden.</h3>
 </div>
 
-<div th:fragment="transaktionTableNoColor (transaktionen)">
-    <table class="table table-striped table-hover">
+<div th:fragment="transaktionTableMultipleKonten (konten, transaktionen)">
+    <table th:if="${!transaktionen.isEmpty()}" class="table table-striped table-hover">
         <thead>
         <tr>
             <th scope="col">Datum</th>
@@ -44,9 +45,14 @@
             <td><label th:text="${transaktion.getVerwendungszweck()}"></label></td>
             <td><label th:text="${transaktion.getQuellkonto().getIban()}"></label></td>
             <td><label th:text="${transaktion.getZielkonto().getIban()}"></label></td>
-            <td><label th:text="${#numbers.formatCurrency(transaktion.getBetrag())}"></label></td>
+            <td>
+                <label th:if="${konten.contains(transaktion.getQuellkonto()) && !konten.contains(transaktion.getZielkonto())}" th:text="'-' +${#numbers.formatCurrency(transaktion.getBetrag())}" class="text-danger"></label>
+                <label th:if="${!konten.contains(transaktion.getQuellkonto()) && konten.contains(transaktion.getZielkonto())}" th:text="'+' + ${#numbers.formatCurrency(transaktion.getBetrag())}"  class="text-success"></label>
+                <label th:if="${konten.contains(transaktion.getZielkonto()) && konten.contains(transaktion.getQuellkonto())}" th:text="${#numbers.formatCurrency(transaktion.getBetrag())}"  class="text-warning"></label>
+            </td>
         </tr>
         </tbody>
     </table>
+    <h3 th:if="${transaktionen.isEmpty()}" class="text-danger">Keine Transaktionen vorhanden.</h3>
 </div>
 </html>

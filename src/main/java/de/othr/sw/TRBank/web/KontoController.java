@@ -48,7 +48,6 @@ public class KontoController {
 
         List<Transaktion> currentTransaktionen = transaktionen.subList((pageNumber-1) * 10, Math.min(transaktionen.size(), (pageNumber-1) * 10 + 9));
         model.addAttribute("currentTransaktionen", currentTransaktionen);
-
         model.addAttribute("pageNumber", pageNumber);
         return "konto";
     }
