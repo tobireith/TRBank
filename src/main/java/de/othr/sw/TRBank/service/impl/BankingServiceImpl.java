@@ -30,6 +30,8 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Autowired
     private KundeServiceIF kundeService;
 
+    public static int SCHULDENLIMIT = 25000;
+
     public double transaktionenSummieren(List<Transaktion> transaktionen){
         double sum = 0;
         for(Transaktion element : transaktionen) {
@@ -87,14 +89,7 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Transactional
     @Override
     public Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TRBankException {
-        System.out.println("TRANSAKTION TÄTIGEN: " + kunde + transaktion);
         kunde = kundeService.kundeAnmelden(kunde);
-
-        // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
-        transaktion.setQuellkonto(this.getKontoByIban(transaktion.getQuellkonto().getIban()));
-        transaktion.setZielkonto(this.getKontoByIban(transaktion.getZielkonto().getIban()));
-
-        transaktion.setDatum(new Date());
 
         // TODO: Firmenkunde überprüfung durch Authorities
         if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
@@ -103,30 +98,7 @@ public class BankingServiceImpl implements BankingServiceIF {
             throw new TRBankException("ERROR: Quell- und Zielkonto gehören nicht dem Kunden!");
         }
 
-        Konto von = transaktion.getQuellkonto();
-        Konto zu = transaktion.getZielkonto();
-        // Prüfen, ob genug Geld auf dem Quellkonto ist
-        if (von.getKontostand() < transaktion.getBetrag()) {
-            throw (new TRBankException("ERROR: Kontostand zu niedrig"));
-        }
-
-        // Transaktion durchführen
-        Transaktion t = transaktionRepository.save(transaktion);
-
-        // Transaktionen Liste im Konto anpassen und Kontostände anpassen
-        List<Transaktion> transaktionenRaus = new ArrayList<>(von.getTransaktionenRaus());
-        transaktionenRaus.add(t);
-        von.setTransaktionenRaus(transaktionenRaus);
-        von.setKontostand(von.getKontostand() - transaktion.getBetrag());
-        this.kontoSpeichern(von);
-
-        List<Transaktion> transaktionenRein = new ArrayList<>(von.getTransaktionenRein());
-        transaktionenRein.add(t);
-        zu.setTransaktionenRein(transaktionenRein);
-        zu.setKontostand(zu.getKontostand() + transaktion.getBetrag());
-        this.kontoSpeichern(zu);
-
-        return t;
+        return transaktionTaetigen(transaktion);
     }
 
     @Transactional
