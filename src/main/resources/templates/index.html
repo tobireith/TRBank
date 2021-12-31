@@ -52,7 +52,7 @@
                         <th scope="row"><label th:text="${konto.getKontoId()}"></label></th>
                         <td><label th:text="${konto.getIban()}"></label></td>
                         <td><label th:text="${#numbers.formatCurrency(konto.getKontostand())}"></label></td>
-                        <td><form th:action="@{/konto/{id}(id=${konto.getID()})}">
+                        <td><form th:action="@{/konto/{id}(id=${konto.getID()}, kontoPage='1')}">
                             <button type="submit" class="btn btn-primary">Details</button>
                         </form></td>
                     </tr>

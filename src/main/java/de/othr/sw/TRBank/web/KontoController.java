@@ -29,20 +29,25 @@ public class KontoController {
     @RequestMapping(value = "/{kontoId}")
     public String konto(
             @PathVariable long kontoId,
-            @RequestParam(name = "pageNumber", required = false) String pageNumber,
+            @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             Model model) throws TRBankException {
         // TODO: Render Error-Page!
         // TODO: Kundenobjekt an diese Seite übergeben anstatt es zu laden!
 
         if(pageNumber == null) {
-            pageNumber = "1";
+            return "redirect:/konto/{kontoId}/?pageNumber=1";
         }
 
         Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde() ,kontoId);
         model.addAttribute("konto", konto);
 
         List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(List.of(konto));
-        model.addAttribute("transaktionen", transaktionen);
+        int pageSize = 10;
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("pages", transaktionen.size() / pageSize + 1);
+
+        List<Transaktion> currentTransaktionen = transaktionen.subList((pageNumber-1) * 10, Math.min(transaktionen.size(), (pageNumber-1) * 10 + 9));
+        model.addAttribute("currentTransaktionen", currentTransaktionen);
 
         model.addAttribute("pageNumber", pageNumber);
         return "konto";
