@@ -19,12 +19,14 @@
                             <div class="form col-6">
                                 <label for="inputUsername">Username</label>
                                 <input type="text" th:field="*{username}" name="username" class="form-control" placeholder="Username" id="inputUsername">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                             </div>
                         </div>
                         <div class="row mb-4">
                             <div class="form col-6">
                                 <label for="inputPasswort">Passwort</label>
                                 <input type="password" th:field="*{passwort}" name="password" class="form-control" placeholder="Passwort" id="inputPasswort">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('passwort')}" th:errors="*{passwort}"></div>
                             </div>
                             <div class="form col-6">
                                 <label for="inputPasswortWiederholen">Passwort wiederholen</label>
@@ -36,15 +38,18 @@
                             <div class="form col-4">
                                 <label for="inputVorname">Vorname</label>
                                 <input type="text" th:field="*{vorname}" name="vorname" class="form-control" placeholder="Vorname" id="inputVorname">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('vorname')}" th:errors="*{vorname}"></div>
                             </div>
                             <div class="form col-4">
                                 <label for="inputNachname">Nachname</label>
                                 <input type="text" th:field="*{nachname}" name="nachname" class="form-control" placeholder="Nachname" id="inputNachname">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('nachname')}" th:errors="*{nachname}"></div>
                             </div>
                             <div class="col-4">
                                 <div class="form-check">
                                     <label class="form-check-label" for="inputFirmenkunde">Firmenkunde</label>
                                     <input type="checkbox" th:field="*{firmenkunde}" name="firmenkunde" class="form-check-input" id="inputFirmenkunde">
+                                    <div class="alert alert-danger" th:if="${#fields.hasErrors('firmenkunde')}" th:errors="*{firmenkunde}"></div>
                                 </div>
                             </div>
                         </div>
@@ -53,24 +58,29 @@
                             <div class="form col-5">
                                 <label for="inputStadt">Stadt</label>
                                 <input type="text" th:field="*{adresse.stadt}" name="stadt" class="form-control" placeholder="Stadt" id="inputStadt">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.stadt')}" th:errors="*{adresse.stadt}"></div>
                             </div>
                             <div class="form col-4">
                                 <label for="inputLand">Land</label>
                                 <input type="text" th:field="*{adresse.land}" name="land" class="form-control" placeholder="Land" id="inputLand">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.land')}" th:errors="*{adresse.land}"></div>
                             </div>
                             <div class="form col-3">
                                 <label for="inputPlz">Postleitzahl</label>
                                 <input type="number" th:field="*{adresse.plz}" name="plz" class="form-control" placeholder="12345" id="inputPlz">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.plz')}" th:errors="*{adresse.plz}"></div>
                             </div>
                         </div>
                         <div class="row mb-4">
                             <div class="form col-6">
                                 <label for="inputStrasse">Straße</label>
                                 <input type="text" th:field="*{adresse.strasse}" name="strasse" class="form-control" placeholder="Strasse" id="inputStrasse">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.strasse')}" th:errors="*{adresse.strasse}"></div>
                             </div>
                             <div class="form col-6">
                                 <label for="inputHausnummer">Hausnummer</label>
                                 <input type="text" th:field="*{adresse.hausnummer}" name="hausnummer" class="form-control" placeholder="Hausnummer" id="inputHausnummer">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.hausnummer')}" th:errors="*{adresse.hausnummer}"></div>
                             </div>
                         </div>
 

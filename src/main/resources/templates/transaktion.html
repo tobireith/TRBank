@@ -13,14 +13,15 @@
             <h3 th:value="${isSender} ? 'Geld senden' : 'Geld anfordern'" class="text-center">Geld senden</h3>
 
             <p class="text-center">Sobald Sie die Zahlung bestätigen, wird diese sofort durchgeführt.</p>
-            <form th:action="@{/konto/{id}/transaktion(id=${konto.getID()})}" method="post" class="form-white form-outline text-dark">
+            <form th:action="@{/konto/{id}/transaktion(id=${konto.getID()})}" th:object="${transaktion}" method="post" class="form-white form-outline text-dark">
                 <div class="row gx-5 mb-2 align-items-center">
                     <div class="col-3">
                         <label>Empfänger IBAN</label>
                     </div>
                     <div class="col-9">
-                        <input type="text" name="ibanTo" class="form-control" th:readonly="${!isSender}"
+                        <input type="text" th:field="*{zielkonto.iban}" name="ibanTo" class="form-control" th:readonly="${!isSender}"
                                th:value="${isSender} ? '' : ${konto.getIban()}" placeholder="DE12345678901234567890" id="inputIbanTo">
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('zielkonto.iban')}" th:errors="*{zielkonto.iban}"></div>
                     </div>
                 </div>
                 <div class="row gx-5 mb-2 align-items-center">
@@ -28,7 +29,8 @@
                         <label>Betrag in €</label>
                     </div>
                     <div class="col-9">
-                        <input type="number" name="betrag" class="form-control" id="inputBetrag" step="any" min="0">
+                        <input type="number" th:field="*{betrag}" name="betrag" class="form-control" id="inputBetrag" step="any" min="0">
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('betrag')}" th:errors="*{betrag}"></div>
                     </div>
                 </div>
                 <div class="row gx-5 mb-2 align-items-center">
@@ -36,8 +38,9 @@
                         <label>Sender IBAN</label>
                     </div>
                     <div class="col-9">
-                        <input type="text" name="ibanFrom" class="form-control" th:readonly="${isSender}"
+                        <input type="text" th:field="*{quellkonto.iban}" name="ibanFrom" class="form-control" th:readonly="${isSender}"
                                th:value="${isSender} ? ${konto.getIban()} : ''" placeholder="DE12345678901234567890" id="inputIbanFrom">
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('quellkonto.iban')}" th:errors="*{quellkonto.iban}"></div>
                     </div>
                 </div>
                 <div class="row gx-5 mb-2 align-items-center">
@@ -45,7 +48,8 @@
                         <label>Verwendungszweck</label>
                     </div>
                     <div class="col-9">
-                        <textarea class="form-control" id="verwendungszweckTextarea" name="verwendungszweck" rows="3"></textarea>
+                        <textarea th:field="*{verwendungszweck}" class="form-control" id="verwendungszweckTextarea" name="verwendungszweck" rows="3"></textarea>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('verwendungszweck')}" th:errors="*{verwendungszweck}"></div>
                     </div>
                 </div>
                 <button type="submit" name="submit" value="Cancel" class="btn btn-danger float-start">Abbrechen</button>

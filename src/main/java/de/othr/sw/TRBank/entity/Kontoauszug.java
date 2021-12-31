@@ -3,6 +3,7 @@ package de.othr.sw.TRBank.entity;
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,16 @@ public class Kontoauszug extends SingleIdEntity<Long> {
 
     public Kontoauszug() {
 
+    }
+
+    public Kontoauszug(Konto konto, List<Transaktion> transaktionen, long versandId, double kontostandAnfang, double kontostandEnde, Date datumVon, Date datumBis) {
+        this.konto = konto;
+        this.transaktionen = transaktionen;
+        this.versandId = versandId;
+        this.kontostandAnfang = kontostandAnfang;
+        this.kontostandEnde = kontostandEnde;
+        this.datumVon = datumVon;
+        this.datumBis = datumBis;
     }
 
     public Kontoauszug(Konto konto, long versandId, double kontostandAnfang, double kontostandEnde, Date datumVon, Date datumBis) {

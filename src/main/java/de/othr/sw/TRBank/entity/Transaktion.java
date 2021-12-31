@@ -1,8 +1,13 @@
 package de.othr.sw.TRBank.entity;
 
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Date;
 
 @Entity
@@ -12,14 +17,21 @@ public class Transaktion extends SingleIdEntity<Long> {
     @Id
     private long transaktionId;
     //TODO: Cascade Type?
+    @NotNull
+    @Valid
     @ManyToOne
     private Konto quellkonto;
     //TODO: Cascade Type?
+    @NotNull
+    @Valid
     @ManyToOne
     private Konto zielkonto;
+    @NotNull
+    @Positive
     private double betrag;
     @Temporal(TemporalType.TIMESTAMP)
     private Date datum;
+    @Length(max = 256)
     private String verwendungszweck;
 
     public Transaktion() {

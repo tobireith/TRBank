@@ -1,8 +1,13 @@
 package de.othr.sw.TRBank.entity;
 
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +15,9 @@ import java.util.List;
 
 @Entity
 public class Konto extends SingleIdEntity<Long> {
+
+    //TODO: Add this to UML Schema!
+    public final int SCHULDENLIMIT = -25000;
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
@@ -21,9 +29,14 @@ public class Konto extends SingleIdEntity<Long> {
     private List<Transaktion> transaktionenRaus = new ArrayList<>();
     @OneToMany(mappedBy = "zielkonto")
     private List<Transaktion> transaktionenRein = new ArrayList<>();
+    @NotNull
+    @Size(min = 22, max = 22)
     @Column(unique = true)
     private String iban;
+    @Min(value = SCHULDENLIMIT)
     private double kontostand;
+
+
 
 
     public Konto() {

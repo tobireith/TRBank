@@ -1,13 +1,27 @@
 package de.othr.sw.TRBank.entity;
 
+
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 @Embeddable
 public class Adresse {
+    @NotBlank
     private String strasse;
+    @NotBlank
+    @Length (min = 1, max = 10)
     private String hausnummer;
+    @NotBlank
     private String stadt;
+    @NotNull
+    @Range(min = 10000, max = 99999)
+    @Positive
     private int plz;
+    @NotBlank
+    @Length(min = 2, max = 50)
     private String land;
 
     public Adresse() {

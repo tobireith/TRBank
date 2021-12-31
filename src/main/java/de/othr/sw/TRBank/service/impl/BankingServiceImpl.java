@@ -30,7 +30,6 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Autowired
     private KundeServiceIF kundeService;
 
-    public static int SCHULDENLIMIT = 25000;
 
     public double transaktionenSummieren(List<Transaktion> transaktionen){
         double sum = 0;
@@ -43,7 +42,8 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Override
     @Transactional
     public Konto getKontoByIban(String Iban) throws TRBankException {
-        return kontoRepository.findKontoByIban(Iban).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
+        System.out.println("IBAN: " + Iban);
+        return kontoRepository.findKontoByIban(Iban).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos! IBAN nicht gefunden: " + Iban));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         Konto von = transaktion.getQuellkonto();
         Konto zu = transaktion.getZielkonto();
         // Prüfen, ob genug Geld auf dem Quellkonto ist
-        if (von.getKontostand() < transaktion.getBetrag()) {
+        if (von.getKontostand() - transaktion.getBetrag() < von.SCHULDENLIMIT) {
             throw (new TRBankException("ERROR: Kontostand zu niedrig"));
         }
 
