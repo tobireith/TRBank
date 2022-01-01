@@ -5,6 +5,7 @@ import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import de.othr.sw.TRBank.service.exception.UIError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.List;
 
 @Controller
 @Scope("singleton")
@@ -66,14 +66,12 @@ public class TransaktionController {
             @ModelAttribute("submit") String submit,
             Model model
     ) throws TRBankException {
+        Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
+        model.addAttribute("konto", konto);
         if(submit.equals("Submit")) {
             if (result.hasErrors()) {
                 System.out.println("ERROR! " + result.getAllErrors());
-                Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
-                model.addAttribute("konto", konto);
                 return "transaktion";
-            } else {
-                System.out.println("NO ERROR!");
             }
             System.out.println("SUBMITTED TRANSAKTION " + transaktion);
             System.out.println("SUBMITTED TRANSAKTION WITH QUELLKONTO " + transaktion.getQuellkonto());
@@ -86,7 +84,14 @@ public class TransaktionController {
             transaktion.setZielkonto(zielkonto);
             transaktion.setDatum(new Date());
 
-            bankingService.transaktionTaetigen(transaktion);
+            try {
+                bankingService.transaktionTaetigen(transaktion);
+            } catch (TRBankException exception) {
+
+                UIError uiError = new UIError(exception.getMessage());
+                model.addAttribute("uiError", uiError);
+                return "transaktion";
+            }
         } else {
             System.out.println("CANCELED TRANSAKTION");
         }

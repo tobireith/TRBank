@@ -31,6 +31,9 @@
                             <div class="form col-6">
                                 <label for="inputPasswortWiederholen">Passwort wiederholen</label>
                                 <input type="password" name="passwordWiederholen" class="form-control" placeholder="Passwort" id="inputPasswortWiederholen">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('global')}">
+                                    <div th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error"></div>
+                                </div>
                             </div>
                         </div>
                         <hr>

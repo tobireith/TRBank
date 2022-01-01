@@ -6,3 +6,10 @@ body {
 .rounded-borders {
     border-radius: 2rem;
 }
+
+.alert-fixed {
+    position:fixed;
+    right: 10%;
+    top: 10%;
+    z-index:9999;
+}

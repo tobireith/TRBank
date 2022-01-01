@@ -115,7 +115,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         Konto zu = transaktion.getZielkonto();
         // Prüfen, ob genug Geld auf dem Quellkonto ist
         if (von.getKontostand() - transaktion.getBetrag() < von.SCHULDENLIMIT) {
-            throw (new TRBankException("ERROR: Kontostand zu niedrig"));
+            throw (new TRBankException("Kontostand zu niedrig"));
         }
 
         // Transaktion durchführen
