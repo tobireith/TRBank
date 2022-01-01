@@ -13,7 +13,7 @@
             <h3 th:value="${isSender} ? 'Geld senden' : 'Geld anfordern'" class="text-center">Geld senden</h3>
 
             <p class="text-center">Sobald Sie die Zahlung bestätigen, wird diese sofort durchgeführt.</p>
-            <form th:action="@{/konto/{id}/transaktion(id=${konto.getID()})}" th:object="${transaktion}" method="post" class="form-white form-outline text-dark">
+            <form th:action="@{/konto/{id}/transaktion(id=${konto.getID()}, isSender=${isSender})}" th:object="${transaktion}" method="post" class="form-white form-outline text-dark">
                 <div class="row gx-5 mb-2 align-items-center">
                     <div class="col-3">
                         <label>Empfänger IBAN</label>

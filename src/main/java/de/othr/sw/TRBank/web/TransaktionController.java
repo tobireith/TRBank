@@ -42,26 +42,25 @@ public class TransaktionController {
         model.addAttribute("konto", konto);
 
         Transaktion transaktion = new Transaktion();
-        transaktion.setQuellkonto(new Konto());
-        transaktion.setZielkonto(new Konto());
         if(isSender) {
             transaktion.setQuellkonto(konto);
+            transaktion.setZielkonto(new Konto());
         } else {
             transaktion.setZielkonto(konto);
+            transaktion.setQuellkonto(new Konto());
         }
         model.addAttribute("transaktion", transaktion);
 
         System.out.println("GET on /transaktion, providing: " + transaktion);
         System.out.println("GET on /transaktion, providing Quellkonto: " + transaktion.getQuellkonto());
 
-        List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(List.of(konto));
-        model.addAttribute("transaktionen", transaktionen);
         return "transaktion";
     }
 
     @RequestMapping(value = "/transaktion", method = RequestMethod.POST)    // th:action="@{login}"
     public String postTransaktion(
             @PathVariable long kontoId,
+            @ModelAttribute("isSender") boolean isSender,
             @Valid @ModelAttribute("transaktion") Transaktion transaktion,
             BindingResult result,
             @ModelAttribute("submit") String submit,
@@ -69,8 +68,9 @@ public class TransaktionController {
     ) throws TRBankException {
         if(submit.equals("Submit")) {
             if (result.hasErrors()) {
-                System.out.println("ERROR!");
-                //FIXME: Correct display of transaktion with result errors!
+                System.out.println("ERROR! " + result.getAllErrors());
+                Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
+                model.addAttribute("konto", konto);
                 return "transaktion";
             } else {
                 System.out.println("NO ERROR!");
