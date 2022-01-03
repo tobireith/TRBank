@@ -43,19 +43,19 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Transactional
     public Konto getKontoByIban(String Iban) throws TRBankException {
         System.out.println("IBAN: " + Iban);
-        return kontoRepository.findKontoByIban(Iban).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos! IBAN nicht gefunden: " + Iban));
+        return kontoRepository.findKontoByIban(Iban).orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos! IBAN nicht gefunden: " + Iban));
     }
 
     @Override
     @Transactional
     public Konto getKontoById(long kontoId) throws TRBankException {
-        return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
+        return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos!"));
     }
 
     @Override
     @Transactional
     public Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException {
-        return kunde.getKonten().stream().filter(konto -> konto.getID() == kontoId).findFirst().orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos! Das Konto gehört ggf. nicht zum Kunden!"));
+        return kunde.getKonten().stream().filter(konto -> konto.getID() == kontoId).findFirst().orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos! Das Konto gehört ggf. nicht zum Kunden!"));
         //return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
     }
 
@@ -82,7 +82,6 @@ public class BankingServiceImpl implements BankingServiceIF {
         Kunde kunde = konto.getBesitzer();
         kunde.addKonto(konto);
         kundeService.kundeSpeichern(kunde);
-        System.out.println("Kunde mit Konten gespeichert: " + kunde.getKonten());
         return konto;
     }
 
@@ -93,9 +92,9 @@ public class BankingServiceImpl implements BankingServiceIF {
 
         // TODO: Firmenkunde überprüfung durch Authorities
         if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
-            throw new TRBankException("ERROR: Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
+            throw new TRBankException("Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
         } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) && !kunde.getKonten().contains(transaktion.getZielkonto())) {
-            throw new TRBankException("ERROR: Quell- und Zielkonto gehören nicht dem Kunden!");
+            throw new TRBankException("Quell- oder Zielkonto gehören nicht dem Kunden!");
         }
 
         return transaktionTaetigen(transaktion);
@@ -115,7 +114,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         Konto zu = transaktion.getZielkonto();
         // Prüfen, ob genug Geld auf dem Quellkonto ist
         if (von.getKontostand() - transaktion.getBetrag() < von.SCHULDENLIMIT) {
-            throw (new TRBankException("Kontostand zu niedrig"));
+            throw (new TRBankException("Kontostand zu niedrig.", "Der Kontostand des Quellkontos ist zu niedrig um den Betrag zu decken und würde das Schuldenlimit des Kontos übersteigen."));
         }
 
         // Transaktion durchführen
@@ -196,7 +195,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         System.out.println("KONTOSTAND WIRD ERSTELLT: " + neueTransaktionen);
 
         if(neueTransaktionen.size() < 1) {
-            throw new TRBankException("Keine neuen Transaktionen seit dem letzten Kontoauszug");
+            throw new TRBankException("Keine neuen Transaktionen seit dem letzten Kontoauszug.");
         }
 
         kontoauszug.setDatumVon(neueTransaktionen.get(0).getDatum());
@@ -213,7 +212,7 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Transactional
     @Override
     public List<Konto> getKontenByKunde(Kunde kunde) throws TRBankException {
-        return kontoRepository.findKontosByBesitzerOrderByKontoId(kunde).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden der Konten!"));
+        return kontoRepository.findKontosByBesitzerOrderByKontoId(kunde).orElseThrow(() -> new TRBankException("Fehler beim Laden der Konten!"));
     }
 
     @Override

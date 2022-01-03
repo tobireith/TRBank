@@ -1,11 +1,9 @@
 package de.othr.sw.TRBank.web;
 
 import de.othr.sw.TRBank.entity.Konto;
-import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
-import de.othr.sw.TRBank.service.exception.UIError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -34,27 +32,28 @@ public class TransaktionController {
     public String getTransaktion(
             @PathVariable long kontoId,
             @ModelAttribute("isSender") boolean isSender,
-            Model model) throws TRBankException {
-        System.out.println("GET on /transaktion");
-        // TODO: Render Error-Page!
-        // TODO: Kundenobjekt an diese Seite übergeben anstatt es zu laden!
-        Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
-        model.addAttribute("konto", konto);
+            Model model) {
+        try {
+            System.out.println("GET on /transaktion");
+            // TODO: Kundenobjekt an diese Seite übergeben anstatt es zu laden!
+            Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
+            model.addAttribute("konto", konto);
 
-        Transaktion transaktion = new Transaktion();
-        if(isSender) {
-            transaktion.setQuellkonto(konto);
-            transaktion.setZielkonto(new Konto());
-        } else {
-            transaktion.setZielkonto(konto);
-            transaktion.setQuellkonto(new Konto());
+            Transaktion transaktion = new Transaktion();
+            if (isSender) {
+                transaktion.setQuellkonto(konto);
+                transaktion.setZielkonto(new Konto());
+            } else {
+                transaktion.setZielkonto(konto);
+                transaktion.setQuellkonto(new Konto());
+            }
+            model.addAttribute("transaktion", transaktion);
+
+            return "transaktion";
+        } catch (TRBankException exception) {
+            model.addAttribute("trException", exception);
+            return "redirect:/konto/{kontoId}";
         }
-        model.addAttribute("transaktion", transaktion);
-
-        System.out.println("GET on /transaktion, providing: " + transaktion);
-        System.out.println("GET on /transaktion, providing Quellkonto: " + transaktion.getQuellkonto());
-
-        return "transaktion";
     }
 
     @RequestMapping(value = "/transaktion", method = RequestMethod.POST)    // th:action="@{login}"
@@ -65,39 +64,30 @@ public class TransaktionController {
             BindingResult result,
             @ModelAttribute("submit") String submit,
             Model model
-    ) throws TRBankException {
-        Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
-        model.addAttribute("konto", konto);
-        if(submit.equals("Submit")) {
-            if (result.hasErrors()) {
-                System.out.println("ERROR! " + result.getAllErrors());
-                return "transaktion";
-            }
-            System.out.println("SUBMITTED TRANSAKTION " + transaktion);
-            System.out.println("SUBMITTED TRANSAKTION WITH QUELLKONTO " + transaktion.getQuellkonto());
+    ) {
+        try {
+            Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
+            model.addAttribute("konto", konto);
+            if (submit.equals("Submit")) {
+                if (result.hasErrors()) {
+                    System.out.println("ERROR! " + result.getAllErrors());
+                    return "transaktion";
+                }
 
-            // TODO: Render Error-Page!
-            Konto quellkonto = bankingService.getKontoByIban(transaktion.getQuellkonto().getIban());
-            Konto zielkonto = bankingService.getKontoByIban(transaktion.getZielkonto().getIban());
+                Konto quellkonto = bankingService.getKontoByIban(transaktion.getQuellkonto().getIban());
+                Konto zielkonto = bankingService.getKontoByIban(transaktion.getZielkonto().getIban());
 
-            transaktion.setQuellkonto(quellkonto);
-            transaktion.setZielkonto(zielkonto);
-            transaktion.setDatum(new Date());
+                transaktion.setQuellkonto(quellkonto);
+                transaktion.setZielkonto(zielkonto);
+                transaktion.setDatum(new Date());
 
-            try {
                 bankingService.transaktionTaetigen(transaktion);
-            } catch (TRBankException exception) {
-
-                UIError uiError = new UIError(exception.getMessage());
-                model.addAttribute("uiError", uiError);
-                return "transaktion";
             }
-        } else {
-            System.out.println("CANCELED TRANSAKTION");
+            return "redirect:/konto/{kontoId}";
+        } catch (TRBankException exception) {
+            model.addAttribute("trException", exception);
+            return "transaktion";
         }
-
-
-        return "redirect:/konto/{kontoId}";
     }
 
 }

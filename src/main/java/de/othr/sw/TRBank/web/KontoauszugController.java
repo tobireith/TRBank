@@ -24,18 +24,23 @@ public class KontoauszugController {
 
     @RequestMapping(value = "/konto/{kontoId}/kontoauszug")
     public String kontoauszug(@PathVariable long kontoId,
-                              Model model) throws TRBankException {
-        System.out.println("GET /konto/id/kontoauszug");
-        model.addAttribute("kunde", loginController.getKunde());
+                              Model model){
+        try {
+            System.out.println("GET /konto/id/kontoauszug");
+            model.addAttribute("kunde", loginController.getKunde());
 
-        model.addAttribute("datum", new Date());
+            model.addAttribute("datum", new Date());
 
-        Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
+            Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
 
-        Kontoauszug kontoauszug = bankingService.kontoauszugErstellen(konto);
-        model.addAttribute("kontoauszug", kontoauszug);
+            Kontoauszug kontoauszug = bankingService.kontoauszugErstellen(konto);
+            model.addAttribute("kontoauszug", kontoauszug);
 
-        model.addAttribute("transaktionen", kontoauszug.getTransaktionen());
-        return "kontoauszug";
+            model.addAttribute("transaktionen", kontoauszug.getTransaktionen());
+            return "kontoauszug";
+        } catch (TRBankException exception) {
+            model.addAttribute("trException", exception);
+            return "redirect:/konto/{kontoId}";
+        }
     }
 }

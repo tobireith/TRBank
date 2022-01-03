@@ -26,7 +26,7 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Override
     public Kunde kundeRegistrieren(Kunde k) throws TRBankException {
         if(kundeRepository.findByUsername(k.getUsername()).isPresent()) {
-            throw new TRBankException("ERROR: Dieser User existiert bereits.");
+            throw new TRBankException("Dieser Username existiert bereits.");
         }
         k.setPasswort(passwordEncoder.encode(k.getPassword()));
         return kundeSpeichern(k);
@@ -43,7 +43,7 @@ public class KundeServiceImpl implements KundeServiceIF {
     public Kunde kundeAnmelden(Kunde anmeldedaten) throws TRBankException{
         Kunde kunde = kundeRepository.findByUsername(anmeldedaten.getUsername()).orElseThrow(() -> new TRBankException("ERROR: Falscher Username"));
         if(!passwordEncoder.matches(anmeldedaten.getPassword(), kunde.getPassword())) {
-            throw new TRBankException("ERROR: Falscher Username oder Passwort");
+            throw new TRBankException("Falscher Username oder Passwort");
         }
         return kunde;
     }
@@ -51,7 +51,7 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Transactional
     @Override
     public Kunde getKundeByUsername(String username) throws TRBankException{
-        return kundeRepository.findByUsername(username).orElseThrow(() -> new TRBankException("ERROR: Unbekannter Username"));
+        return kundeRepository.findByUsername(username).orElseThrow(() -> new TRBankException("Unbekannter Username"));
     }
 
     @Transactional
@@ -65,7 +65,7 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return kundeRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("ERROR: Falscher Username"));
+        return kundeRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Falscher Username"));
     }
 
 

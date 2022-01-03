@@ -36,13 +36,19 @@ public class LoginController {
 
     @RequestMapping(value="login/success")
     public String doLogin(
-            Principal principal
-    ) throws TRBankException {
-        System.out.println("SETTING Kunde for this session...");
-        this.kunde = kundeService.getKundeByUsername(principal.getName());
-        this.username = principal.getName();
-        System.out.println("SET Kunde for this session: " + this.kunde);
-        return "redirect:/";
+            Principal principal,
+            Model model
+    ) {
+        try {
+            System.out.println("SETTING Kunde for this session...");
+            this.kunde = kundeService.getKundeByUsername(principal.getName());
+            this.username = principal.getName();
+            System.out.println("SET Kunde for this session: " + this.kunde);
+            return "redirect:/";
+        } catch (TRBankException exception) {
+            model.addAttribute("trException", exception);
+            return "redirect:/";
+        }
     }
 
     public Kunde getKunde() {

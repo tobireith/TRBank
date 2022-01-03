@@ -54,6 +54,7 @@ public class TRBankSecurityConfiguration extends WebSecurityConfigurerAdapter {
                             redirectStrategy.sendRedirect(request, response, "/login/success");
                         }
                     })
+                //TODO: Handle the login error!
                     .failureUrl("/login?error")
                 .and()
                     .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
