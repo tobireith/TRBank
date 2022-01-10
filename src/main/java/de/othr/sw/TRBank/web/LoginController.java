@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.security.Principal;
@@ -24,7 +25,12 @@ public class LoginController {
     private String username;
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
-    public String login(Model model) {
+    public String login(
+            @RequestParam(value = "error", required = false) Exception exception,
+            Model model) {
+        if(exception != null) {
+            model.addAttribute("trException", new TRBankException("Falscher Username oder Passwort."));
+        }
         System.out.println("GET /login");
         return "login";
     }
@@ -40,14 +46,12 @@ public class LoginController {
             Model model
     ) {
         try {
-            System.out.println("SETTING Kunde for this session...");
             this.kunde = kundeService.getKundeByUsername(principal.getName());
             this.username = principal.getName();
-            System.out.println("SET Kunde for this session: " + this.kunde);
             return "redirect:/";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
-            return "redirect:/";
+            return "redirect:/login";
         }
     }
 

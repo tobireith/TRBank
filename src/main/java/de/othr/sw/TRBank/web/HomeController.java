@@ -41,7 +41,6 @@ public class HomeController {
         model.addAttribute("transaktionen", transaktionen);
         return "index";
 
-
     }
 
 }

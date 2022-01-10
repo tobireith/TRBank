@@ -8,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,7 +28,6 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     @Length(min = 6, max = 20)
     private String username;
     @NotBlank
-    @Length(min = 6, max = 20)
     private String passwort;
     @NotBlank
     private String vorname;

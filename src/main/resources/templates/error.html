@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/header :: header">
+</head>
+
+<div>
+    <div th:replace="common/header :: navigation"></div>
+    <div class="container py-2">
+        <div class="card alert alert-danger rounded-borders">
+            <div class="card-body text-center">
+                <div class="fs-4">
+                    <i class="bi bi-exclamation-octagon-fill m-auto"></i>
+                    <label>Oops! Etwas ist schiefgelaufen.</label>
+                </div>
+                <p class="error">Ein Fehler ist aufgetreten. Versuchen Sie es erneut oder kehren Sie zur Startseite zurück.</p>
+                <a class="btn btn-outline-warning" role="button" href="/">Zurück zum Start</a>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

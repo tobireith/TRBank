@@ -25,12 +25,12 @@
                         <div class="row mb-4">
                             <div class="form col-6">
                                 <label for="inputPasswort">Passwort</label>
-                                <input type="password" th:field="*{passwort}" name="password" class="form-control" placeholder="Passwort" id="inputPasswort">
+                                <input type="password" th:field="*{passwort}" name="password" class="form-control" placeholder="Passwort" id="inputPasswort" minlength="6" maxlength="20">
                                 <div class="alert alert-danger" th:if="${#fields.hasErrors('passwort')}" th:errors="*{passwort}"></div>
                             </div>
                             <div class="form col-6">
                                 <label for="inputPasswortWiederholen">Passwort wiederholen</label>
-                                <input type="password" name="passwordWiederholen" class="form-control" placeholder="Passwort" id="inputPasswortWiederholen">
+                                <input type="password" name="passwordWiederholen" class="form-control" placeholder="Passwort" id="inputPasswortWiederholen" minlength="6" maxlength="20">
                                 <div class="alert alert-danger" th:if="${#fields.hasErrors('global')}">
                                     <div th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error"></div>
                                 </div>
