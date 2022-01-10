@@ -1,11 +1,11 @@
 package de.othr.sw.TRBank.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Date;
@@ -19,11 +19,13 @@ public class Transaktion extends SingleIdEntity<Long> {
     //TODO: Cascade Type?
     @NotNull
     @Valid
+    @JsonBackReference(value = "quelle")
     @ManyToOne
     private Konto quellkonto;
     //TODO: Cascade Type?
     @NotNull
     @Valid
+    @JsonBackReference(value = "ziel")
     @ManyToOne
     private Konto zielkonto;
     @NotNull

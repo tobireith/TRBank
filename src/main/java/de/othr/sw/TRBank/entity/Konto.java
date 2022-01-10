@@ -1,15 +1,13 @@
 package de.othr.sw.TRBank.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,8 +23,10 @@ public class Konto extends SingleIdEntity<Long> {
     //TODO: Cascade Type?
     @ManyToOne
     private Kunde besitzer;
+    @JsonManagedReference(value = "quelle")
     @OneToMany(mappedBy = "quellkonto")
     private List<Transaktion> transaktionenRaus = new ArrayList<>();
+    @JsonManagedReference(value = "ziel")
     @OneToMany(mappedBy = "zielkonto")
     private List<Transaktion> transaktionenRein = new ArrayList<>();
     @NotNull
@@ -40,6 +40,10 @@ public class Konto extends SingleIdEntity<Long> {
 
 
     public Konto() {
+    }
+
+    public Konto(String iban) {
+        this.iban = iban;
     }
 
     public Konto(String iban, Kunde besitzer, double kontostand) {

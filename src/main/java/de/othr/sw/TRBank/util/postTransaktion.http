@@ -1,0 +1,43 @@
+### StandardTransaktion
+# Korrekte Transaktion einfügen
+POST http://localhost:8080/api/rest/transaktion
+Content-Type: application/json
+
+{
+  "kunde": {
+    "username": "Huber1",
+    "passwort": "passwort1"
+  },
+  "transaktion": {
+    "quellkonto": {
+      "iban": "DE12345678900943280229"
+    },
+    "zielkonto": {
+      "iban": "DE12345678900450601723"
+    },
+    "betrag": 1.56,
+    "verwendungszweck": "Externe Transaktion via REST"
+  }
+}
+
+### InkorrekteTransaktion
+# Inkorrekte Transaktion ausprobieren
+POST http://localhost:8080/api/rest/transaktion
+Content-Type: application/json
+
+{
+  "kunde": {
+    "username": "Huber1",
+    "passwort": "passwort1"
+  },
+  "transaktion": {
+    "quellkonto": {
+      "iban": "DE12345678900943280229"
+    },
+    "zielkonto": {
+      "iban": "DE12345678900450601723"
+    },
+    "betrag": -1.56,
+    "verwendungszweck": "Externe Transaktion via REST"
+  }
+}

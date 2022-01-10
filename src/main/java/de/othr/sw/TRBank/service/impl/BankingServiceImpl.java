@@ -11,7 +11,6 @@ import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -87,28 +86,18 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional
     @Override
-    public Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TRBankException {
-        kunde = kundeService.kundeAnmelden(kunde);
-
-        // TODO: Firmenkunde überprüfung durch Authorities
-        if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
-            throw new TRBankException("Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
-        } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) && !kunde.getKonten().contains(transaktion.getZielkonto())) {
-            throw new TRBankException("Quell- oder Zielkonto gehören nicht dem Kunden!");
-        }
-
-        return transaktionTaetigen(transaktion);
-    }
-
-    @Transactional
-    @Override
-    public Transaktion transaktionTaetigen(Transaktion transaktion) throws TRBankException {
-
+    public Transaktion transaktionTaetigen(Transaktion transaktion, Kunde kunde) throws TRBankException {
         // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
         transaktion.setQuellkonto(getKontoByIban(transaktion.getQuellkonto().getIban()));
         transaktion.setZielkonto(getKontoByIban(transaktion.getZielkonto().getIban()));
 
         transaktion.setDatum(new Date());
+
+        if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
+            throw new TRBankException("Kunde ist kein Firmenkunde. quellkonto muss das Konto des Kunden sein.");
+        } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) && !kunde.getKonten().contains(transaktion.getZielkonto())) {
+            throw new TRBankException("Quell- oder Zielkonto gehören nicht dem Kunden!");
+        }
 
         Konto von = transaktion.getQuellkonto();
         Konto zu = transaktion.getZielkonto();

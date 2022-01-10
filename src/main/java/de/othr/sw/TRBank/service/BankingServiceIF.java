@@ -14,7 +14,7 @@ public interface BankingServiceIF {
     List<Konto> getKontenByKunde(Kunde kunde) throws TRBankException;
 
     @Transactional
-    Transaktion transaktionTaetigen(Transaktion transaktion) throws TRBankException;
+    Transaktion transaktionTaetigen(Transaktion transaktion, Kunde kunde) throws TRBankException;
 
     Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException;
 
@@ -25,7 +25,6 @@ public interface BankingServiceIF {
     Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException;
 
     Konto kontoSpeichern(Konto konto);
-    Transaktion transaktionTaetigen(Kunde kunde, Transaktion transaktion) throws TRBankException;
 
     @Transactional
     List<Transaktion> getTransaktionenForKonten(List<Konto> konten);

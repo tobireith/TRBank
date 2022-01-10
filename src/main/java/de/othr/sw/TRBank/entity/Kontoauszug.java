@@ -3,7 +3,6 @@ package de.othr.sw.TRBank.entity;
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

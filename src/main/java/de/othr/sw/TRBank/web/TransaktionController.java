@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
-import java.util.Date;
 
 @Controller
 @Scope("singleton")
@@ -56,7 +55,7 @@ public class TransaktionController {
         }
     }
 
-    @RequestMapping(value = "/transaktion", method = RequestMethod.POST)    // th:action="@{login}"
+    @RequestMapping(value = "/transaktion", method = RequestMethod.POST)
     public String postTransaktion(
             @PathVariable long kontoId,
             @ModelAttribute("isSender") boolean isSender,
@@ -74,14 +73,7 @@ public class TransaktionController {
                     return "transaktion";
                 }
 
-                Konto quellkonto = bankingService.getKontoByIban(transaktion.getQuellkonto().getIban());
-                Konto zielkonto = bankingService.getKontoByIban(transaktion.getZielkonto().getIban());
-
-                transaktion.setQuellkonto(quellkonto);
-                transaktion.setZielkonto(zielkonto);
-                transaktion.setDatum(new Date());
-
-                bankingService.transaktionTaetigen(transaktion);
+                bankingService.transaktionTaetigen(transaktion, loginController.getKunde());
             }
             return "redirect:/konto/{kontoId}";
         } catch (TRBankException exception) {
