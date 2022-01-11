@@ -34,16 +34,9 @@ public class Konto extends SingleIdEntity<Long> {
     @Column(unique = true)
     private String iban;
     @Min(value = SCHULDENLIMIT)
-    private double kontostand;
-
-
-
+    private double kontostand = 0.0;
 
     public Konto() {
-    }
-
-    public Konto(String iban) {
-        this.iban = iban;
     }
 
     public Konto(String iban, Kunde besitzer, double kontostand) {

@@ -60,6 +60,13 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional
     @Override
+    public Konto kontoAnlegen(Kunde kunde) {
+        Konto konto = new Konto(generateRandomIban(kunde.getAdresse().getLand().substring(0, 2).toUpperCase()), kunde, 0.0);
+        return kontoAnlegen(konto);
+    }
+
+    @Transactional
+    @Override
     public Konto kontoAnlegen(Konto konto) {
         // Referenz im Kunden speichern / setzen reicht, da Cascade Type dort gesetzt ist!
         Kunde kunde = konto.getBesitzer();

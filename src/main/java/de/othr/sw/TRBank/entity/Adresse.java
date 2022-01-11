@@ -12,7 +12,7 @@ public class Adresse {
     @NotBlank
     private String strasse;
     @NotBlank
-    @Length (min = 1, max = 10)
+    @Length (min = 1, max = 20)
     private String hausnummer;
     @NotBlank
     private String stadt;

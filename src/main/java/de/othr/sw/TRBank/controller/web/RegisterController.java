@@ -62,9 +62,7 @@ public class RegisterController {
             kundeService.kundeRegistrieren(kunde);
 
             // Standard-Konto für Kunden anlegen
-            String iban = bankingService.generateRandomIban(kunde.getAdresse().getLand().substring(0, 2).toUpperCase());
-            Konto konto = new Konto(iban, kunde, 0);
-            bankingService.kontoAnlegen(konto);
+            bankingService.kontoAnlegen(kunde);
 
             //Auto-Login nach Registrierung
             request.login(kunde.getUsername(), confirmationPasswort);
