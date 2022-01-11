@@ -89,7 +89,9 @@ public class BankingServiceImpl implements BankingServiceIF {
         transaktion.setQuellkonto(getKontoByIban(transaktion.getQuellkonto().getIban()));
         transaktion.setZielkonto(getKontoByIban(transaktion.getZielkonto().getIban()));
 
-        transaktion.setDatum(new Date());
+        if(transaktion.getDatum() == null) {
+            transaktion.setDatum(new Date());
+        }
 
         if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
             throw new TRBankException("Kunde ist kein Firmenkunde. quellkonto muss das Konto des Kunden sein.");
@@ -220,6 +222,11 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Override
     public String generateRandomIban(String prefix) {
-        return prefix+"1234567890" + String.format("%010d", new Random().nextInt(1000000000));
+        String iban;
+        do {
+            System.out.println("Generating new IBAN...");
+            iban = prefix+"0123456789" + String.format("%010d", new Random().nextInt(1000000000));
+        } while (!kontoRepository.findKontoByIban(iban).isEmpty());
+        return iban;
     }
 }

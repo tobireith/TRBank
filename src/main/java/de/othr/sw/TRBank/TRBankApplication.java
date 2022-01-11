@@ -28,14 +28,7 @@ public class TRBankApplication implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 		if(kundeService.getAllKunden().size() <= 0) {
 			System.out.println("Initializing data");
-			initData.initData();
-
+			initData.initAllData();
 		}
-	}
-
-	@GetMapping("/hello")
-	//public String hello(@RequestParam(value = "kundenNr", defaultValue = "0") int kundenNr) {
-	public String hello() {
-		return String.format("Hello!");
 	}
 }

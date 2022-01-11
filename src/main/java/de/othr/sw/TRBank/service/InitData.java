@@ -1,15 +1,14 @@
 package de.othr.sw.TRBank.service;
 
 import de.othr.sw.TRBank.entity.*;
-import de.othr.sw.TRBank.repository.KontoRepository;
-import de.othr.sw.TRBank.repository.KundeRepository;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class InitData {
@@ -18,48 +17,79 @@ public class InitData {
     @Autowired
     private BankingServiceIF bankingService;
 
-    // TODO: Initialize with real data!
-
     @Transactional
-    public void initData() throws TRBankException {
-        for (int i = 1; i <= 5; i++) {
-            //Adressen erzeugen
-            Adresse adr = new Adresse("Seybothstrasse ", String.valueOf(i), "Regensburg", 93053, "Deutschland");
-            System.out.println("Adresse erstellt:" + adr);
+    public void initAllData() throws TRBankException {
+        Map<String, Kunde> kundeMap = new HashMap<>();
 
-            //Kunde erzeugen
-            Kunde testKunde = new Kunde("Huber" + i, "passwort" + i, adr, "Hans " + i, "Huber " + i, true);
-            testKunde = kundeService.kundeRegistrieren(testKunde);
-            System.out.println("Kunde erstellt:" + testKunde);
+        // Firmenkunden anlegen
+        kundeMap.put("TRBank", new Kunde("TRBank", "passwort", new Adresse("Gewerbepark", "1a", "Regensburg", 93049, "Deutschland"), "Tobias", "Reithmaier", true));
+        kundeMap.put("haberlRepairs", new Kunde("haberlRepairs", "simon123", new Adresse("Seybothstrasse", "2b", "Regensburg", 93048, "Deutschland"), "Simon", "Haberl", true));
+        kundeMap.put("erbenAirports", new Kunde("erbenAirports", "emanuel123", new Adresse("Am Fischmarkt", "13", "Regensburg", 93053, "Deutschland"), "Emanuel", "Erben", true));
+        kundeMap.put("gebauerSecurity", new Kunde("gebauerSecurity", "miriam123", new Adresse("Galgenbergstrasse", "35c", "Regensburg", 93053, "Deutschland"), "Miriam", "Gebauer", true));
+        kundeMap.put("huberCompany", new Kunde("huberCompany", "passwort", new Adresse("Gewerbepark", "21c", "Regensburg", 93049, "Deutschland"), "Georg", "Huber", true));
+        kundeMap.put("maierCompany", new Kunde("maierCompany", "passwort", new Adresse("Gewerbepark", "33c", "Regensburg", 93049, "Deutschland"), "Thorsten", "Maier", true));
 
-            //Konten erzeugen (1-3 pro Kunde)
-            int anzahlKontos = new Random().nextInt(3) + 1;
+        // Privatkunden anlegen
+        kundeMap.put("customer1", new Kunde("customer1", "passwort", new Adresse("Am Fischmarkt", "15a, Whg. 13, EG", "Regensburg", 93053, "Deutschland"), "Renate", "Renner", false));
+        kundeMap.put("customer2", new Kunde("customer2", "passwort", new Adresse("Donauweg", "33c", "Regensburg", 93049, "Deutschland"), "Thorsten", "Maier", false));
+        kundeMap.put("customer3", new Kunde("customer3", "passwort", new Adresse("Landshuter Strasse", "4", "Regensburg", 93049, "Deutschland"), "Angela", "Hofmeister", false));
+        kundeMap.put("customer4", new Kunde("customer4", "passwort", new Adresse("Peter-Müllritter-Strasse", "12a, Whg. 3", "Sinzing", 93161, "Deutschland"), "Peter", "Bauer", false));
+
+        // Alle Kunden speichern / registrieren
+        for (Kunde kunde : kundeMap.values()) {
+            kundeService.kundeRegistrieren(kunde);
+        }
+
+        double kontostandFirmenkunde = 1000000 + Math.round(new Random().nextDouble() * 800000);
+        double kontostandPrivatkunde = 10000 + Math.round(new Random().nextDouble() * 200000);
+
+        // Konten zu Firmenkunden hinzufügen
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500001", kundeMap.get("TRBank"), kontostandFirmenkunde));
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500002", kundeMap.get("haberlRepairs"), kontostandFirmenkunde));
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500003", kundeMap.get("erbenAirports"), kontostandFirmenkunde));
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500004", kundeMap.get("gebauerSecurity"), kontostandFirmenkunde));
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500005", kundeMap.get("huberCompany"), kontostandFirmenkunde));
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500006", kundeMap.get("maierCompany"), kontostandFirmenkunde));
+
+        // Konten zu Privatkunden hinzufügen
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500901", kundeMap.get("customer1"), kontostandPrivatkunde));
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500902", kundeMap.get("customer2"), kontostandPrivatkunde));
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500903", kundeMap.get("customer3"), kontostandPrivatkunde));
+        bankingService.kontoAnlegen(new Konto("DE12345678901234500904", kundeMap.get("customer4"), kontostandPrivatkunde));
+
+        // Zusätzliche Konten erzeugen (0-2 pro Kunde)
+        for (Kunde kunde : kundeMap.values()) {
+            int anzahlKontos = new Random().nextInt(3);
             for (int j = 1; j <= anzahlKontos; j++) {
-                double kontostand = 1000 + Math.round(new Random().nextDouble() * 10000);
+                double kontostand = 50000 + Math.round(new Random().nextDouble() * 80000);
                 String iban = bankingService.generateRandomIban("DE");
-                Konto testKonto = new Konto(iban, testKunde, kontostand);
-                Konto konto = bankingService.kontoSpeichern(testKonto);
-                System.out.println("Konto erstellt:" + konto);
+                bankingService.kontoAnlegen(new Konto(iban, kunde, kontostand));
             }
         }
-        //Transaktionen erzeugen (1-5 pro Kunde), beim Letzten kunden nicht
-        for(int i = 1; i <= 4; i++) {
-            int anzahlTransaktionen = new Random().nextInt(5) + 1;
-            for (int k = 1; k <= anzahlTransaktionen; k++) {
-                Kunde vonKunde = kundeService.getAllKunden().get(i-1);
-                Konto vonKonto = vonKunde.getKonten().get(0);
-                Kunde zuKunde = kundeService.getAllKunden().get(i);
-                Konto zuKonto = zuKunde.getKonten().get(0);
+
+        List<String> keys = new ArrayList<>(kundeMap.keySet());
+        //Transaktionen erzeugen, beim Letzten kunden nicht
+        for(int i = 0; i < kundeMap.size(); i++) {
+            int anzahlTransaktionen = new Random().nextInt(30);
+            for (int k = 0; k < anzahlTransaktionen; k++) {
+                Kunde vonKunde = kundeService.getAllKunden().get(i);
+                Konto vonKonto = vonKunde.getKonten().get(new Random().nextInt(vonKunde.getKonten().size()));
+                Konto zuKonto;
+                do {
+                    String randomKundeKeyZu = keys.get(new Random().nextInt(kundeMap.size()));
+                    Kunde randomKundeZu = kundeMap.get(randomKundeKeyZu);
+                    zuKonto = randomKundeZu.getKonten().get(new Random().nextInt(randomKundeZu.getKonten().size()));
+                } while(zuKonto == vonKonto);
                 double betrag = Math.round(new Random().nextDouble() * 1000);
-                Date datum = new Date();
-                String verwendungszweck = "Testüberweisung " + k + " von Konto " + vonKonto.getID();
-                Transaktion testTransaktion = new Transaktion(vonKonto, zuKonto, betrag, datum, verwendungszweck);
-                Kunde tempKunde = new Kunde("Huber" + i, "passwort" + i);
-                System.out.println("TRANSAKTION:" + testTransaktion + " KUNDE: " + tempKunde);
-                Transaktion t = bankingService.transaktionTaetigen(tempKunde, testTransaktion);
-                System.out.println("Transaktion erstellt:" + t);
+                Date datum = new Date(ThreadLocalRandom
+                        .current()
+                        .nextLong(new Date(new Date().getTime() - TimeUnit.DAYS.toMillis(1) * 365).getTime(), new Date().getTime()));
+                String verwendungszweck = "Initiale Überweisung " + k + " von Konto " + vonKonto.getID() + " zu Konto " + zuKonto.getID();
+                Transaktion transaktion = new Transaktion(vonKonto, zuKonto, betrag, datum, verwendungszweck);
+                bankingService.transaktionTaetigen(transaktion, vonKunde);
             }
         }
-        //TODO: Kontoauszüge erstellen
+
+        System.out.println("Initialisierung abgeschlossen.");
     }
 }
