@@ -60,27 +60,18 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional
     @Override
-    public Konto kontoSpeichern(Konto konto) {
-        /*
-        // Erst Konto Speichern, dann Referenz im Kunden updaten!
-        Konto savedKonto = kontoRepository.save(konto);
-        Kunde kunde = konto.getBesitzer();
-        List<Konto> konten = new ArrayList<>(kunde.getKonten());
-        if(konten.size() >= 1) {
-            konten.remove(konto);
-        }
-        konten.add(konto);
-        kunde.setKonten(konten);
-
-        kundeService.kundeSpeichern(kunde);
-        System.out.println("Kunde mit neuen Konten gespeichert: " + kunde.getKonten());
-        return savedKonto;
-         */
-
-        //konto = kontoRepository.save(konto);
+    public Konto kontoAnlegen(Konto konto) {
+        // Referenz im Kunden speichern / setzen reicht, da Cascade Type dort gesetzt ist!
         Kunde kunde = konto.getBesitzer();
         kunde.addKonto(konto);
         kundeService.kundeSpeichern(kunde);
+        return konto;
+    }
+
+    @Transactional
+    @Override
+    public Konto kontoUpdaten(Konto konto) {
+        konto = kontoRepository.save(konto);
         return konto;
     }
 
@@ -107,22 +98,15 @@ public class BankingServiceImpl implements BankingServiceIF {
         }
 
         // Transaktion durchführen
-        Transaktion t = transaktionRepository.save(transaktion);
+        transaktion = transaktionRepository.save(transaktion);
 
-        // Transaktionen Liste im Konto anpassen und Kontostände anpassen
-        List<Transaktion> transaktionenRaus = new ArrayList<>(von.getTransaktionenRaus());
-        transaktionenRaus.add(t);
-        von.setTransaktionenRaus(transaktionenRaus);
+        // Kontostände anpassen & Änderungen speichern
         von.setKontostand(von.getKontostand() - transaktion.getBetrag());
-        this.kontoSpeichern(von);
-
-        List<Transaktion> transaktionenRein = new ArrayList<>(von.getTransaktionenRein());
-        transaktionenRein.add(t);
-        zu.setTransaktionenRein(transaktionenRein);
+        kontoUpdaten(von);
         zu.setKontostand(zu.getKontostand() + transaktion.getBetrag());
-        this.kontoSpeichern(zu);
+        kontoUpdaten(zu);
 
-        return t;
+        return transaktion;
     }
 
     private List<Transaktion> transaktionenAbDatum(List<Transaktion> transaktionen, Date datum) {

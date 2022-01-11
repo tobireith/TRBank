@@ -24,7 +24,8 @@ public interface BankingServiceIF {
     @Transactional
     Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException;
 
-    Konto kontoSpeichern(Konto konto);
+    Konto kontoAnlegen(Konto konto);
+    Konto kontoUpdaten(Konto konto);
 
     @Transactional
     List<Transaktion> getTransaktionenForKonten(List<Konto> konten);
