@@ -1,4 +1,4 @@
-package de.othr.sw.TRBank.web;
+package de.othr.sw.TRBank.controller.web;
 
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kunde;
@@ -64,7 +64,7 @@ public class RegisterController {
             // Standard-Konto für Kunden anlegen
             String iban = bankingService.generateRandomIban(kunde.getAdresse().getLand().substring(0, 2).toUpperCase());
             Konto konto = new Konto(iban, kunde, 0);
-            bankingService.kontoSpeichern(konto);
+            bankingService.kontoAnlegen(konto);
 
             //Auto-Login nach Registrierung
             request.login(kunde.getUsername(), confirmationPasswort);

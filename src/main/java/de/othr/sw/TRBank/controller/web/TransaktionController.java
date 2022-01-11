@@ -1,4 +1,4 @@
-package de.othr.sw.TRBank.web;
+package de.othr.sw.TRBank.controller.web;
 
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Transaktion;

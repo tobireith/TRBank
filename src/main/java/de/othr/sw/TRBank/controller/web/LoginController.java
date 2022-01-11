@@ -1,4 +1,4 @@
-package de.othr.sw.TRBank.web;
+package de.othr.sw.TRBank.controller.web;
 
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.service.KundeServiceIF;
