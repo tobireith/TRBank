@@ -49,14 +49,7 @@ public class TRBankSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .formLogin()
                     .loginPage("/login").permitAll()
-                    .successHandler(new AuthenticationSuccessHandler() {
-                        @Override
-                        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                                            Authentication authentication) throws IOException, ServletException {
-                            redirectStrategy.sendRedirect(request, response, "/login/success");
-                        }
-                    })
-                //TODO: Handle the login error!
+                    .defaultSuccessUrl("/")
                     .failureUrl("/login?error")
                 .and()
                     .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

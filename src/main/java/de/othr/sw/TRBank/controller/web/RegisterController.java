@@ -30,10 +30,6 @@ public class RegisterController {
     @Autowired
     private BankingServiceIF bankingService;
 
-    @Autowired
-    private LoginController loginController;
-
-
     @RequestMapping(value = "register", method = RequestMethod.GET)
     public String register(Model model) {
         model.addAttribute("kunde", new Kunde());
@@ -67,12 +63,12 @@ public class RegisterController {
             //Auto-Login nach Registrierung
             request.login(kunde.getUsername(), confirmationPasswort);
 
-            return "redirect:/login/success";
+            return "redirect:/";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
             return "register";
         } catch (ServletException e) {
-            model.addAttribute("trException", new TRBankException("Fehler beim anmelden des neuen Benutzers.", e.getMessage()));
+            model.addAttribute("trException", new TRBankException("Fehler bei der Anmeldung des neuen Benutzers.", e.getMessage()));
             return "redirect:/login";
         }
     }

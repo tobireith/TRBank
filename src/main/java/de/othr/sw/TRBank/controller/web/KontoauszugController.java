@@ -2,7 +2,9 @@ package de.othr.sw.TRBank.controller.web;
 
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kontoauszug;
+import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.service.BankingServiceIF;
+import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -11,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.Date;
 
 @Controller
@@ -20,18 +23,20 @@ public class KontoauszugController {
     private BankingServiceIF bankingService;
 
     @Autowired
-    private LoginController loginController;
+    private KundeServiceIF kundeService;
 
     @RequestMapping(value = "/konto/{kontoId}/kontoauszug")
     public String kontoauszug(@PathVariable long kontoId,
-                              Model model){
+                              Model model,
+                              Principal principal){
         try {
             System.out.println("GET /konto/id/kontoauszug");
-            model.addAttribute("kunde", loginController.getKunde());
+            Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
+            model.addAttribute("kunde", aktuellerKunde);
 
             model.addAttribute("datum", new Date());
 
-            Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
+            Konto konto = bankingService.getKontoFromKundeById(aktuellerKunde, kontoId);
 
             Kontoauszug kontoauszug = bankingService.kontoauszugErstellen(konto);
             model.addAttribute("kontoauszug", kontoauszug);

@@ -1,8 +1,10 @@
 package de.othr.sw.TRBank.controller.web;
 
 import de.othr.sw.TRBank.entity.Konto;
+import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.BankingServiceIF;
+import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -23,21 +26,22 @@ public class KontoController {
     private BankingServiceIF bankingService;
 
     @Autowired
-    private LoginController loginController;
+    private KundeServiceIF kundeService;
 
     @RequestMapping(value = "/{kontoId}")
     public String konto(
             @PathVariable long kontoId,
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
-            Model model) {
+            Model model,
+            Principal principal) {
         try {
             // TODO: Kundenobjekt an diese Seite übergeben anstatt es zu laden!
 
             if (pageNumber == null) {
                 return "redirect:/konto/{kontoId}/?pageNumber=1";
             }
-
-            Konto konto = bankingService.getKontoFromKundeById(loginController.getKunde(), kontoId);
+            Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
+            Konto konto = bankingService.getKontoFromKundeById(aktuellerKunde, kontoId);
             model.addAttribute("konto", konto);
 
             List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(List.of(konto));
