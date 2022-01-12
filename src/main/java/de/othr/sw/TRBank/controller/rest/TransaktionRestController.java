@@ -4,6 +4,7 @@ import de.othr.sw.TRBank.dto.TransaktionRestDTO;
 import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
+import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.validation.annotation.Validated;
@@ -26,16 +27,11 @@ public class TransaktionRestController {
     @RequestMapping(value = "/transaktion", method = RequestMethod.POST)
     public Transaktion transaktionTaetigen(
             @Valid @RequestBody TransaktionRestDTO transaktionRestDTO
-    ){
-        try {
-            Transaktion transaktion = bankingService.transaktionTaetigen(transaktionRestDTO.getTransaktion(), kundeService.kundeAnmelden(transaktionRestDTO.getKunde()));
+    ) throws TRBankException {
+        Transaktion transaktion = bankingService.transaktionTaetigen(transaktionRestDTO.getTransaktion(), kundeService.kundeAnmelden(transaktionRestDTO.getKunde()));
 
-            System.out.println("EXTERNE TRANSAKTION WURDE DURCHGEFÜHRT: " + transaktion);
+        System.out.println("EXTERNE TRANSAKTION WURDE DURCHGEFÜHRT: " + transaktion);
 
-            return transaktion;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return transaktion;
     }
 }

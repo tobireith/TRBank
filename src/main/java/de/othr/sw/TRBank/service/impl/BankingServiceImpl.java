@@ -95,8 +95,12 @@ public class BankingServiceImpl implements BankingServiceIF {
 
         if(!kunde.isFirmenkunde() && !kunde.getKonten().contains(transaktion.getQuellkonto())) {
             throw new TRBankException("Kunde ist kein Firmenkunde. quellkonto muss das Konto des Kunden sein.");
-        } else if(!kunde.getKonten().contains(transaktion.getQuellkonto()) && !kunde.getKonten().contains(transaktion.getZielkonto())) {
+        }
+        if(!kunde.getKonten().contains(transaktion.getQuellkonto()) && !kunde.getKonten().contains(transaktion.getZielkonto())) {
             throw new TRBankException("Quell- oder Zielkonto gehören nicht dem Kunden!");
+        }
+        if(transaktion.getQuellkonto() == transaktion.getZielkonto()) {
+            throw new TRBankException("Quell- und Zielkonto müssen unterschiedlich sein.");
         }
 
         Konto von = transaktion.getQuellkonto();
