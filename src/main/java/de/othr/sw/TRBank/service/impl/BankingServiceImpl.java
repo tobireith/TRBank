@@ -1,5 +1,8 @@
 package de.othr.sw.TRBank.service.impl;
 
+import de.othr.sw.TRBank.controller.rest.SendDeliveryIF;
+import de.othr.sw.TRBank.controller.rest.TempDelivery;
+import de.othr.sw.TRBank.controller.rest.TempDeliveryDTO;
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kontoauszug;
 import de.othr.sw.TRBank.entity.Kunde;
@@ -28,6 +31,8 @@ public class BankingServiceImpl implements BankingServiceIF {
     private TransaktionRepository transaktionRepository;
     @Autowired
     private KundeServiceIF kundeService;
+    @Autowired
+    private SendDeliveryIF sendDelivery;
 
 
     public double transaktionenSummieren(List<Transaktion> transaktionen){
@@ -171,15 +176,6 @@ public class BankingServiceImpl implements BankingServiceIF {
         kontoauszug.setKontostandAnfang(kontostandAnfang);
         kontoauszug.setKontostandEnde(konto.getKontostand());
 
-        //TODO: Check this!
-        /*
-        if(kontoauszug.getKontostandEnde() != konto.getKontostand()) {
-            throw new TRBankException("ERROR: Kontostand stimmt nicht mit dem berechneten Wert des aktuellen Kontoauszuges überein");
-        }
-         */
-
-        System.out.println("KONTOSTAND WIRD ERSTELLT: " + neueTransaktionen);
-
         if(neueTransaktionen.size() < 1) {
             throw new TRBankException("Keine neuen Transaktionen seit dem letzten Kontoauszug.");
         }
@@ -188,9 +184,13 @@ public class BankingServiceImpl implements BankingServiceIF {
         kontoauszug.setDatumBis(neueTransaktionen.get(neueTransaktionen.size()-1).getDatum());
         kontoauszug.setKonto(konto);
 
-        // Versandunternehmen beauftragen
-        //TODO: Aufruf zur externen Schnittstelle des Versandunternehmens
-        kontoauszug.setVersandId(new Random().nextInt(10000));
+        try {
+            // Versandunternehmen beauftragen
+            TempDelivery delivery = sendDelivery.sendDelivery(new TempDeliveryDTO(new Kunde("username", "password"), new TempDelivery()));
+            kontoauszug.setVersandId(delivery.getDeliveryId());
+        } catch (Exception e) {
+            throw new TRBankException("Fehler bei der Erstellung des Sendungsauftrages.", e.getMessage());
+        }
 
         return kontoauszugRepository.save(kontoauszug);
     }
