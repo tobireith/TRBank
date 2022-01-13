@@ -16,14 +16,10 @@ public class Transaktion extends SingleIdEntity<Long> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private long transaktionId;
-    //TODO: Cascade Type?
-    @NotNull
     @Valid
     @JsonBackReference(value = "quelle")
     @ManyToOne
     private Konto quellkonto;
-    //TODO: Cascade Type?
-    @NotNull
     @Valid
     @JsonBackReference(value = "ziel")
     @ManyToOne
@@ -95,8 +91,8 @@ public class Transaktion extends SingleIdEntity<Long> {
     public String toString() {
         return "Transaktion{" +
                 "transaktionId=" + transaktionId +
-                ", quellkontoId=" + quellkonto.getID() +
-                ", zielkontoId=" + zielkonto.getID() +
+                ", quellkontoId=" + (quellkonto != null ? quellkonto.getID() : null)  +
+                ", zielkontoId=" + (zielkonto != null ? zielkonto.getID() : null) +
                 ", betrag=" + betrag +
                 ", datum=" + datum +
                 ", verwendungszweck='" + verwendungszweck + '\'' +

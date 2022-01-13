@@ -14,13 +14,14 @@
         </thead>
         <tbody>
         <tr th:each="transaktion : ${transaktionen}">
-            <td><label th:text="${#dates.format(transaktion.getDatum(), 'dd.MM.yyyy hh:mm')}"></label></td>
+            <td><label th:text="${#dates.format(transaktion.getDatum(), 'dd.MM.yyyy HH:mm')}"></label></td>
             <td><label th:text="${transaktion.getVerwendungszweck()}"></label></td>
-            <td><label th:text="${transaktion.getQuellkonto().getIban()}"></label></td>
-            <td><label th:text="${transaktion.getZielkonto().getIban()}"></label></td>
-            <td th:switch="${transaktion.getQuellkonto().getIban()}">
-                <label th:case="${konto.getIban()}" th:text="'-' +${#numbers.formatCurrency(transaktion.getBetrag())}" class="text-danger"></label>
-                <label th:case="*" th:text="'+' + ${#numbers.formatCurrency(transaktion.getBetrag())}"  class="text-success"></label>
+            <td><label th:text="${transaktion.getQuellkonto()}? ${transaktion.getQuellkonto().getIban()} : 'Gelöschtes Konto'"></label></td>
+            <td><label th:text="${transaktion.getZielkonto()}? ${transaktion.getZielkonto().getIban()} : 'Gelöschtes Konto'"></label></td>
+            <td th:switch="${konto}">
+                <label th:case="${transaktion.getQuellkonto()}" th:text="'-' +${#numbers.formatCurrency(transaktion.getBetrag())}" class="text-danger"></label>
+                <label th:case="${transaktion.getZielkonto()}" th:text="'+' +${#numbers.formatCurrency(transaktion.getBetrag())}" class="text-success"></label>
+                <label th:case="*" th:text="${#numbers.formatCurrency(transaktion.getBetrag())}"></label>
             </td>
         </tr>
         </tbody>
@@ -41,10 +42,10 @@
         </thead>
         <tbody>
         <tr th:each="transaktion : ${transaktionen}">
-            <td><label th:text="${#dates.format(transaktion.getDatum(), 'dd.MM.yyyy hh:mm')}"></label></td>
+            <td><label th:text="${#dates.format(transaktion.getDatum(), 'dd.MM.yyyy HH:mm')}"></label></td>
             <td><label th:text="${transaktion.getVerwendungszweck()}"></label></td>
-            <td><label th:text="${transaktion.getQuellkonto().getIban()}"></label></td>
-            <td><label th:text="${transaktion.getZielkonto().getIban()}"></label></td>
+            <td><label th:text="${transaktion.getQuellkonto()}? ${transaktion.getQuellkonto().getIban()} : 'Gelöschtes Konto'"></label></td>
+            <td><label th:text="${transaktion.getZielkonto()}? ${transaktion.getZielkonto().getIban()} : 'Gelöschtes Konto'"></label></td>
             <td>
                 <label th:if="${konten.contains(transaktion.getQuellkonto()) && !konten.contains(transaktion.getZielkonto())}" th:text="'-' +${#numbers.formatCurrency(transaktion.getBetrag())}" class="text-danger"></label>
                 <label th:if="${!konten.contains(transaktion.getQuellkonto()) && konten.contains(transaktion.getZielkonto())}" th:text="'+' + ${#numbers.formatCurrency(transaktion.getBetrag())}"  class="text-success"></label>

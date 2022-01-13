@@ -80,5 +80,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Button trigger modal -->
+    <div class="container d-flex justify-content-center align-items-center  w-100 p-2" >
+        <button type="button" class="btn btn-danger" th:disabled="${disableDelete}"  data-bs-toggle="modal" data-bs-target="#deleteKontoModal">
+            Konto auflösen
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteKontoModal" tabindex="-1" aria-labelledby="deleteKontoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteKontoModalLabel">Konto auflösen</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Sind Sie sicher, dass Sie dieses Konto auflösen möchten?
+                    Damit werden auch sämtliche Kontoauszüge gelöscht.
+                    Diese Aktion kann nicht rückgängig gemacht werden!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary float-start" data-bs-dismiss="modal">Abbrechen</button>
+                    <a th:href="@{/konto/{id}/delete(id=${konto.getID()})}">
+                        <button type="button" class="btn btn-danger float-end" th:disabled="${disableDelete}"  data-bs-dismiss="modal">
+                            Bestätigen
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

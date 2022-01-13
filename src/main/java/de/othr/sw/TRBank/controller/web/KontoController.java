@@ -52,10 +52,25 @@ public class KontoController {
             List<Transaktion> currentTransaktionen = transaktionen.subList((pageNumber - 1) * 10, Math.min(transaktionen.size(), (pageNumber - 1) * 10 + 9));
             model.addAttribute("currentTransaktionen", currentTransaktionen);
             model.addAttribute("pageNumber", pageNumber);
+
+            model.addAttribute("disableDelete", (konto.getKontostand() != 0));
             return "konto";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
             return "redirect:/";
+        }
+    }
+
+    @RequestMapping(value = "/{kontoId}/delete")
+    public String deleteKonto(
+            @PathVariable long kontoId,
+            Model model) {
+        try {
+            bankingService.kontoLoeschen(kontoId);
+            return "redirect:/";
+        } catch (TRBankException e) {
+            model.addAttribute("trException", e);
+            return "redirect:/konto/{kontoId}/?pageNumber=1";
         }
     }
 }

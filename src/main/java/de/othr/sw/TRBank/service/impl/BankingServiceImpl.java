@@ -46,7 +46,6 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Override
     @Transactional
     public Konto getKontoByIban(String Iban) throws TRBankException {
-        System.out.println("IBAN: " + Iban);
         return kontoRepository.findKontoByIban(Iban).orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos! IBAN nicht gefunden: " + Iban));
     }
 
@@ -73,9 +72,12 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Transactional
     @Override
     public Konto kontoAnlegen(Konto konto) {
-        // Referenz im Kunden speichern / setzen reicht, da Cascade Type dort gesetzt ist!
+        // TODO: Check this again
+        // FALSCH: Referenz im Kunden speichern / setzen reicht, da Cascade Type dort gesetzt ist! - Wieso reicht das nicht?
+        // Erst Konto speichern, dann das gespeicherte Konto in der Liste des Kunden hinzufügen
+        konto = kontoRepository.save(konto);
         Kunde kunde = konto.getBesitzer();
-        kunde.addKonto(konto);
+        kunde.getKonten().add(konto);
         kundeService.kundeSpeichern(kunde);
         return konto;
     }
@@ -85,6 +87,24 @@ public class BankingServiceImpl implements BankingServiceIF {
     public Konto kontoUpdaten(Konto konto) {
         konto = kontoRepository.save(konto);
         return konto;
+    }
+
+    @Transactional
+    @Override
+    public void kontoLoeschen(long kontoId) throws TRBankException {
+        Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("Konto zum löschen nicht gefunden."));
+        if(konto.getKontostand() != 0) {
+            throw new TRBankException("Kontostand muss gleich 0 sein.", "Kontostand muss gleich 0 sein. Aktueller Kontostand: " + konto.getKontostand(), "Überweisen sie Ihr restliches Geld auf ein anderes Konto, oder begleichen Sie Ihre Schulden.");
+        }
+        for(Transaktion t : konto.getTransaktionenRaus()) {
+            t.setQuellkonto(null);
+            transaktionRepository.save(t);
+        }
+        for(Transaktion t : konto.getTransaktionenRein()) {
+            t.setZielkonto(null);
+            transaktionRepository.save(t);
+        }
+        kontoRepository.deleteById(kontoId);
     }
 
     @Transactional
@@ -184,6 +204,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         kontoauszug.setDatumBis(neueTransaktionen.get(neueTransaktionen.size()-1).getDatum());
         kontoauszug.setKonto(konto);
 
+        /*
         try {
             // Versandunternehmen beauftragen
             TempDelivery delivery = sendDelivery.sendDelivery(new TempDeliveryDTO(new Kunde("username", "password"), new TempDelivery()));
@@ -191,6 +212,8 @@ public class BankingServiceImpl implements BankingServiceIF {
         } catch (Exception e) {
             throw new TRBankException("Fehler bei der Erstellung des Sendungsauftrages.", e.getMessage());
         }
+         */
+        kontoauszug.setVersandId(new Random().nextInt(99999999));
 
         return kontoauszugRepository.save(kontoauszug);
     }
@@ -227,10 +250,12 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Override
     public String generateRandomIban(String prefix) {
         String iban;
+        Konto konto;
         do {
-            System.out.println("Generating new IBAN...");
-            iban = prefix+"0123456789" + String.format("%010d", new Random().nextInt(1000000000));
-        } while (!kontoRepository.findKontoByIban(iban).isEmpty());
+            iban = prefix+"1234567890" + String.format("%010d", new Random().nextInt(1000000000));
+            konto = kontoRepository.findKontoByIban(iban).orElse(null);
+        } while (konto != null);
+        System.out.println("Returning IBAN: " + iban);
         return iban;
     }
 }

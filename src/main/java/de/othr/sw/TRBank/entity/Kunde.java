@@ -22,7 +22,7 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     @Valid
     private Adresse adresse;
     //TODO: Check cascade type and orphan Removal!
-    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.PERSIST)
     private List<Konto> konten = new ArrayList<>();
     @Column(unique = true)
     @NotBlank
@@ -67,23 +67,11 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     }
 
     public List<Konto> getKonten() {
-        return Collections.unmodifiableList(konten);
+        return konten;
     }
 
     public void setKonten(List<Konto> konten) {
         this.konten = konten;
-    }
-
-    public Kunde addKonto(Konto konto) {
-        konten.add(konto);
-        konto.setBesitzer(this);
-        return this;
-    }
-
-    public Kunde removeKonto(Konto konto) {
-        konten.remove(konto);
-        konto.setBesitzer(null);
-        return this;
     }
 
     public boolean isFirmenkunde() {

@@ -29,6 +29,11 @@ public class Konto extends SingleIdEntity<Long> {
     @JsonManagedReference(value = "ziel")
     @OneToMany(mappedBy = "zielkonto")
     private List<Transaktion> transaktionenRein = new ArrayList<>();
+    // OrphanRemoval:
+    //      Wenn ein Konto aufgelöst wird, so werden auch die gespeicherten Kontoauszüge nicht mehr benötigt,
+    //      denn sie wurden ja bereits versendet und das Konto existiert nicht mehr.
+    @OneToMany(mappedBy = "konto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Kontoauszug> kontoauszugList = new ArrayList<>();
     @NotNull
     @Size(min = 22, max = 22)
     @Column(unique = true)
@@ -65,12 +70,20 @@ public class Konto extends SingleIdEntity<Long> {
         return Collections.unmodifiableList(transaktionenRein);
     }
 
+    public List<Kontoauszug> getKontoauszugList() {
+        return Collections.unmodifiableList(kontoauszugList);
+    }
+
     public void setTransaktionenRaus(List<Transaktion> transaktionenRaus) {
         this.transaktionenRaus = transaktionenRaus;
     }
 
     public void setTransaktionenRein(List<Transaktion> transaktionenRein) {
         this.transaktionenRein = transaktionenRein;
+    }
+
+    public void setKontoauszugList(List<Kontoauszug> kontoauszugList) {
+        this.kontoauszugList = kontoauszugList;
     }
 
     public double getKontostand() {
@@ -96,6 +109,7 @@ public class Konto extends SingleIdEntity<Long> {
                 ", besitzerID=" + (besitzer != null ? besitzer.getID() : null) +
                 ", transaktionenRaus=" + transaktionenRaus +
                 ", transaktionenRein=" + transaktionenRein +
+                ", kontoauszugList=" + kontoauszugList +
                 ", iban='" + iban + '\'' +
                 ", kontostand=" + kontostand +
                 '}';

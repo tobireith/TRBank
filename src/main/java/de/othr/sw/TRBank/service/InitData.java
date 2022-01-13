@@ -39,6 +39,7 @@ public class InitData {
         for (Kunde kunde : kundeMap.values()) {
             kundeService.kundeRegistrieren(kunde);
         }
+        System.out.println("Alle Kunden erfolgreich registriert.");
 
         double kontostandFirmenkunde = 1000000 + Math.round(new Random().nextDouble() * 800000);
         double kontostandPrivatkunde = 10000 + Math.round(new Random().nextDouble() * 200000);
@@ -57,15 +58,20 @@ public class InitData {
         bankingService.kontoAnlegen(new Konto("DE12345678901234500903", kundeMap.get("customer3"), kontostandPrivatkunde));
         bankingService.kontoAnlegen(new Konto("DE12345678901234500904", kundeMap.get("customer4"), kontostandPrivatkunde));
 
+        System.out.println("Standardkonten erfolgreich angelegt.");
+
         // Zusätzliche Konten erzeugen (0-2 pro Kunde)
         for (Kunde kunde : kundeMap.values()) {
             int anzahlKontos = new Random().nextInt(3);
             for (int j = 1; j <= anzahlKontos; j++) {
                 double kontostand = 50000 + Math.round(new Random().nextDouble() * 80000);
                 String iban = bankingService.generateRandomIban("DE");
+                System.out.println("RANDOM IBAN: " + iban);
                 bankingService.kontoAnlegen(new Konto(iban, kunde, kontostand));
             }
         }
+
+        System.out.println("Weitere Zufallskonten erfolgreich angelegt.");
 
         List<String> keys = new ArrayList<>(kundeMap.keySet());
         //Transaktionen erzeugen, beim Letzten kunden nicht
@@ -89,6 +95,8 @@ public class InitData {
                 bankingService.transaktionTaetigen(transaktion, vonKunde);
             }
         }
+
+        System.out.println("Transaktionen erfolgreich angelegt.");
 
         System.out.println("Initialisierung abgeschlossen.");
     }

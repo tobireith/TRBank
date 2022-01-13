@@ -13,10 +13,8 @@ public class Kontoauszug extends SingleIdEntity<Long> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private long kontoauszugId;
-    //TODO: Cascade Type?
     @ManyToOne
     private Konto konto;
-    //TODO: Cascade Type?
     @ManyToMany
     private List<Transaktion> transaktionen = new ArrayList<>();
     private long versandId;
@@ -114,7 +112,7 @@ public class Kontoauszug extends SingleIdEntity<Long> {
     public String toString() {
         return "Kontoauszug{" +
                 "kontoauszugId=" + kontoauszugId +
-                ", konto=" + konto +
+                ", kontoID=" + konto.getID() +
                 ", transaktionen=" + transaktionen +
                 ", versandId=" + versandId +
                 ", kontostandAnfang=" + kontostandAnfang +

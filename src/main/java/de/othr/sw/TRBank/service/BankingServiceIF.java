@@ -29,6 +29,8 @@ public interface BankingServiceIF {
 
     Konto kontoUpdaten(Konto konto);
 
+    void kontoLoeschen(long kontoId) throws TRBankException;
+
     @Transactional
     List<Transaktion> getTransaktionenForKonten(List<Konto> konten);
 
