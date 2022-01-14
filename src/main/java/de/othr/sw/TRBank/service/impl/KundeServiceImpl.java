@@ -22,7 +22,7 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     @Override
     public Kunde kundeRegistrieren(Kunde k) throws TRBankException {
         if(kundeRepository.findByUsername(k.getUsername()).isPresent()) {
@@ -32,13 +32,13 @@ public class KundeServiceImpl implements KundeServiceIF {
         return kundeSpeichern(k);
     }
 
-    @Transactional
+    @Transactional (Transactional.TxType.REQUIRED)
     @Override
     public Kunde kundeSpeichern(Kunde k){
         return kundeRepository.save(k);
     }
 
-    @Transactional
+    @Transactional (Transactional.TxType.SUPPORTS)
     @Override
     public Kunde kundeAnmelden(Kunde anmeldedaten) throws TRBankException{
         Kunde kunde = kundeRepository.findByUsername(anmeldedaten.getUsername()).orElseThrow(() -> new TRBankException("ERROR: Falscher Username"));
@@ -48,13 +48,19 @@ public class KundeServiceImpl implements KundeServiceIF {
         return kunde;
     }
 
-    @Transactional
+    @Transactional (Transactional.TxType.REQUIRES_NEW)
     @Override
     public Kunde getKundeByUsername(String username) throws TRBankException{
         return kundeRepository.findByUsername(username).orElseThrow(() -> new TRBankException("Unbekannter Username: " + username));
     }
 
-    @Transactional
+    @Transactional (Transactional.TxType.SUPPORTS)
+    @Override
+    public boolean userWithUsernameExists(String username){
+        return kundeRepository.findByUsername(username).isPresent();
+    }
+
+    @Transactional (Transactional.TxType.SUPPORTS)
     @Override
     public List<Kunde> getAllKunden() {
         List<Kunde> kunden = new ArrayList<>();
@@ -62,7 +68,7 @@ public class KundeServiceImpl implements KundeServiceIF {
         return kunden;
     }
 
-    @Transactional
+    @Transactional (Transactional.TxType.SUPPORTS)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return kundeRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Falscher Username"));

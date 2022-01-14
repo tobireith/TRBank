@@ -26,9 +26,12 @@ public class TRBankApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
+		/*
 		if(kundeService.getAllKunden().size() <= 0) {
 			System.out.println("Initializing data");
 			initData.initAllData();
 		}
+
+		 */
 	}
 }
