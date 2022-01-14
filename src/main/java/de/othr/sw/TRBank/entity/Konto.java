@@ -20,7 +20,6 @@ public class Konto extends SingleIdEntity<Long> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private long kontoId;
-    //TODO: Cascade Type?
     @ManyToOne
     private Kunde besitzer;
     @JsonManagedReference(value = "quelle")

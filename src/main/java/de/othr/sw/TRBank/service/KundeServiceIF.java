@@ -10,13 +10,13 @@ import java.util.List;
 public interface KundeServiceIF extends UserDetailsService {
     Kunde kundeRegistrieren(Kunde kunde) throws TRBankException;
 
-    @Transactional
     Kunde kundeSpeichern(Kunde k);
 
     Kunde kundeAnmelden(Kunde kunde) throws TRBankException;
 
-    @Transactional
     Kunde getKundeByUsername(String username) throws TRBankException;
+
+    boolean userWithUsernameExists(String username);
 
     List<Kunde> getAllKunden();
 }

@@ -1,6 +1,5 @@
 package de.othr.sw.TRBank.controller.rest;
 
-import de.othr.sw.TRBank.dto.TransaktionRestDTO;
 import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;

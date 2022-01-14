@@ -13,15 +13,16 @@ import java.util.List;
 public interface BankingServiceIF {
     List<Konto> getKontenByKunde(Kunde kunde) throws TRBankException;
 
-    @Transactional
     Transaktion transaktionTaetigen(Transaktion transaktion, Kunde kunde) throws TRBankException;
 
     Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException;
 
     Konto getKontoByIban(String Iban) throws TRBankException;
+
+    boolean kontoWithIbanExists(String Iban);
+
     Konto getKontoById (long kontoId)  throws TRBankException;
 
-    @Transactional
     Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException;
 
     Konto kontoAnlegen(Kunde kunde);
@@ -31,8 +32,9 @@ public interface BankingServiceIF {
 
     void kontoLoeschen(long kontoId) throws TRBankException;
 
-    @Transactional
     List<Transaktion> getTransaktionenForKonten(List<Konto> konten);
+
+    List<Transaktion> getAllTransaktionen();
 
     String generateRandomIban(String prefix);
 }

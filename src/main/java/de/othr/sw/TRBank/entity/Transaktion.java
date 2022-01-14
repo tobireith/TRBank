@@ -35,6 +35,14 @@ public class Transaktion extends SingleIdEntity<Long> {
     public Transaktion() {
     }
 
+    public Transaktion(Konto vonKonto, Konto zuKonto, double betrag, String verwendgunszweck) {
+        this.quellkonto = vonKonto;
+        this.zielkonto = zuKonto;
+        this.betrag = betrag;
+        this.datum = null;
+        this.verwendungszweck = verwendgunszweck;
+    }
+
     public Transaktion(Konto vonKonto, Konto zuKonto, double betrag, Date datum, String verwendgunszweck) {
         this.quellkonto = vonKonto;
         this.zielkonto = zuKonto;

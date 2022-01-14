@@ -44,52 +44,57 @@ public class BankingServiceImpl implements BankingServiceIF {
     }
 
     @Override
-    @Transactional
+    @Transactional (Transactional.TxType.SUPPORTS)
     public Konto getKontoByIban(String Iban) throws TRBankException {
         return kontoRepository.findKontoByIban(Iban).orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos! IBAN nicht gefunden: " + Iban));
     }
 
     @Override
-    @Transactional
+    @Transactional (Transactional.TxType.SUPPORTS)
+    public boolean kontoWithIbanExists(String Iban) {
+        return kontoRepository.findKontoByIban(Iban).isPresent();
+    }
+
+    @Override
+    @Transactional (Transactional.TxType.SUPPORTS)
     public Konto getKontoById(long kontoId) throws TRBankException {
         return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos!"));
     }
 
     @Override
-    @Transactional
     public Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException {
         return kunde.getKonten().stream().filter(konto -> konto.getID() == kontoId).findFirst().orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos! Das Konto gehört ggf. nicht zum Kunden!"));
         //return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
     }
 
-    @Transactional
     @Override
     public Konto kontoAnlegen(Kunde kunde) {
         Konto konto = new Konto(generateRandomIban(kunde.getAdresse().getLand().substring(0, 2).toUpperCase()), kunde, 0.0);
         return kontoAnlegen(konto);
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     @Override
     public Konto kontoAnlegen(Konto konto) {
-        // TODO: Check this again
-        // FALSCH: Referenz im Kunden speichern / setzen reicht, da Cascade Type dort gesetzt ist! - Wieso reicht das nicht?
-        // Erst Konto speichern, dann das gespeicherte Konto in der Liste des Kunden hinzufügen
+        // Konto speichern, das gespeicherte Konto wird in der Liste des Kunden automatisch hinzugefügt
         konto = kontoRepository.save(konto);
+        /*
         Kunde kunde = konto.getBesitzer();
+        //FIXME: LazyInitializationException: failed to lazily initialize a collection of role: de.othr.sw.TRBank.entity.Kunde.konten, could not initialize proxy - no Session
         kunde.getKonten().add(konto);
         kundeService.kundeSpeichern(kunde);
+         */
         return konto;
     }
 
-    @Transactional
+    @Transactional (Transactional.TxType.REQUIRED)
     @Override
     public Konto kontoUpdaten(Konto konto) {
         konto = kontoRepository.save(konto);
         return konto;
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     @Override
     public void kontoLoeschen(long kontoId) throws TRBankException {
         Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("Konto zum löschen nicht gefunden."));
@@ -107,7 +112,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         kontoRepository.deleteById(kontoId);
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     @Override
     public Transaktion transaktionTaetigen(Transaktion transaktion, Kunde kunde) throws TRBankException {
         // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
@@ -154,7 +159,7 @@ public class BankingServiceImpl implements BankingServiceIF {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     @Override
     public Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException {
         Kontoauszug kontoauszug = new Kontoauszug();
@@ -218,14 +223,13 @@ public class BankingServiceImpl implements BankingServiceIF {
         return kontoauszugRepository.save(kontoauszug);
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.SUPPORTS)
     @Override
     public List<Konto> getKontenByKunde(Kunde kunde) throws TRBankException {
         return kontoRepository.findKontosByBesitzerOrderByKontoId(kunde).orElseThrow(() -> new TRBankException("Fehler beim Laden der Konten!"));
     }
 
     @Override
-    @Transactional
     public List<Transaktion> getTransaktionenForKonten(List<Konto> konten) {
         List<Transaktion> transaktionenTotal = new ArrayList<>();
         // Alle Konten durchiterieren
@@ -247,6 +251,15 @@ public class BankingServiceImpl implements BankingServiceIF {
         return transaktionenTotal;
     }
 
+    @Transactional(Transactional.TxType.SUPPORTS)
+    @Override
+    public List<Transaktion> getAllTransaktionen() {
+        List<Transaktion> transaktionen = new ArrayList<>();
+        transaktionRepository.findAll().forEach(transaktionen::add);
+        return transaktionen;
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
     @Override
     public String generateRandomIban(String prefix) {
         String iban;

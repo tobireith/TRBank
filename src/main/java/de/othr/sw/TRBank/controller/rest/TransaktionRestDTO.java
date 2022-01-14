@@ -1,4 +1,4 @@
-package de.othr.sw.TRBank.dto;
+package de.othr.sw.TRBank.controller.rest;
 
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
