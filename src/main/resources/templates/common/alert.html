@@ -20,4 +20,15 @@ Inspired by: https://www.tutorialrepublic.com/twitter-bootstrap-tutorial/bootstr
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 </div>
+
+<div th:fragment="successAlert (alertSuccessTitle, alertSuccessMessage)" class="alert-fixed" th:if="${alertSuccessMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show" >
+        <div class="fs-4 alert-heading">
+            <i class="bi bi-check-lg-fill m-auto"></i>
+            <label th:text="${alertSuccessTitle != null ? alertSuccessTitle : 'Aktion erfolgreich durchgefühert.'}"></label>
+        </div>
+        <p th:text="${alertSuccessMessage}" class="success"></p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
 </html>

@@ -41,7 +41,10 @@
             </div>
         </nav>
 
-        <div th:replace="common/errorAlert :: errorAlert (${trException})">
+        <div th:replace="common/alert :: errorAlert (${trException})">
+        </div>
+
+        <div th:replace="common/alert :: successAlert (${alertSuccessTitle}, ${alertSuccessMessage})">
         </div>
     </div>
 

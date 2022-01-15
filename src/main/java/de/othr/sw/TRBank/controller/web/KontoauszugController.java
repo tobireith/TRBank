@@ -42,6 +42,11 @@ public class KontoauszugController {
             model.addAttribute("kontoauszug", kontoauszug);
 
             model.addAttribute("transaktionen", kontoauszug.getTransaktionen());
+
+            model.addAttribute("alertSuccessTitle", "Kontoauszug erstellt und versendet.");
+            model.addAttribute("alertSuccessMessage", "Der Kontoauszug wurde erfolgreich erstellt " +
+                    "und ein Versandauftrag wurde beim Versandunternehmen DaumDelivery erstellt. " +
+                    "Die Sendungsnummer finden Sie in Ihrem Kontoauszug.");
             return "kontoauszug";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);

@@ -82,7 +82,9 @@ public class TransaktionController {
 
                 bankingService.transaktionTaetigen(transaktion, aktuellerKunde);
             }
-            return "redirect:/konto/{kontoId}";
+            model.addAttribute("successTitle", "Transaktion erfolgreich durchgeführt.");
+            model.addAttribute("successMessage", "Die Transaktion wurde erfolgreich durchgeführt.");
+            return "success";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
             return "transaktion";
