@@ -82,8 +82,9 @@
     </div>
 
     <!-- Button trigger modal -->
-    <div class="container d-flex justify-content-center align-items-center  w-100 p-2" >
-        <button type="button" class="btn btn-danger" th:disabled="${disableDelete}"  data-bs-toggle="modal" data-bs-target="#deleteKontoModal">
+    <div class="container d-flex justify-content-center align-items-center  w-100 p-2"  th:title="${disableDelete}? 'Nur verfügbar, wenn der Kontostand auf 0,00 € steht.' : ''">
+        <button type="button" class="btn btn-danger"
+                th:disabled="${disableDelete}" data-bs-toggle="modal" data-bs-target="#deleteKontoModal" >
             Konto auflösen
         </button>
     </div>
