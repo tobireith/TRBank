@@ -7,9 +7,13 @@ import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -25,19 +29,25 @@ public class TransaktionSetup extends SetupComponentAbstract{
     @Override
     boolean setup() throws TRBankException {
         //Nur wenn bisher keine Transaktionen vorhanden sind
-        if (bankingService.getAllTransaktionen().size() == 0) {
+        if (bankingService.getAllTransaktionen().size() <= 5) {
             List<Kunde> allKunden = kundeService.getAllKunden();
             //Transaktionen für jeden Kunden erstellen
             for (Kunde vonKunde : allKunden) {
                 int anzahlTransaktionen = new Random().nextInt(25);
                 for (int k = 0; k < anzahlTransaktionen; k++) {
-                    //FIXME: failed to lazily initialize a collection of role: de.othr.sw.TRBank.entity.Kunde.konten, could not initialize proxy - no Session
-                    Konto vonKonto = vonKunde.getKonten().get(new Random().nextInt(vonKunde.getKonten().size()));
+                    List<Konto> vonKonten = bankingService.getKontenByKunde(vonKunde);
+                    Konto vonKonto = vonKonten.get(new Random().nextInt(vonKonten.size()));
+
+                    //Konto vonKonto = vonKunde.getKonten().get(new Random().nextInt(vonKunde.getKonten().size()));
                     Konto zuKonto;
                     do {
                         Kunde zuKunde = allKunden.get(new Random().nextInt(allKunden.size()));
-                        zuKonto = zuKunde.getKonten().get(new Random().nextInt(zuKunde.getKonten().size()));
-                    } while (zuKonto == vonKonto);
+
+                        List<Konto> zuKonten = bankingService.getKontenByKunde(zuKunde);
+                        zuKonto = zuKonten.get(new Random().nextInt(zuKonten.size()));
+
+                        //zuKonto = zuKunde.getKonten().get(new Random().nextInt(zuKunde.getKonten().size()));
+                    } while (Objects.equals(zuKonto.getID(), vonKonto.getID()));
                     double betrag = Math.round(new Random().nextDouble() * 1000);
                     Date datum = new Date(ThreadLocalRandom
                             .current()

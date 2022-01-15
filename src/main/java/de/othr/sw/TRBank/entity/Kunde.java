@@ -67,7 +67,7 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     }
 
     public List<Konto> getKonten() {
-        return konten;
+        return Collections.unmodifiableList(konten);
     }
 
     public void setKonten(List<Konto> konten) {

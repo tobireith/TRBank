@@ -22,8 +22,8 @@ public class KundeSetupFirmenkunde extends KundeSetupAbstract{
         if(!kundeService.userWithUsernameExists("gebauerSecurity")) {
             kundeService.kundeRegistrieren(new Kunde("gebauerSecurity", "miriam123", new Adresse("Galgenbergstrasse", "35c", "Regensburg", 93053, "Deutschland"), "Miriam", "Gebauer", true));
         }
-        if(!kundeService.userWithUsernameExists("huberCompany")) {
-            kundeService.kundeRegistrieren(new Kunde("huberCompany", "passwort", new Adresse("Gewerbepark", "21c", "Regensburg", 93049, "Deutschland"), "Georg", "Huber", true));
+        if(!kundeService.userWithUsernameExists("daumCompany")) {
+            kundeService.kundeRegistrieren(new Kunde("daumCompany", "passwort", new Adresse("Gewerbepark", "21c", "Regensburg", 93049, "Deutschland"), "Georg", "Huber", true));
         }
         if(!kundeService.userWithUsernameExists("maierCompany")) {
             kundeService.kundeRegistrieren(new Kunde("maierCompany", "passwort", new Adresse("Gewerbepark", "33c", "Regensburg", 93049, "Deutschland"), "Thorsten", "Maier", true));

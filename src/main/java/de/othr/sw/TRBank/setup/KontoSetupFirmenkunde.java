@@ -4,11 +4,8 @@ import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 
-import javax.transaction.Transactional;
-
 public class KontoSetupFirmenkunde extends KontoSetupAbstract{
     @Override
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
     boolean setup() throws TRBankException {
         // Konten für Firmenkunden hinzufügen
         if(!bankingService.kontoWithIbanExists("DE12345678901234500001")) {
@@ -32,13 +29,18 @@ public class KontoSetupFirmenkunde extends KontoSetupAbstract{
             generateRandomKonten(kunde);
         }
         if(!bankingService.kontoWithIbanExists("DE12345678901234500005")) {
-            Kunde kunde = kundeService.getKundeByUsername("huberCompany");
+            Kunde kunde = kundeService.getKundeByUsername("daumCompany");
             bankingService.kontoAnlegen(new Konto("DE12345678901234500005", kunde, generateKontostandFirmenkunde()));
             generateRandomKonten(kunde);
         }
         if(!bankingService.kontoWithIbanExists("DE12345678901234500006")) {
             Kunde kunde = kundeService.getKundeByUsername("maierCompany");
             bankingService.kontoAnlegen(new Konto("DE12345678901234500006", kunde, generateKontostandFirmenkunde()));
+            generateRandomKonten(kunde);
+        }
+        if(!bankingService.kontoWithIbanExists("DE12345678901234500007")) {
+            Kunde kunde = kundeService.getKundeByUsername("hoffmannAirways");
+            bankingService.kontoAnlegen(new Konto("DE12345678901234500007", kunde, generateKontostandFirmenkunde()));
             generateRandomKonten(kunde);
         }
         return true;

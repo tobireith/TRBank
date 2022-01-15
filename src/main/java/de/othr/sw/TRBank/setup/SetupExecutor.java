@@ -3,19 +3,16 @@ package de.othr.sw.TRBank.setup;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Scope("singleton")
 @Component
 public class SetupExecutor {
 
-    private List<SetupComponentAbstract> setupComponents = new ArrayList<>();
+    private final List<SetupComponentAbstract> setupComponents = new ArrayList<>();
 
     @Autowired @Qualifier("firmenkunde")
     KundeSetupAbstract kundeSetupFirmenkunde;
@@ -33,7 +30,6 @@ public class SetupExecutor {
     TransaktionSetup transaktionSetup;
 
     @PostConstruct
-    @Transactional
     public void executeSetup() {
         setupComponents.addAll(List.of(kundeSetupFirmenkunde, kundeSetupPrivatkunde, kontoSetupFirmenkunde, kontoSetupPrivatkunde, transaktionSetup));
         try {
@@ -50,6 +46,9 @@ public class SetupExecutor {
             System.out.println("Setup erfolgreich abgeschlossen!");
         } catch (TRBankException e) {
             System.out.println("Setup fehlgeschlagen! " + e.getNachricht());
+        } catch (Exception e) {
+            System.out.println("Setup fehlgeschlagen! " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

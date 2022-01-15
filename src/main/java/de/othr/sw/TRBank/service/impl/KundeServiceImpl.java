@@ -48,7 +48,7 @@ public class KundeServiceImpl implements KundeServiceIF {
         return kunde;
     }
 
-    @Transactional (Transactional.TxType.REQUIRES_NEW)
+    @Transactional (Transactional.TxType.SUPPORTS)
     @Override
     public Kunde getKundeByUsername(String username) throws TRBankException{
         return kundeRepository.findByUsername(username).orElseThrow(() -> new TRBankException("Unbekannter Username: " + username));
