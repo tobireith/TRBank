@@ -1,6 +1,8 @@
 package de.othr.sw.TRBank.controller.rest;
 
+import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
+import de.othr.sw.TRBank.entity.dto.RestDTO;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
@@ -25,9 +27,10 @@ public class TransaktionRestController {
 
     @RequestMapping(value = "/transaktion", method = RequestMethod.POST)
     public Transaktion transaktionTaetigen(
-            @Valid @RequestBody TransaktionRestDTO transaktionRestDTO
+            @Valid @RequestBody RestDTO restDTO
     ) throws TRBankException {
-        Transaktion transaktion = bankingService.transaktionTaetigen(transaktionRestDTO.getTransaktion(), kundeService.kundeAnmelden(transaktionRestDTO.getKunde()));
+        Kunde kunde = kundeService.anmeldedatenVerifizieren(restDTO.getUsername(), restDTO.getPasswort());
+        Transaktion transaktion = bankingService.transaktionTaetigen(restDTO.getTransaktionDTO(), kunde);
 
         System.out.println("EXTERNE TRANSAKTION WURDE DURCHGEFÜHRT: " + transaktion);
 

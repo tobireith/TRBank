@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class KontoController {
             model.addAttribute("currentTransaktionen", currentTransaktionen);
             model.addAttribute("pageNumber", pageNumber);
 
-            model.addAttribute("disableDelete", (konto.getKontostand() != 0));
+            model.addAttribute("disableDelete", (konto.getKontostand().compareTo(new BigDecimal("0.0")) != 0));
             return "konto";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);

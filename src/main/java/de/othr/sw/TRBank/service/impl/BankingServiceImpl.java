@@ -7,6 +7,7 @@ import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kontoauszug;
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
+import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
 import de.othr.sw.TRBank.repository.KontoRepository;
 import de.othr.sw.TRBank.repository.KontoauszugRepository;
 import de.othr.sw.TRBank.repository.TransaktionRepository;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,10 +37,10 @@ public class BankingServiceImpl implements BankingServiceIF {
     private SendDeliveryIF sendDelivery;
 
 
-    public double transaktionenSummieren(List<Transaktion> transaktionen){
-        double sum = 0;
+    public BigDecimal transaktionenSummieren(List<Transaktion> transaktionen){
+        BigDecimal sum = new BigDecimal("0.0");
         for(Transaktion element : transaktionen) {
-            sum += element.getBetrag();
+            sum = sum.add(element.getBetrag());
         }
         return sum;
     }
@@ -69,7 +71,7 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Override
     public Konto kontoAnlegen(Kunde kunde) {
-        Konto konto = new Konto(generateRandomIban(kunde.getAdresse().getLand().substring(0, 2).toUpperCase()), kunde, 0.0);
+        Konto konto = new Konto(generateRandomIban(kunde.getAdresse().getLand().substring(0, 2).toUpperCase()), kunde, new BigDecimal("0.0"));
         return kontoAnlegen(konto);
     }
 
@@ -98,7 +100,7 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Override
     public void kontoLoeschen(long kontoId) throws TRBankException {
         Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("Konto zum löschen nicht gefunden."));
-        if(konto.getKontostand() != 0) {
+        if(konto.getKontostand().compareTo(new BigDecimal("0.0")) != 0) {
             throw new TRBankException("Kontostand muss gleich 0 sein.", "Kontostand muss gleich 0 sein. Aktueller Kontostand: " + konto.getKontostand(), "Überweisen sie Ihr restliches Geld auf ein anderes Konto, oder begleichen Sie Ihre Schulden.");
         }
         for(Transaktion t : konto.getTransaktionenRaus()) {
@@ -114,29 +116,39 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     @Override
-    public Transaktion transaktionTaetigen(Transaktion transaktion, Kunde kunde) throws TRBankException {
-        // Für Quell- & Zielkonto sind ggf. nur die IBANs eingetragen -> Lookup durch Service nach diesen IBANs
-        transaktion.setQuellkonto(getKontoByIban(transaktion.getQuellkonto().getIban()));
-        transaktion.setZielkonto(getKontoByIban(transaktion.getZielkonto().getIban()));
+    public Transaktion transaktionSpeichern(Transaktion transaktion) {
+        return transaktionRepository.save(transaktion);
+    }
 
-        if(transaktion.getDatum() == null) {
-            transaktion.setDatum(new Date());
-        }
-        List<Konto> konten = getKontenByKunde(kunde);
-        if(!kunde.isFirmenkunde() && !konten.contains(transaktion.getQuellkonto())) {
-            throw new TRBankException("Kunde ist kein Firmenkunde. quellkonto muss das Konto des Kunden sein.");
-        }
-        if(!konten.contains(transaktion.getQuellkonto()) && !konten.contains(transaktion.getZielkonto())) {
-            throw new TRBankException("Quell- oder Zielkonto gehören nicht dem Kunden!");
-        }
-        if(transaktion.getQuellkonto() == transaktion.getZielkonto()) {
-            throw new TRBankException("Quell- und Zielkonto müssen unterschiedlich sein.");
-        }
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Override
+    public Transaktion transaktionTaetigen(TransaktionDTO transaktionDTO, Kunde kunde) throws TRBankException {
+        Transaktion transaktion =  new Transaktion();
+
+        transaktion.setBetrag(transaktionDTO.getBetrag());
+        transaktion.setVerwendungszweck(transaktionDTO.getVerwendungszweck());
+        transaktion.setDatum(new Date());
+
+        // Für Quell- & Zielkonto sind nur die IBANs eingetragen → Lookup durch Service nach diesen IBANs
+        transaktion.setQuellkonto(getKontoByIban(transaktionDTO.getQuellIban()));
+        transaktion.setZielkonto(getKontoByIban(transaktionDTO.getZielIban()));
 
         Konto von = transaktion.getQuellkonto();
         Konto zu = transaktion.getZielkonto();
+
+        List<Konto> konten = getKontenByKunde(kunde);
+        if(!kunde.isFirmenkunde() && !konten.contains(von)) {
+            throw new TRBankException("Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
+        }
+        if(!konten.contains(von) && !konten.contains(zu)) {
+            throw new TRBankException("Quell- und Zielkonto gehören nicht dem Kunden!");
+        }
+        if(von == zu) {
+            throw new TRBankException("Quell- und Zielkonto müssen unterschiedlich sein.");
+        }
+
         // Prüfen, ob genug Geld auf dem Quellkonto ist
-        if (von.getKontostand() - transaktion.getBetrag() < von.SCHULDENLIMIT) {
+        if (von.getKontostand().subtract(transaktion.getBetrag()).compareTo(new BigDecimal(von.SCHULDENLIMIT)) < 0) {
             throw (new TRBankException("Kontostand zu niedrig.", "Der Kontostand des Quellkontos ist zu niedrig um den Betrag zu decken und würde das Schuldenlimit des Kontos übersteigen."));
         }
 
@@ -144,9 +156,9 @@ public class BankingServiceImpl implements BankingServiceIF {
         transaktion = transaktionRepository.save(transaktion);
 
         // Kontostände anpassen & Änderungen speichern
-        von.setKontostand(von.getKontostand() - transaktion.getBetrag());
+        von.setKontostand(von.getKontostand().subtract(transaktion.getBetrag()));
         kontoUpdaten(von);
-        zu.setKontostand(zu.getKontostand() + transaktion.getBetrag());
+        zu.setKontostand(zu.getKontostand().subtract(transaktion.getBetrag()));
         kontoUpdaten(zu);
 
         return transaktion;
@@ -183,7 +195,7 @@ public class BankingServiceImpl implements BankingServiceIF {
             neueEingehendeTransaktionen = transaktionenAbDatum(konto.getTransaktionenRein(), letzteTransaktion.getDatum());
 
         } else {
-            kontoauszug.setKontostandAnfang(0);
+            kontoauszug.setKontostandAnfang(new BigDecimal("0.0"));
             neueAusgehendeTransaktionen = konto.getTransaktionenRaus();
             neueEingehendeTransaktionen = konto.getTransaktionenRein();
         }
@@ -195,9 +207,9 @@ public class BankingServiceImpl implements BankingServiceIF {
                 .collect(Collectors.toList());
         kontoauszug.setTransaktionen(neueTransaktionen);
 
-        double summeEingehend = transaktionenSummieren(neueEingehendeTransaktionen);
-        double summeAusgehend = transaktionenSummieren(neueAusgehendeTransaktionen);
-        double kontostandAnfang = konto.getKontostand() - (summeEingehend - summeAusgehend);
+        BigDecimal summeEingehend = transaktionenSummieren(neueEingehendeTransaktionen);
+        BigDecimal summeAusgehend = transaktionenSummieren(neueAusgehendeTransaktionen);
+        BigDecimal kontostandAnfang = konto.getKontostand().subtract( summeEingehend.subtract(summeAusgehend) );
         kontoauszug.setKontostandAnfang(kontostandAnfang);
         kontoauszug.setKontostandEnde(konto.getKontostand());
 

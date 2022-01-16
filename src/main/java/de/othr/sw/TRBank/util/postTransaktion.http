@@ -4,17 +4,11 @@ POST http://localhost:8080/api/rest/transaktion
 Content-Type: application/json
 
 {
-  "kunde": {
-    "username": "TRBank",
-    "passwort": "passwort"
-  },
-  "transaktion": {
-    "quellkonto": {
-      "iban": "DE12345678901234500001"
-    },
-    "zielkonto": {
-      "iban": "DE12345678901234500901"
-    },
+  "username": "TRBank",
+  "passwort": "passwort",
+  "transaktionDTO": {
+    "quellIban": "DE12345678901234500001",
+    "zielIban": "DE12345678901234500901",
     "betrag": 1.56,
     "verwendungszweck": "Extern: Zinsen von der Bank"
   }
@@ -26,17 +20,11 @@ POST http://localhost:8080/api/rest/transaktion
 Content-Type: application/json
 
 {
-  "kunde": {
-    "username": "Huber1",
-    "passwort": "passwort1"
-  },
-  "transaktion": {
-    "quellkonto": {
-      "iban": "DE12345678900943280229"
-    },
-    "zielkonto": {
-      "iban": "DE12345678900450601723"
-    },
+  "username": "TRBank",
+  "passwort": "passwort",
+  "transaktionDTO": {
+    "quellIban": "DE12345678901234500001",
+    "zielIban": "DE12345678901234500901",
     "betrag": -1.56,
     "verwendungszweck": "Externe Transaktion via REST"
   }

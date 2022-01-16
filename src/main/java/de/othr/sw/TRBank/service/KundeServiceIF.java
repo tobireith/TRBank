@@ -12,7 +12,7 @@ public interface KundeServiceIF extends UserDetailsService {
 
     Kunde kundeSpeichern(Kunde k);
 
-    Kunde kundeAnmelden(Kunde kunde) throws TRBankException;
+    Kunde anmeldedatenVerifizieren(String username, String passwort) throws TRBankException;
 
     Kunde getKundeByUsername(String username) throws TRBankException;
 

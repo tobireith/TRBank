@@ -3,6 +3,9 @@ package de.othr.sw.TRBank.entity;
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,8 +21,8 @@ public class Kontoauszug extends SingleIdEntity<Long> {
     @ManyToMany
     private List<Transaktion> transaktionen = new ArrayList<>();
     private long versandId;
-    private double kontostandAnfang;
-    private double kontostandEnde;
+    private BigDecimal kontostandAnfang;
+    private BigDecimal kontostandEnde;
     @Temporal(TemporalType.TIMESTAMP)
     private Date datumVon;
     @Temporal(TemporalType.TIMESTAMP)
@@ -29,7 +32,7 @@ public class Kontoauszug extends SingleIdEntity<Long> {
 
     }
 
-    public Kontoauszug(Konto konto, List<Transaktion> transaktionen, long versandId, double kontostandAnfang, double kontostandEnde, Date datumVon, Date datumBis) {
+    public Kontoauszug(Konto konto, List<Transaktion> transaktionen, long versandId, BigDecimal kontostandAnfang, BigDecimal kontostandEnde, Date datumVon, Date datumBis) {
         this.konto = konto;
         this.transaktionen = transaktionen;
         this.versandId = versandId;
@@ -39,7 +42,7 @@ public class Kontoauszug extends SingleIdEntity<Long> {
         this.datumBis = datumBis;
     }
 
-    public Kontoauszug(Konto konto, long versandId, double kontostandAnfang, double kontostandEnde, Date datumVon, Date datumBis) {
+    public Kontoauszug(Konto konto, long versandId, BigDecimal kontostandAnfang, BigDecimal kontostandEnde, Date datumVon, Date datumBis) {
         this.konto = konto;
         this.versandId = versandId;
         this.kontostandAnfang = kontostandAnfang;
@@ -76,20 +79,20 @@ public class Kontoauszug extends SingleIdEntity<Long> {
         this.versandId = versandId;
     }
 
-    public double getKontostandAnfang() {
+    public BigDecimal getKontostandAnfang() {
         return kontostandAnfang;
     }
 
-    public void setKontostandAnfang(double kontostandAnfang) {
-        this.kontostandAnfang = kontostandAnfang;
+    public void setKontostandAnfang(BigDecimal kontostandAnfang) {
+        this.kontostandAnfang = kontostandAnfang.round(new MathContext(3, RoundingMode.HALF_UP));
     }
 
-    public double getKontostandEnde() {
+    public BigDecimal getKontostandEnde() {
         return kontostandEnde;
     }
 
-    public void setKontostandEnde(double kontostandEnde) {
-        this.kontostandEnde = kontostandEnde;
+    public void setKontostandEnde(BigDecimal kontostandEnde) {
+        this.kontostandEnde = kontostandEnde.round(new MathContext(3, RoundingMode.HALF_UP));
     }
 
     public Date getDatumVon() {

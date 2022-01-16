@@ -14,3 +14,7 @@ body {
     max-width: 40%;
     z-index:9999;
 }
+
+.trMainColor {
+    color: #c20044;
+}

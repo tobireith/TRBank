@@ -40,9 +40,9 @@ public class KundeServiceImpl implements KundeServiceIF {
 
     @Transactional (Transactional.TxType.SUPPORTS)
     @Override
-    public Kunde kundeAnmelden(Kunde anmeldedaten) throws TRBankException{
-        Kunde kunde = kundeRepository.findByUsername(anmeldedaten.getUsername()).orElseThrow(() -> new TRBankException("ERROR: Falscher Username"));
-        if(!passwordEncoder.matches(anmeldedaten.getPassword(), kunde.getPassword())) {
+    public Kunde anmeldedatenVerifizieren(String username, String passwort) throws TRBankException{
+        Kunde kunde = kundeRepository.findByUsername(username).orElseThrow(() -> new TRBankException("Unbekannter Username"));
+        if(!passwordEncoder.matches(passwort, kunde.getPassword())) {
             throw new TRBankException("Falscher Username oder Passwort");
         }
         return kunde;

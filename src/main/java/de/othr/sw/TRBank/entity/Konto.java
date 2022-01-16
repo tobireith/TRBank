@@ -7,6 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,12 +41,12 @@ public class Konto extends SingleIdEntity<Long> {
     @Column(unique = true)
     private String iban;
     @Min(value = SCHULDENLIMIT)
-    private double kontostand = 0.0;
+    private BigDecimal kontostand = new BigDecimal("0.0");
 
     public Konto() {
     }
 
-    public Konto(String iban, Kunde besitzer, double kontostand) {
+    public Konto(String iban, Kunde besitzer, BigDecimal kontostand) {
         this.iban = iban;
         this.besitzer = besitzer;
         this.kontostand = kontostand;
@@ -85,12 +88,12 @@ public class Konto extends SingleIdEntity<Long> {
         this.kontoauszugList = kontoauszugList;
     }
 
-    public double getKontostand() {
+    public BigDecimal getKontostand() {
         return kontostand;
     }
 
-    public void setKontostand(double kontostand) {
-        this.kontostand = kontostand;
+    public void setKontostand(BigDecimal kontostand) {
+        this.kontostand = kontostand.round(new MathContext(3, RoundingMode.HALF_UP));
     }
 
     public String getIban() {

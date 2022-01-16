@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
@@ -34,7 +35,10 @@ public class HomeController {
             model.addAttribute("kunde", aktuellerKunde);
             model.addAttribute("konten", aktuellerKunde.getKonten());
 
-            double kontostandTotal = aktuellerKunde.getKonten().stream().mapToDouble(Konto::getKontostand).sum();
+            BigDecimal kontostandTotal = new BigDecimal("0.0");
+            for(Konto konto : aktuellerKunde.getKonten()) {
+                kontostandTotal = kontostandTotal.add(konto.getKontostand());
+            }
             model.addAttribute("kontostandTotal", kontostandTotal);
 
             List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(aktuellerKunde.getKonten());

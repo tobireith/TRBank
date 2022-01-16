@@ -8,6 +8,9 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Date;
 
 @Entity
@@ -26,7 +29,7 @@ public class Transaktion extends SingleIdEntity<Long> {
     private Konto zielkonto;
     @NotNull
     @Positive
-    private double betrag;
+    private BigDecimal betrag;
     @Temporal(TemporalType.TIMESTAMP)
     private Date datum;
     @Length(max = 256)
@@ -35,18 +38,18 @@ public class Transaktion extends SingleIdEntity<Long> {
     public Transaktion() {
     }
 
-    public Transaktion(Konto vonKonto, Konto zuKonto, double betrag, String verwendgunszweck) {
+    public Transaktion(Konto vonKonto, Konto zuKonto, BigDecimal betrag, String verwendgunszweck) {
         this.quellkonto = vonKonto;
         this.zielkonto = zuKonto;
-        this.betrag = betrag;
+        this.setBetrag(betrag);
         this.datum = null;
         this.verwendungszweck = verwendgunszweck;
     }
 
-    public Transaktion(Konto vonKonto, Konto zuKonto, double betrag, Date datum, String verwendgunszweck) {
+    public Transaktion(Konto vonKonto, Konto zuKonto, BigDecimal betrag, Date datum, String verwendgunszweck) {
         this.quellkonto = vonKonto;
         this.zielkonto = zuKonto;
-        this.betrag = betrag;
+        this.setBetrag(betrag);
         this.datum = datum;
         this.verwendungszweck = verwendgunszweck;
     }
@@ -71,12 +74,12 @@ public class Transaktion extends SingleIdEntity<Long> {
         this.zielkonto = zuKontoId;
     }
 
-    public double getBetrag() {
+    public BigDecimal getBetrag() {
         return betrag;
     }
 
-    public void setBetrag(double betrag) {
-        this.betrag = betrag;
+    public void setBetrag(BigDecimal betrag) {
+        this.betrag = betrag.round(new MathContext(3, RoundingMode.HALF_UP));
     }
 
     public Date getDatum() {

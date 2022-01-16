@@ -2,7 +2,7 @@ package de.othr.sw.TRBank.controller.web;
 
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kunde;
-import de.othr.sw.TRBank.entity.Transaktion;
+import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
@@ -43,15 +43,13 @@ public class TransaktionController {
             Konto konto = bankingService.getKontoFromKundeById(aktuellerKunde, kontoId);
             model.addAttribute("konto", konto);
 
-            Transaktion transaktion = new Transaktion();
+            TransaktionDTO transaktionDTO = new TransaktionDTO();
             if (isSender) {
-                transaktion.setQuellkonto(konto);
-                transaktion.setZielkonto(new Konto());
+                transaktionDTO.setQuellIban(konto.getIban());
             } else {
-                transaktion.setZielkonto(konto);
-                transaktion.setQuellkonto(new Konto());
+                transaktionDTO.setZielIban(konto.getIban());
             }
-            model.addAttribute("transaktion", transaktion);
+            model.addAttribute("transaktionDTO", transaktionDTO);
 
             return "transaktion";
         } catch (TRBankException exception) {
@@ -64,9 +62,8 @@ public class TransaktionController {
     public String postTransaktion(
             @PathVariable long kontoId,
             @ModelAttribute("isSender") boolean isSender,
-            @Valid @ModelAttribute("transaktion") Transaktion transaktion,
+            @Valid @ModelAttribute("transaktionDTO") TransaktionDTO transaktionDTO,
             BindingResult result,
-            @ModelAttribute("submit") String submit,
             Model model,
             Principal principal
     ) {
@@ -74,17 +71,13 @@ public class TransaktionController {
             Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
             Konto konto = bankingService.getKontoFromKundeById(aktuellerKunde, kontoId);
             model.addAttribute("konto", konto);
-            if (submit.equals("Submit")) {
-                if (result.hasErrors()) {
-                    System.out.println("ERROR! " + result.getAllErrors());
-                    return "transaktion";
-                }
-                bankingService.transaktionTaetigen(transaktion, aktuellerKunde);
-                model.addAttribute("successTitle", "Transaktion erfolgreich durchgeführt.");
-                model.addAttribute("successMessage", "Die Transaktion wurde erfolgreich durchgeführt.");
-                return "success";
+            if (result.hasErrors()) {
+                return "transaktion";
             }
-            return "redirect:/konto/{kontoId}";
+            bankingService.transaktionTaetigen(transaktionDTO, aktuellerKunde);
+            model.addAttribute("successTitle", "Transaktion erfolgreich durchgeführt.");
+            model.addAttribute("successMessage", "Die Transaktion wurde erfolgreich durchgeführt.");
+            return "success";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
             return "transaktion";

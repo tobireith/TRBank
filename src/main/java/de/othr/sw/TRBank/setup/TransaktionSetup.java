@@ -3,14 +3,15 @@ package de.othr.sw.TRBank.setup;
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
+import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -48,13 +49,16 @@ public class TransaktionSetup extends SetupComponentAbstract{
 
                         //zuKonto = zuKunde.getKonten().get(new Random().nextInt(zuKunde.getKonten().size()));
                     } while (Objects.equals(zuKonto.getID(), vonKonto.getID()));
-                    double betrag = Math.round(new Random().nextDouble() * 1000);
+                    BigDecimal betrag = BigDecimal.valueOf(new Random().nextDouble() * 1000).round(new MathContext(3, RoundingMode.HALF_UP));
+
+                    String verwendungszweck = "Setup Überweisung " + " von Konto " + vonKonto.getID() + " zu Konto " + zuKonto.getID();
+                    TransaktionDTO transaktionDTO = new TransaktionDTO(vonKonto.getIban(), zuKonto.getIban(), betrag, verwendungszweck);
+                    Transaktion transaktion = bankingService.transaktionTaetigen(transaktionDTO, vonKunde);
                     Date datum = new Date(ThreadLocalRandom
                             .current()
                             .nextLong(new Date(new Date().getTime() - TimeUnit.DAYS.toMillis(1) * 365).getTime(), new Date().getTime()));
-                    String verwendungszweck = "Setup Überweisung " + " von Konto " + vonKonto.getID() + " zu Konto " + zuKonto.getID();
-                    Transaktion transaktion = new Transaktion(vonKonto, zuKonto, betrag, datum, verwendungszweck);
-                    bankingService.transaktionTaetigen(transaktion, vonKunde);
+                    transaktion.setDatum(datum);
+                    bankingService.transaktionSpeichern(transaktion);
                 }
             }
             return true;

@@ -4,6 +4,7 @@ import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kontoauszug;
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.entity.Transaktion;
+import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +14,8 @@ import java.util.List;
 public interface BankingServiceIF {
     List<Konto> getKontenByKunde(Kunde kunde) throws TRBankException;
 
-    Transaktion transaktionTaetigen(Transaktion transaktion, Kunde kunde) throws TRBankException;
+    Transaktion transaktionSpeichern(Transaktion transaktion);
+    Transaktion transaktionTaetigen(TransaktionDTO transaktion, Kunde kunde) throws TRBankException;
 
     Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException;
 
