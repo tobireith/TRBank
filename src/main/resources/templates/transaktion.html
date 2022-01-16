@@ -19,7 +19,7 @@
                         <label>Empfänger IBAN</label>
                     </div>
                     <div class="col-9">
-                        <input type="text" th:field="*{zielkonto.iban}" name="ibanTo" class="form-control" th:readonly="${!isSender}"
+                        <input type="text" th:field="*{zielkonto.iban}" name="ibanTo" class="form-control"  maxlength="22" minlength="22"  th:readonly="${!isSender}"
                                th:value="${isSender} ? '' : ${konto.getIban()}" placeholder="DE12345678901234567890" id="inputIbanTo">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('zielkonto.iban')}" th:errors="*{zielkonto.iban}"></div>
                     </div>
@@ -29,7 +29,7 @@
                         <label>Betrag in €</label>
                     </div>
                     <div class="col-9">
-                        <input type="number" th:field="*{betrag}" name="betrag" class="form-control" id="inputBetrag" step="any" min="0">
+                        <input type="number" th:field="*{betrag}" name="betrag" class="form-control" id="inputBetrag" step="0.01" min="0.01">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('betrag')}" th:errors="*{betrag}"></div>
                     </div>
                 </div>
@@ -38,8 +38,8 @@
                         <label>Sender IBAN</label>
                     </div>
                     <div class="col-9">
-                        <input type="text" th:field="*{quellkonto.iban}" name="ibanFrom" class="form-control" th:readonly="${isSender}"
-                               th:value="${isSender} ? ${konto.getIban()} : ''" placeholder="DE12345678901234567890" id="inputIbanFrom">
+                        <input type="text" th:field="*{quellkonto.iban}" name="ibanFrom" maxlength="22" minlength="22" class="form-control" th:readonly="${isSender}"
+                               th:value="${isSender} ? ${konto.getIban()} : ''" id="inputIbanFrom">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('quellkonto.iban')}" th:errors="*{quellkonto.iban}"></div>
                     </div>
                 </div>

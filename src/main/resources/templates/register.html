@@ -70,7 +70,7 @@
                             </div>
                             <div class="form col-3">
                                 <label for="inputPlz">Postleitzahl</label>
-                                <input type="number" th:field="*{adresse.plz}" name="plz" class="form-control" placeholder="12345" id="inputPlz">
+                                <input type="text" th:field="*{adresse.plz}" name="plz" class="form-control" placeholder="12345" id="inputPlz">
                                 <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.plz')}" th:errors="*{adresse.plz}"></div>
                             </div>
                         </div>

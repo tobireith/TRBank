@@ -16,10 +16,9 @@ public class Adresse {
     private String hausnummer;
     @NotBlank
     private String stadt;
-    @NotNull
-    @Range(min = 10000, max = 99999)
-    @Positive
-    private int plz;
+    @NotBlank
+    @Length (min = 5, max = 5)
+    private String plz;
     @NotBlank
     @Length(min = 2, max = 50)
     private String land;
@@ -28,7 +27,7 @@ public class Adresse {
 
     }
 
-    public Adresse(String strasse, String hausnummer, String stadt, int plz, String land) {
+    public Adresse(String strasse, String hausnummer, String stadt, String plz, String land) {
         this.strasse = strasse;
         this.hausnummer = hausnummer;
         this.stadt = stadt;
@@ -60,11 +59,11 @@ public class Adresse {
         this.stadt = stadt;
     }
 
-    public int getPlz() {
+    public String getPlz() {
         return plz;
     }
 
-    public void setPlz(int plz) {
+    public void setPlz(String plz) {
         this.plz = plz;
     }
 
