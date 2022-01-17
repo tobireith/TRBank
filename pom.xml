@@ -14,7 +14,7 @@
 	<name>TRBank</name>
 	<description>SW Projekt WiSe 2021/2022</description>
 	<properties>
-		<java.version>16</java.version>
+		<java.version>14</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -65,6 +65,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>de.othr.sw.TRBank.TRBankApplication</mainClass>
+					<executable>true</executable>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
