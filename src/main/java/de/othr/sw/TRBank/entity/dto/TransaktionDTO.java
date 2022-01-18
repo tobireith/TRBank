@@ -6,6 +6,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 public class TransaktionDTO {
@@ -18,6 +19,7 @@ public class TransaktionDTO {
 
     @NotNull
     @Positive
+    @Digits(integer = 9, fraction = 2)
     private BigDecimal betrag;
 
     @Length(max = 256)
@@ -33,7 +35,7 @@ public class TransaktionDTO {
     public TransaktionDTO(String quellIban, String zielIban, BigDecimal betrag, String verwendungszweck) {
         this.quellIban = quellIban;
         this.zielIban = zielIban;
-        this.betrag = betrag;
+        this.setBetrag(betrag);
         this.verwendungszweck = verwendungszweck;
     }
 
@@ -58,7 +60,7 @@ public class TransaktionDTO {
     }
 
     public void setBetrag(BigDecimal betrag) {
-        this.betrag = betrag;
+        this.betrag = betrag.setScale(2, RoundingMode.HALF_UP);
     }
 
     public String getVerwendungszweck() {
