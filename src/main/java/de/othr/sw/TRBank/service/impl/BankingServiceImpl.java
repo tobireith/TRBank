@@ -34,8 +34,6 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Autowired
     private TransaktionRepository transaktionRepository;
     @Autowired
-    private KundeServiceIF kundeService;
-    @Autowired
     private SendDeliveryIF sendDelivery;
 
 
@@ -82,12 +80,6 @@ public class BankingServiceImpl implements BankingServiceIF {
     public Konto kontoAnlegen(Konto konto) {
         // Konto speichern, das gespeicherte Konto wird in der Liste des Kunden automatisch hinzugefügt
         konto = kontoRepository.save(konto);
-        /*
-        Kunde kunde = konto.getBesitzer();
-        //FIXME: LazyInitializationException: failed to lazily initialize a collection of role: de.othr.sw.TRBank.entity.Kunde.konten, could not initialize proxy - no Session
-        kunde.getKonten().add(konto);
-        kundeService.kundeSpeichern(kunde);
-         */
         return konto;
     }
 
@@ -160,7 +152,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         // Kontostände anpassen & Änderungen speichern
         von.setKontostand(von.getKontostand().subtract(transaktion.getBetrag()));
         kontoUpdaten(von);
-        zu.setKontostand(zu.getKontostand().subtract(transaktion.getBetrag()));
+        zu.setKontostand(zu.getKontostand().add(transaktion.getBetrag()));
         kontoUpdaten(zu);
 
         return transaktion;

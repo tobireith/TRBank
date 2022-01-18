@@ -30,8 +30,12 @@ public class SetupExecutor {
     TransaktionSetup transaktionSetup;
 
     @PostConstruct
-    public void executeSetup() {
+    public void initSetups() {
         setupComponents.addAll(List.of(kundeSetupFirmenkunde, kundeSetupPrivatkunde, kontoSetupFirmenkunde, kontoSetupPrivatkunde, transaktionSetup));
+
+    }
+
+    public void executeSetup() {
         try {
             System.out.println("Setup wird gestartet...");
             for(int i = 0; i < setupComponents.size(); i++) {
