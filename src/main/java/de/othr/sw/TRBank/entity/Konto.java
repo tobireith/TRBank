@@ -17,8 +17,7 @@ import java.util.List;
 @Entity
 public class Konto extends SingleIdEntity<Long> {
 
-    //TODO: Add this to UML Schema!
-    public final int SCHULDENLIMIT = -25000;
+    public static final int SCHULDENLIMIT = -25000;
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id

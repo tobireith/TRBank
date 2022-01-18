@@ -48,7 +48,7 @@ public class KontoController {
             List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(List.of(konto));
             int pageSize = 10;
             model.addAttribute("pageSize", pageSize);
-            model.addAttribute("pages", transaktionen.size() / pageSize + 1);
+            model.addAttribute("pages", (transaktionen.size()-1) / pageSize + 1);
 
             List<Transaktion> currentTransaktionen = transaktionen.subList((pageNumber - 1) * 10, Math.min(transaktionen.size(), (pageNumber - 1) * 10 + 9));
             model.addAttribute("currentTransaktionen", currentTransaktionen);

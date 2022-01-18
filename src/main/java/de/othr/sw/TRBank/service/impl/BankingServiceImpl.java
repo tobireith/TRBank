@@ -23,6 +23,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.othr.sw.TRBank.entity.Konto.SCHULDENLIMIT;
+
 @Service
 public class BankingServiceImpl implements BankingServiceIF {
     @Autowired
@@ -75,7 +77,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         return kontoAnlegen(konto);
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public Konto kontoAnlegen(Konto konto) {
         // Konto speichern, das gespeicherte Konto wird in der Liste des Kunden automatisch hinzugefügt
@@ -96,7 +98,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         return konto;
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public void kontoLoeschen(long kontoId) throws TRBankException {
         Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("Konto zum löschen nicht gefunden."));
@@ -114,13 +116,13 @@ public class BankingServiceImpl implements BankingServiceIF {
         kontoRepository.deleteById(kontoId);
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public Transaktion transaktionSpeichern(Transaktion transaktion) {
         return transaktionRepository.save(transaktion);
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public Transaktion transaktionTaetigen(TransaktionDTO transaktionDTO, Kunde kunde) throws TRBankException {
         Transaktion transaktion =  new Transaktion();
@@ -148,7 +150,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         }
 
         // Prüfen, ob genug Geld auf dem Quellkonto ist
-        if (von.getKontostand().subtract(transaktion.getBetrag()).compareTo(new BigDecimal(von.SCHULDENLIMIT)) < 0) {
+        if (von.getKontostand().subtract(transaktion.getBetrag()).compareTo(new BigDecimal(SCHULDENLIMIT)) < 0) {
             throw (new TRBankException("Kontostand zu niedrig.", "Der Kontostand des Quellkontos ist zu niedrig um den Betrag zu decken und würde das Schuldenlimit des Kontos übersteigen."));
         }
 
@@ -171,7 +173,7 @@ public class BankingServiceImpl implements BankingServiceIF {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException {
         Kontoauszug kontoauszug = new Kontoauszug();

@@ -22,7 +22,7 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public Kunde kundeRegistrieren(Kunde k) throws TRBankException {
         if(kundeRepository.findByUsername(k.getUsername()).isPresent()) {
