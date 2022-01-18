@@ -21,7 +21,6 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     @Embedded
     @Valid
     private Adresse adresse;
-    //TODO: Check cascade type and orphan Removal!
     @OneToMany(mappedBy = "besitzer", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<Konto> konten = new ArrayList<>();
     @Column(unique = true)

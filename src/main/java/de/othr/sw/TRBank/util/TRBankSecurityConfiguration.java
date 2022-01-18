@@ -35,7 +35,6 @@ public class TRBankSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
             "/static/css/**", "/image/**", "/fonts/**", "/js/**", "/login", "/register", "/static/**", "/resources/**", "/css/**", "/error",
-            //FIXME: Maybe change this to use authentication at first and then grant access instead of passing the user credentials
             "/api/rest/**"
     };
 

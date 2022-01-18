@@ -38,7 +38,6 @@ public class TransaktionController {
             Principal principal) {
         try {
             System.out.println("GET on /transaktion");
-            // TODO: Kundenobjekt an diese Seite übergeben anstatt es zu laden!
             Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
             Konto konto = bankingService.getKontoFromKundeById(aktuellerKunde, kontoId);
             model.addAttribute("konto", konto);

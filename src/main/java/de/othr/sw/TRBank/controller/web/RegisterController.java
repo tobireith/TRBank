@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
-//TODO: Scope = singleton or request???
 @Scope("singleton")
 public class RegisterController {
 

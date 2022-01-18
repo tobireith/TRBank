@@ -8,11 +8,13 @@ import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -36,7 +38,6 @@ public class KontoController {
             Model model,
             Principal principal) {
         try {
-            // TODO: Kundenobjekt an diese Seite übergeben anstatt es zu laden!
 
             if (pageNumber == null) {
                 return "redirect:/konto/{kontoId}/?pageNumber=1";
@@ -47,9 +48,16 @@ public class KontoController {
 
             List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(List.of(konto));
             int pageSize = 10;
-            model.addAttribute("pageSize", pageSize);
-            model.addAttribute("pages", (transaktionen.size()-1) / pageSize + 1);
+            int pages = (transaktionen.size()-1) / pageSize + 1;
 
+            if(pageNumber > pages) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST
+                );
+            }
+
+            model.addAttribute("pageSize", pageSize);
+            model.addAttribute("pages", pages);
             List<Transaktion> currentTransaktionen = transaktionen.subList((pageNumber - 1) * 10, Math.min(transaktionen.size(), (pageNumber - 1) * 10 + 9));
             model.addAttribute("currentTransaktionen", currentTransaktionen);
             model.addAttribute("pageNumber", pageNumber);
