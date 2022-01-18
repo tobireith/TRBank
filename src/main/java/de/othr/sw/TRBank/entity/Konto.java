@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.othr.sw.TRBank.entity.util.SingleIdEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +41,7 @@ public class Konto extends SingleIdEntity<Long> {
     @Column(unique = true)
     private String iban;
     @Min(value = SCHULDENLIMIT)
+    @Digits(integer = 16, fraction = 2)
     private BigDecimal kontostand = new BigDecimal("0.0");
 
     public Konto() {
@@ -49,7 +50,7 @@ public class Konto extends SingleIdEntity<Long> {
     public Konto(String iban, Kunde besitzer, BigDecimal kontostand) {
         this.iban = iban;
         this.besitzer = besitzer;
-        this.kontostand = kontostand;
+        this.setKontostand(kontostand);
     }
 
     public long getKontoId() {
@@ -93,7 +94,7 @@ public class Konto extends SingleIdEntity<Long> {
     }
 
     public void setKontostand(BigDecimal kontostand) {
-        this.kontostand = kontostand.round(new MathContext(3, RoundingMode.HALF_UP));
+        this.kontostand = kontostand.setScale(2, RoundingMode.HALF_UP);
     }
 
     public String getIban() {

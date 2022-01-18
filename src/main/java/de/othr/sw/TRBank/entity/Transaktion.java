@@ -6,10 +6,10 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Date;
 
@@ -29,6 +29,7 @@ public class Transaktion extends SingleIdEntity<Long> {
     private Konto zielkonto;
     @NotNull
     @Positive
+    @Digits(integer = 9, fraction = 2)
     private BigDecimal betrag;
     @Temporal(TemporalType.TIMESTAMP)
     private Date datum;
@@ -79,7 +80,7 @@ public class Transaktion extends SingleIdEntity<Long> {
     }
 
     public void setBetrag(BigDecimal betrag) {
-        this.betrag = betrag.round(new MathContext(3, RoundingMode.HALF_UP));
+        this.betrag = betrag.setScale(2, RoundingMode.HALF_UP);
     }
 
     public Date getDatum() {

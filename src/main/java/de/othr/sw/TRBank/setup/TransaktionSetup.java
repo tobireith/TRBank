@@ -10,8 +10,6 @@ import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +47,7 @@ public class TransaktionSetup extends SetupComponentAbstract{
 
                         //zuKonto = zuKunde.getKonten().get(new Random().nextInt(zuKunde.getKonten().size()));
                     } while (Objects.equals(zuKonto.getID(), vonKonto.getID()));
-                    BigDecimal betrag = BigDecimal.valueOf(new Random().nextDouble() * 1000).round(new MathContext(3, RoundingMode.HALF_UP));
+                    BigDecimal betrag = BigDecimal.valueOf(new Random().nextDouble() * 1000);
 
                     String verwendungszweck = "Setup Überweisung " + " von Konto " + vonKonto.getID() + " zu Konto " + zuKonto.getID();
                     TransaktionDTO transaktionDTO = new TransaktionDTO(vonKonto.getIban(), zuKonto.getIban(), betrag, verwendungszweck);
