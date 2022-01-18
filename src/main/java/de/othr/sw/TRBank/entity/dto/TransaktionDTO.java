@@ -2,8 +2,11 @@ package de.othr.sw.TRBank.entity.dto;
 
 import org.hibernate.validator.constraints.Length;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class TransaktionDTO {
     @NotBlank
@@ -19,6 +22,9 @@ public class TransaktionDTO {
 
     @Length(max = 256)
     private String verwendungszweck;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date datum;
 
     public TransaktionDTO() {
 
@@ -63,13 +69,22 @@ public class TransaktionDTO {
         this.verwendungszweck = verwendungszweck;
     }
 
+    public Date getDatum() {
+        return datum;
+    }
+
+    public void setDatum(Date datum) {
+        this.datum = datum;
+    }
+
     @Override
     public String toString() {
         return "TransaktionDTO{" +
-                ", quellIban='" + quellIban + '\'' +
+                "quellIban='" + quellIban + '\'' +
                 ", zielIban='" + zielIban + '\'' +
                 ", betrag=" + betrag +
                 ", verwendungszweck='" + verwendungszweck + '\'' +
+                ", datum=" + datum +
                 '}';
     }
 }
