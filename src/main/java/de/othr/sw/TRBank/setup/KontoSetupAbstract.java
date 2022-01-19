@@ -16,17 +16,22 @@ public abstract class KontoSetupAbstract extends SetupComponentAbstract{
     KundeServiceIF kundeService;
 
     BigDecimal generateKontostandFirmenkunde() {
-        return BigDecimal.valueOf(new Random().nextDouble() * 800000 + 1000000.0);
+        return BigDecimal.valueOf(new Random().nextDouble() * 8000000 + 25000000.0);
     }
     BigDecimal generateKontostandPrivatkunde() {
-        return BigDecimal.valueOf(new Random().nextDouble() * 200000 + 10000.0);
+        return BigDecimal.valueOf(new Random().nextDouble() * 250000 + 50000.0);
     }
 
     void generateRandomKonten(Kunde kunde) {
-        // Zusätzliche Konten erzeugen (0-3 pro Kunde)
-        int anzahlKontos = new Random().nextInt(4);
+        // Zusätzliche Konten erzeugen (1-4 pro Kunde)
+        int anzahlKontos = new Random().nextInt(3) + 1;
         for (int j = 1; j <= anzahlKontos; j++) {
-            BigDecimal kontostand = BigDecimal.valueOf(new Random().nextDouble() * 80000 + 5000.0);
+            BigDecimal kontostand;
+            if(kunde.isFirmenkunde()) {
+                kontostand = generateKontostandFirmenkunde();
+            } else {
+                kontostand = generateKontostandPrivatkunde();
+            }
             String iban = bankingService.generateRandomIban("DE");
             bankingService.kontoAnlegen(new Konto(iban, kunde, kontostand));
         }

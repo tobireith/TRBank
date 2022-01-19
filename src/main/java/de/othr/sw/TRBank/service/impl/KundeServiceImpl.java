@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class KundeServiceImpl implements KundeServiceIF {
 
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
-    public Kunde kundeRegistrieren(Kunde k) throws TRBankException {
+    public Kunde kundeRegistrieren(@Valid Kunde k) throws TRBankException {
         if(kundeRepository.findByUsername(k.getUsername()).isPresent()) {
             throw new TRBankException("Dieser Username existiert bereits.");
         }
@@ -34,7 +35,7 @@ public class KundeServiceImpl implements KundeServiceIF {
 
     @Transactional (Transactional.TxType.REQUIRED)
     @Override
-    public Kunde kundeSpeichern(Kunde k){
+    public Kunde kundeSpeichern(@Valid Kunde k){
         return kundeRepository.save(k);
     }
 

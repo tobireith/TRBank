@@ -1,8 +1,6 @@
 package de.othr.sw.TRBank.service.impl;
 
 import de.othr.sw.TRBank.controller.rest.SendDeliveryIF;
-import de.othr.sw.TRBank.controller.rest.TempDelivery;
-import de.othr.sw.TRBank.controller.rest.TempDeliveryDTO;
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kontoauszug;
 import de.othr.sw.TRBank.entity.Kunde;
@@ -12,12 +10,12 @@ import de.othr.sw.TRBank.repository.KontoRepository;
 import de.othr.sw.TRBank.repository.KontoauszugRepository;
 import de.othr.sw.TRBank.repository.TransaktionRepository;
 import de.othr.sw.TRBank.service.BankingServiceIF;
-import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -77,7 +75,7 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
-    public Konto kontoAnlegen(Konto konto) {
+    public Konto kontoAnlegen(@Valid Konto konto) {
         // Konto speichern, das gespeicherte Konto wird in der Liste des Kunden automatisch hinzugefügt
         konto = kontoRepository.save(konto);
         return konto;
@@ -85,7 +83,7 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional (Transactional.TxType.REQUIRED)
     @Override
-    public Konto kontoUpdaten(Konto konto) {
+    public Konto kontoUpdaten(@Valid Konto konto) {
         konto = kontoRepository.save(konto);
         return konto;
     }
@@ -110,13 +108,13 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
-    public Transaktion transaktionSpeichern(Transaktion transaktion) {
+    public Transaktion transaktionSpeichern(@Valid Transaktion transaktion) {
         return transaktionRepository.save(transaktion);
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
-    public Transaktion transaktionTaetigen(TransaktionDTO transaktionDTO, Kunde kunde) throws TRBankException {
+    public Transaktion transaktionTaetigen(@Valid TransaktionDTO transaktionDTO, @Valid Kunde kunde) throws TRBankException {
         Transaktion transaktion =  new Transaktion();
 
         transaktion.setBetrag(transaktionDTO.getBetrag());
@@ -167,7 +165,7 @@ public class BankingServiceImpl implements BankingServiceIF {
 
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
-    public Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException {
+    public Kontoauszug kontoauszugErstellen(@Valid Konto konto) throws TRBankException {
         Kontoauszug kontoauszug = new Kontoauszug();
 
         Kontoauszug letzterKontoauszug;
