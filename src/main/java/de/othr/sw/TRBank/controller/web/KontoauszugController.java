@@ -34,7 +34,6 @@ public class KontoauszugController {
                               Model model,
                               Principal principal){
         try {
-            System.out.println("GET /konto/id/kontoauszug");
             Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
             model.addAttribute("kunde", aktuellerKunde);
 

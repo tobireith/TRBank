@@ -37,7 +37,6 @@ public class RegisterController {
     @RequestMapping(value = "register", method = RequestMethod.GET)
     public String register(Model model) {
         model.addAttribute("kunde", new Kunde());
-        System.out.println("GET /register");
         return "register";
     }
 
@@ -49,7 +48,6 @@ public class RegisterController {
             HttpServletRequest request,
             Model model) {
         try {
-            System.out.println("POST /register");
             if (!confirmationPasswort.equals(kunde.getPasswort())) {
                 result.addError(new ObjectError("globalError", "Die beiden eingegebenen Passwörter stimmen nicht überein."));
             }

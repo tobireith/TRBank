@@ -18,7 +18,6 @@ public class LoginController {
         if(exception != null) {
             model.addAttribute("trException", new TRBankException("Falscher Username oder Passwort."));
         }
-        System.out.println("GET /login");
         return "login";
     }
 }

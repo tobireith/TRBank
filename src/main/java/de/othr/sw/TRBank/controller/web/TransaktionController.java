@@ -41,7 +41,6 @@ public class TransaktionController {
             Model model,
             Principal principal) {
         try {
-            System.out.println("GET on /transaktion");
             Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
             Konto konto = bankingService.getKontoFromKundeById(aktuellerKunde, kontoId);
             model.addAttribute("konto", konto);
