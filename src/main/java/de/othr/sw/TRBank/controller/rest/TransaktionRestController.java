@@ -7,6 +7,9 @@ import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import de.othr.sw.TRBank.service.impl.BankingServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.validation.annotation.Validated;
@@ -26,14 +29,14 @@ public class TransaktionRestController {
     @Autowired
     private KundeServiceIF kundeService;
 
+    private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
+
     @RequestMapping(value = "/transaktion", method = RequestMethod.POST)
     public TransaktionDTO transaktionTaetigen(
             @Valid @RequestBody RestDTO restDTO
     ) throws TRBankException {
         Kunde kunde = kundeService.anmeldedatenVerifizieren(restDTO.getUsername(), restDTO.getPasswort());
         Transaktion transaktion = bankingService.transaktionTaetigen(restDTO.getTransaktionDTO(), kunde);
-
-        System.out.println("EXTERNE TRANSAKTION WURDE DURCHGEFÜHRT: " + transaktion);
 
         TransaktionDTO responseTransaktion = new TransaktionDTO(
             transaktion.getQuellkonto().getIban(),
@@ -42,6 +45,8 @@ public class TransaktionRestController {
             transaktion.getVerwendungszweck()
         );
         responseTransaktion.setDatum(transaktion.getDatum());
+
+        logger.info("Transaktion von externem Aufruf wurde durchgeführt.");
         return responseTransaktion;
     }
 }

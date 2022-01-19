@@ -55,8 +55,8 @@ public class SetupExecutor {
         } catch (TRBankException e) {
             logger.error("Setup fehlgeschlagen! " + e.getNachricht());
         } catch (Exception e) {
-            logger.error("Setup fehlgeschlagen! " + e.getMessage());
             e.printStackTrace();
+            logger.error("Setup fehlgeschlagen! " + e.getMessage());
         }
     }
 }

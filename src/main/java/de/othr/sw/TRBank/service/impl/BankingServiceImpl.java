@@ -82,6 +82,7 @@ public class BankingServiceImpl implements BankingServiceIF {
     public Konto kontoAnlegen(@Valid Konto konto) {
         // Konto speichern, das gespeicherte Konto wird in der Liste des Kunden automatisch hinzugefügt
         konto = kontoRepository.save(konto);
+        logger.info("Konto wurde erfolgreich angelegt");
         return konto;
     }
 

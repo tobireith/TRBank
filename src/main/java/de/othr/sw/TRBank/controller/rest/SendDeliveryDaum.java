@@ -1,5 +1,8 @@
 package de.othr.sw.TRBank.controller.rest;
 
+import de.othr.sw.TRBank.service.impl.BankingServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -13,9 +16,11 @@ public class SendDeliveryDaum implements SendDeliveryIF {
     @Autowired
     private RestTemplate restServiceClient;
 
+    private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
+
     @Override
     public TempDelivery sendDelivery(TempDeliveryDTO tempDeliveryDTO) {
-        System.out.println("Requesting new Delivery from DaumDeliveries!");
+        logger.info("Requesting new Delivery from DaumDeliveries!");
         // FIXME:   Adjust URL and Port
         //          Adjust Objects + Class
         return restServiceClient.postForObject("im-codd.oth-regensburg.de/8934" + "/api/deliveries", tempDeliveryDTO, TempDelivery.class);
