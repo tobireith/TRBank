@@ -11,6 +11,8 @@ import de.othr.sw.TRBank.repository.KontoauszugRepository;
 import de.othr.sw.TRBank.repository.TransaktionRepository;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,8 @@ public class BankingServiceImpl implements BankingServiceIF {
     private TransaktionRepository transaktionRepository;
     @Autowired
     private SendDeliveryIF sendDelivery;
+
+    private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
 
 
     public BigDecimal transaktionenSummieren(List<Transaktion> transaktionen){
@@ -104,6 +108,7 @@ public class BankingServiceImpl implements BankingServiceIF {
             transaktionRepository.save(t);
         }
         kontoRepository.deleteById(kontoId);
+        logger.info("Konto wurde erfolgreich gelöscht.");
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
@@ -153,6 +158,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         zu.setKontostand(zu.getKontostand().add(transaktion.getBetrag()));
         kontoUpdaten(zu);
 
+        logger.info("Transaktion wurde erfolgreich erstellt.");
         return transaktion;
     }
 
@@ -220,11 +226,15 @@ public class BankingServiceImpl implements BankingServiceIF {
             kontoauszug.setVersandId(delivery.getDeliveryId());
         } catch (Exception e) {
             throw new TRBankException("Fehler bei der Erstellung des Sendungsauftrages.", e.getMessage());
+            logger.error("An Error occurred while calling the external Delivery-System: " + e);
         }
          */
         kontoauszug.setVersandId(new Random().nextInt(99999999));
 
-        return kontoauszugRepository.save(kontoauszug);
+        kontoauszug = kontoauszugRepository.save(kontoauszug);
+        logger.info("Kontoauszug wurde erfolgreich erstellt.");
+
+        return kontoauszug;
     }
 
     @Transactional(Transactional.TxType.SUPPORTS)
@@ -272,7 +282,6 @@ public class BankingServiceImpl implements BankingServiceIF {
             iban = prefix+"1234567890" + String.format("%010d", new Random().nextInt(1000000000));
             konto = kontoRepository.findKontoByIban(iban).orElse(null);
         } while (konto != null);
-        System.out.println("Returning IBAN: " + iban);
         return iban;
     }
 }

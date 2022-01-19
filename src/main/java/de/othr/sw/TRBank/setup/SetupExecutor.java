@@ -1,6 +1,8 @@
 package de.othr.sw.TRBank.setup;
 
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,8 @@ public class SetupExecutor {
     @Autowired
     TransaktionSetup transaktionSetup;
 
+    private final Logger logger = LoggerFactory.getLogger(SetupExecutor.class);
+
     @PostConstruct
     public void initSetups() {
         setupComponents.addAll(List.of(kundeSetupFirmenkunde, kundeSetupPrivatkunde, kontoSetupFirmenkunde, kontoSetupPrivatkunde, transaktionSetup));
@@ -37,21 +41,21 @@ public class SetupExecutor {
 
     public void executeSetup() {
         try {
-            System.out.println("Setup wird gestartet...");
+           logger.info("Setup wird gestartet...");
             for(int i = 0; i < setupComponents.size(); i++) {
                 SetupComponentAbstract setupComponent = setupComponents.get(i);
-                System.out.println("Setup... Schritt[" + (i+1) + " / " + setupComponents.size() + "]" );
+                logger.info("Setup... Schritt[" + (i+1) + " / " + setupComponents.size() + "]" );
                 if (setupComponent.setup()) {
-                    System.out.println(setupComponent.getClass().getSimpleName() + " erfolgreich!");
+                    logger.info(setupComponent.getClass().getSimpleName() + " erfolgreich!");
                 } else {
-                    System.out.println(setupComponent.getClass().getSimpleName() + " übersprungen!");
+                    logger.info(setupComponent.getClass().getSimpleName() + " übersprungen!");
                 }
             }
-            System.out.println("Setup erfolgreich abgeschlossen!");
+            logger.info("Setup erfolgreich abgeschlossen!");
         } catch (TRBankException e) {
-            System.out.println("Setup fehlgeschlagen! " + e.getNachricht());
+            logger.error("Setup fehlgeschlagen! " + e.getNachricht());
         } catch (Exception e) {
-            System.out.println("Setup fehlgeschlagen! " + e.getMessage());
+            logger.error("Setup fehlgeschlagen! " + e.getMessage());
             e.printStackTrace();
         }
     }

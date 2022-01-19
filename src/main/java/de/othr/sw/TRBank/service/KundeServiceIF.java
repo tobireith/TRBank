@@ -10,8 +10,6 @@ import java.util.List;
 public interface KundeServiceIF extends UserDetailsService {
     Kunde kundeRegistrieren(Kunde kunde) throws TRBankException;
 
-    Kunde kundeSpeichern(Kunde k);
-
     Kunde anmeldedatenVerifizieren(String username, String passwort) throws TRBankException;
 
     Kunde getKundeByUsername(String username) throws TRBankException;

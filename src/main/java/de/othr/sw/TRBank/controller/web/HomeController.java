@@ -6,6 +6,8 @@ import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -26,10 +28,11 @@ public class HomeController {
     @Autowired
     private KundeServiceIF kundeService;
 
+    private final Logger logger = LoggerFactory.getLogger(HomeController.class);
+
     @RequestMapping(value = "/")
     public String home(Model model, Principal principal) {
         try {
-            System.out.println("GET /");
 
             Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
             model.addAttribute("kunde", aktuellerKunde);
@@ -49,6 +52,7 @@ public class HomeController {
             return "index";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
+            logger.error("An Error occurred: " + exception);
             return "redirect:/error";
         }
 

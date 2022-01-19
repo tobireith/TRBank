@@ -4,6 +4,8 @@ import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.repository.KundeRepository;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,6 +25,8 @@ public class KundeServiceImpl implements KundeServiceIF {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    private final Logger logger = LoggerFactory.getLogger(KundeServiceImpl.class);
+
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public Kunde kundeRegistrieren(@Valid Kunde k) throws TRBankException {
@@ -30,13 +34,9 @@ public class KundeServiceImpl implements KundeServiceIF {
             throw new TRBankException("Dieser Username existiert bereits.");
         }
         k.setPasswort(passwordEncoder.encode(k.getPassword()));
-        return kundeSpeichern(k);
-    }
-
-    @Transactional (Transactional.TxType.REQUIRED)
-    @Override
-    public Kunde kundeSpeichern(@Valid Kunde k){
-        return kundeRepository.save(k);
+        k = kundeRepository.save(k);
+        logger.info("Kunde wurde erfolgreich registriert.");
+        return k;
     }
 
     @Transactional (Transactional.TxType.SUPPORTS)

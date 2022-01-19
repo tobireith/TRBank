@@ -6,6 +6,8 @@ import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,8 @@ public class TransaktionController {
     @Autowired
     private KundeServiceIF kundeService;
 
+    private final Logger logger = LoggerFactory.getLogger(TransaktionController.class);
+
     @RequestMapping("/transaktion")
     public String getTransaktion(
             @PathVariable long kontoId,
@@ -53,6 +57,7 @@ public class TransaktionController {
             return "transaktion";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
+            logger.error("An Error occurred: " + exception);
             return "redirect:/konto/{kontoId}";
         }
     }
@@ -79,6 +84,7 @@ public class TransaktionController {
             return "success";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
+            logger.error("An TRBank-Error occurred: " + exception);
             return "transaktion";
         }
     }

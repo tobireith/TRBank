@@ -5,6 +5,9 @@ import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import de.othr.sw.TRBank.service.impl.BankingServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -28,6 +31,8 @@ public class RegisterController {
 
     @Autowired
     private BankingServiceIF bankingService;
+
+    private final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
     @RequestMapping(value = "register", method = RequestMethod.GET)
     public String register(Model model) {
@@ -67,9 +72,11 @@ public class RegisterController {
             return "redirect:/";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
+            logger.error("An TRBank-Error Occurred: " + exception);
             return "register";
         } catch (ServletException e) {
             model.addAttribute("trException", new TRBankException("Fehler bei der Anmeldung des neuen Benutzers.", e.getMessage()));
+            logger.error("An Servlet-Error Occurred: " + e);
             return "redirect:/login";
         }
     }

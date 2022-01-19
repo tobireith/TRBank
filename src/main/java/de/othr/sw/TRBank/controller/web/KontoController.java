@@ -6,6 +6,8 @@ import de.othr.sw.TRBank.entity.Transaktion;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,8 @@ public class KontoController {
 
     @Autowired
     private KundeServiceIF kundeService;
+
+    private final Logger logger = LoggerFactory.getLogger(KontoController.class);
 
     @RequestMapping(value = "/{kontoId}")
     public String konto(
@@ -66,6 +70,7 @@ public class KontoController {
             return "konto";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
+            logger.error("An Error occurred: " + exception);
             return "redirect:/";
         }
     }
@@ -79,6 +84,7 @@ public class KontoController {
             return "redirect:/";
         } catch (TRBankException e) {
             model.addAttribute("trException", e);
+            logger.error("An Error occurred while deleting the Konto: " + e);
             return "redirect:/konto/{kontoId}/?pageNumber=1";
         }
     }

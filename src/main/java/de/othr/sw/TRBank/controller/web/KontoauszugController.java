@@ -6,6 +6,8 @@ import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,8 @@ public class KontoauszugController {
 
     @Autowired
     private KundeServiceIF kundeService;
+
+    private final Logger logger = LoggerFactory.getLogger(KontoauszugController.class);
 
     @RequestMapping(value = "/konto/{kontoId}/kontoauszug")
     public String kontoauszug(@PathVariable long kontoId,
@@ -50,6 +54,7 @@ public class KontoauszugController {
             return "kontoauszug";
         } catch (TRBankException exception) {
             model.addAttribute("trException", exception);
+            logger.error("An Error occurred: " + exception);
             return "redirect:/konto/{kontoId}";
         }
     }
