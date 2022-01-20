@@ -18,6 +18,7 @@ import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,8 +38,12 @@ public class BankingServiceImpl implements BankingServiceIF {
     private KontoauszugRepository kontoauszugRepository;
     @Autowired
     private TransaktionRepository transaktionRepository;
-    @Autowired
-    private SendDeliveryIF sendDeliveryService;
+
+    @Autowired @Qualifier("default")
+    private SendDeliveryIF daumDeliveryService;
+
+    @Autowired @Qualifier("ownProxy")
+    private SendDeliveryIF myProxyDeliveryService;
 
     private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
 
@@ -220,7 +225,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         try {
             Kunde kunde = konto.getBesitzer();
             // Versandunternehmen beauftragen
-            DeliveryDTO delivery = sendDeliveryService.sendDelivery(
+            DeliveryDTO delivery = daumDeliveryService.sendDelivery(
                     new RestDTO(
                             "RobertUser",
                             "123",
@@ -247,7 +252,9 @@ public class BankingServiceImpl implements BankingServiceIF {
             kontoauszug.setVersandId(delivery.getDeliveryId());
         } catch (Exception e) {
             logger.error("An Error occurred while calling the external Delivery-System: " + e);
-            throw new TRBankException("Fehler bei der Erstellung des Sendungsauftrages.", e.getMessage());
+            throw new TRBankException("Fehler bei der Erstellung des Kontoauszuges.",
+                    "Ihr Kontoauszug konnte nicht erstellt werden.",
+                    "Versuchen Sie es später erneut.");
         }
 
         kontoauszug = kontoauszugRepository.save(kontoauszug);

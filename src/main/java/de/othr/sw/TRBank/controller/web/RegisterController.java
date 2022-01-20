@@ -86,7 +86,7 @@ public class RegisterController {
             return "register";
         } catch (ServletException e) {
             attributes.addFlashAttribute("trBankException", new TRBankException("Fehler bei der Anmeldung des neuen Benutzers.", e.getMessage()));
-            logger.error("An Servlet-Error Occurred: " + e);
+            logger.error("An Servlet-Error Occurred while performing register and login: " + e);
             return "redirect:/login";
         }
     }

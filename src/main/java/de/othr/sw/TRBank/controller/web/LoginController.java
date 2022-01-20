@@ -21,7 +21,7 @@ public class LoginController {
             model.addAttribute("trBankException", trBankException);
         }
         if(exception != null) {
-            model.addAttribute("trBankException", new TRBankException("Falscher Username oder Passwort."));
+            model.addAttribute("trBankException", new TRBankException("Falscher Username oder Passwort.", "Bitte geben Sie Ihren richtigen Anmeldedaten ein."));
         }
         return "login";
     }
