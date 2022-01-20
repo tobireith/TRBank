@@ -14,9 +14,14 @@ public class LoginController {
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login(
             @RequestParam(value = "error", required = false) Exception exception,
-            Model model) {
+            Model model
+    ) {
+        TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
+        if(trBankException != null) {
+            model.addAttribute("trBankException", trBankException);
+        }
         if(exception != null) {
-            model.addAttribute("trException", new TRBankException("Falscher Username oder Passwort."));
+            model.addAttribute("trBankException", new TRBankException("Falscher Username oder Passwort."));
         }
         return "login";
     }

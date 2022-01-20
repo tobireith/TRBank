@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -31,7 +33,15 @@ public class HomeController {
     private final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @RequestMapping(value = "/")
-    public String home(Model model, Principal principal) {
+    public String home(
+            Model model,
+            Principal principal,
+            RedirectAttributes attributes
+    ) {
+        TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
+        if(trBankException != null) {
+            model.addAttribute("trBankException", trBankException);
+        }
         try {
 
             Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
@@ -51,7 +61,7 @@ public class HomeController {
             model.addAttribute("transaktionen", transaktionen);
             return "index";
         } catch (TRBankException exception) {
-            model.addAttribute("trException", exception);
+            attributes.addFlashAttribute("trBankException", exception);
             logger.error("An Error occurred: " + exception);
             return "redirect:/error";
         }

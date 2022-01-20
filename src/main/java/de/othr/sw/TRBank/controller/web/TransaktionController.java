@@ -13,10 +13,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -39,7 +37,13 @@ public class TransaktionController {
             @PathVariable long kontoId,
             @ModelAttribute("isSender") boolean isSender,
             Model model,
-            Principal principal) {
+            Principal principal,
+            RedirectAttributes attributes
+    ) {
+        TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
+        if(trBankException != null) {
+            model.addAttribute("trBankException", trBankException);
+        }
         try {
             Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
             Konto konto = bankingService.getKontoFromKundeById(aktuellerKunde, kontoId);
@@ -55,7 +59,7 @@ public class TransaktionController {
 
             return "transaktion";
         } catch (TRBankException exception) {
-            model.addAttribute("trException", exception);
+            attributes.addFlashAttribute("trBankException", exception);
             logger.error("An Error occurred: " + exception);
             return "redirect:/konto/{kontoId}";
         }
@@ -82,7 +86,7 @@ public class TransaktionController {
             model.addAttribute("successMessage", "Die Transaktion wurde erfolgreich durchgeführt.");
             return "success";
         } catch (TRBankException exception) {
-            model.addAttribute("trException", exception);
+            model.addAttribute("trBankException", exception);
             logger.error("An TRBank-Error occurred: " + exception);
             return "transaktion";
         }

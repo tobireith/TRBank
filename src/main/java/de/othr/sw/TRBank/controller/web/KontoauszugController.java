@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.Date;
@@ -32,7 +34,13 @@ public class KontoauszugController {
     @RequestMapping(value = "/konto/{kontoId}/kontoauszug")
     public String kontoauszug(@PathVariable long kontoId,
                               Model model,
-                              Principal principal){
+                              Principal principal,
+                              RedirectAttributes attributes
+    ) {
+        TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
+        if(trBankException != null) {
+            model.addAttribute("trBankException", trBankException);
+        }
         try {
             Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
             model.addAttribute("kunde", aktuellerKunde);
@@ -52,8 +60,8 @@ public class KontoauszugController {
                     "Die Sendungsnummer finden Sie in Ihrem Kontoauszug.");
             return "kontoauszug";
         } catch (TRBankException exception) {
-            model.addAttribute("trException", exception);
             logger.error("An Error occurred: " + exception);
+            attributes.addFlashAttribute("trBankException", exception);
             return "redirect:/konto/{kontoId}";
         }
     }

@@ -17,6 +17,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +37,13 @@ public class RegisterController {
     private final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
     @RequestMapping(value = "register", method = RequestMethod.GET)
-    public String register(Model model) {
+    public String register(Model model,
+                           RedirectAttributes attributes
+    ) {
+        TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
+        if(trBankException != null) {
+            model.addAttribute("trBankException", trBankException);
+        }
         model.addAttribute("kunde", new Kunde());
         return "register";
     }
@@ -46,7 +54,13 @@ public class RegisterController {
             BindingResult result,
             @ModelAttribute("passwordWiederholen") String confirmationPasswort,
             HttpServletRequest request,
-            Model model) {
+            Model model,
+            RedirectAttributes attributes
+    ) {
+        TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
+        if(trBankException != null) {
+            model.addAttribute("trBankException", trBankException);
+        }
         try {
             if (!confirmationPasswort.equals(kunde.getPasswort())) {
                 result.addError(new ObjectError("globalError", "Die beiden eingegebenen Passwörter stimmen nicht überein."));
@@ -69,11 +83,11 @@ public class RegisterController {
 
             return "redirect:/";
         } catch (TRBankException exception) {
-            model.addAttribute("trException", exception);
+            model.addAttribute("trBankException", exception);
             logger.error("An TRBank-Error Occurred: " + exception);
             return "register";
         } catch (ServletException e) {
-            model.addAttribute("trException", new TRBankException("Fehler bei der Anmeldung des neuen Benutzers.", e.getMessage()));
+            attributes.addFlashAttribute("trBankException", new TRBankException("Fehler bei der Anmeldung des neuen Benutzers.", e.getMessage()));
             logger.error("An Servlet-Error Occurred: " + e);
             return "redirect:/login";
         }

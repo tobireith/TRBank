@@ -222,8 +222,8 @@ public class BankingServiceImpl implements BankingServiceIF {
             // Versandunternehmen beauftragen
             DeliveryDTO delivery = sendDeliveryService.sendDelivery(
                     new RestDTO(
-                            "username",
-                            "passwort",
+                            "RobertUser",
+                            "123",
                             new Address(
                                     kunde.getAdresse().getStrasse(),
                                     kunde.getAdresse().getHausnummer(),

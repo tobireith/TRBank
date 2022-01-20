@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -40,10 +41,17 @@ public class KontoController {
             @PathVariable long kontoId,
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             Model model,
-            Principal principal) {
+            Principal principal,
+            RedirectAttributes attributes
+    ) {
+        TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
+        if(trBankException != null) {
+            model.addAttribute("trBankException", trBankException);
+        }
         try {
 
             if (pageNumber == null) {
+                attributes.addFlashAttribute("trBankException", trBankException);
                 return "redirect:/konto/{kontoId}/?pageNumber=1";
             }
             Kunde aktuellerKunde = kundeService.getKundeByUsername(principal.getName());
@@ -69,8 +77,8 @@ public class KontoController {
             model.addAttribute("disableDelete", (konto.getKontostand().compareTo(new BigDecimal("0.0")) != 0));
             return "konto";
         } catch (TRBankException exception) {
-            model.addAttribute("trException", exception);
             logger.error("An Error occurred: " + exception);
+            attributes.addFlashAttribute("trBankException", exception);
             return "redirect:/";
         }
     }
@@ -78,13 +86,14 @@ public class KontoController {
     @RequestMapping(value = "/{kontoId}/delete")
     public String deleteKonto(
             @PathVariable long kontoId,
-            Model model) {
+            Model model,
+            RedirectAttributes attributes) {
         try {
             bankingService.kontoLoeschen(kontoId);
             return "redirect:/";
-        } catch (TRBankException e) {
-            model.addAttribute("trException", e);
-            logger.error("An Error occurred while deleting the Konto: " + e);
+        } catch (TRBankException exception) {
+            logger.error("An Error occurred while deleting the Konto: " + exception);
+            attributes.addFlashAttribute("trBankException", exception);
             return "redirect:/konto/{kontoId}/?pageNumber=1";
         }
     }
