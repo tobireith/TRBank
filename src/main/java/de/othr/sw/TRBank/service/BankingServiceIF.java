@@ -21,8 +21,6 @@ public interface BankingServiceIF {
 
     boolean kontoWithIbanExists(String Iban);
 
-    Konto getKontoById (long kontoId)  throws TRBankException;
-
     Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException;
 
     Konto kontoAnlegen(Kunde kunde);

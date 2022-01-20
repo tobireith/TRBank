@@ -33,8 +33,10 @@ public class BankingServiceImpl implements BankingServiceIF {
     private KontoauszugRepository kontoauszugRepository;
     @Autowired
     private TransaktionRepository transaktionRepository;
+    /*
     @Autowired
     private SendDeliveryIF sendDelivery;
+     */
 
     private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
 
@@ -60,15 +62,8 @@ public class BankingServiceImpl implements BankingServiceIF {
     }
 
     @Override
-    @Transactional (Transactional.TxType.SUPPORTS)
-    public Konto getKontoById(long kontoId) throws TRBankException {
-        return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos!"));
-    }
-
-    @Override
     public Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException {
         return kunde.getKonten().stream().filter(konto -> konto.getID() == kontoId).findFirst().orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos! Das Konto gehört ggf. nicht zum Kunden!"));
-        //return kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("ERROR: Fehler beim Laden des Kontos!"));
     }
 
     @Override
@@ -230,6 +225,7 @@ public class BankingServiceImpl implements BankingServiceIF {
             logger.error("An Error occurred while calling the external Delivery-System: " + e);
         }
          */
+        //TODO: Use Interface of Daum Delivery!
         kontoauszug.setVersandId(new Random().nextInt(99999999));
 
         kontoauszug = kontoauszugRepository.save(kontoauszug);

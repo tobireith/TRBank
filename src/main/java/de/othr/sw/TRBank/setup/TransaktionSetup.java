@@ -37,15 +37,12 @@ public class TransaktionSetup extends SetupComponentAbstract{
                     List<Konto> vonKonten = bankingService.getKontenByKunde(vonKunde);
                     Konto vonKonto = vonKonten.get(new Random().nextInt(vonKonten.size()));
 
-                    //Konto vonKonto = vonKunde.getKonten().get(new Random().nextInt(vonKunde.getKonten().size()));
                     Konto zuKonto;
                     do {
                         Kunde zuKunde = allKunden.get(new Random().nextInt(allKunden.size()));
 
                         List<Konto> zuKonten = bankingService.getKontenByKunde(zuKunde);
                         zuKonto = zuKonten.get(new Random().nextInt(zuKonten.size()));
-
-                        //zuKonto = zuKunde.getKonten().get(new Random().nextInt(zuKunde.getKonten().size()));
                     } while (Objects.equals(zuKonto.getID(), vonKonto.getID()));
                     BigDecimal betrag = BigDecimal.valueOf(new Random().nextDouble() * 1000);
 

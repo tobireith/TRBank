@@ -4,14 +4,14 @@ import de.othr.sw.TRBank.service.impl.BankingServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/*
 @Scope("singleton")
 @Service
-public class SendDeliveryDaum implements SendDeliveryIF {
+public class SendDeliveryImpl implements SendDeliveryIF {
 
     @Autowired
     private RestTemplate restServiceClient;
@@ -27,3 +27,4 @@ public class SendDeliveryDaum implements SendDeliveryIF {
         //TODO: Errorhandling
     }
 }
+ */
