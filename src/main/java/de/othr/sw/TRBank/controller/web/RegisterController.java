@@ -75,8 +75,6 @@ public class RegisterController {
 
             // Standard-Konto für Kunden anlegen
             bankingService.kontoAnlegen(kunde);
-            model.addAttribute("alertSuccessTitle", "Registrierung erfolgreich.");
-            model.addAttribute("alertSuccessMessage", "Sie wurden erfolgreich als Kunde registriert und ein Konto wurde automatisch für Sie angelegt. Sie werden nun automatisch angemeldet.");
 
             //Auto-Login nach Registrierung
             request.login(kunde.getUsername(), confirmationPasswort);
