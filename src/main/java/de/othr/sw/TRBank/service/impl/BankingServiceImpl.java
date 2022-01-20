@@ -1,5 +1,9 @@
 package de.othr.sw.TRBank.service.impl;
 
+import de.othr.DaumDelivery.entity.Address;
+import de.othr.DaumDelivery.entity.dto.DeliveryDTO;
+import de.othr.DaumDelivery.entity.dto.ParcelDTO;
+import de.othr.DaumDelivery.entity.dto.RestDTO;
 import de.othr.sw.TRBank.controller.rest.SendDeliveryIF;
 import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kontoauszug;
@@ -33,10 +37,8 @@ public class BankingServiceImpl implements BankingServiceIF {
     private KontoauszugRepository kontoauszugRepository;
     @Autowired
     private TransaktionRepository transaktionRepository;
-    /*
     @Autowired
-    private SendDeliveryIF sendDelivery;
-     */
+    private SendDeliveryIF sendDeliveryService;
 
     private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
 
@@ -215,18 +217,38 @@ public class BankingServiceImpl implements BankingServiceIF {
         kontoauszug.setDatumBis(neueTransaktionen.get(neueTransaktionen.size()-1).getDatum());
         kontoauszug.setKonto(konto);
 
-        /*
         try {
+            Kunde kunde = konto.getBesitzer();
             // Versandunternehmen beauftragen
-            TempDelivery delivery = sendDelivery.sendDelivery(new TempDeliveryDTO(new Kunde("username", "password"), new TempDelivery()));
+            DeliveryDTO delivery = sendDeliveryService.sendDelivery(
+                    new RestDTO(
+                            "username",
+                            "passwort",
+                            new Address(
+                                    kunde.getAdresse().getStrasse(),
+                                    kunde.getAdresse().getHausnummer(),
+                                    kunde.getAdresse().getPlz(),
+                                    kunde.getAdresse().getStadt(),
+                                    kunde.getAdresse().getLand()
+                            ),
+                            List.of(
+                                   new ParcelDTO(
+                                            0.02,
+                                           1,
+                                           12,
+                                           23
+                                   )
+                            )
+                    )
+            );
+            if(delivery == null) {
+                throw new Exception();
+            }
             kontoauszug.setVersandId(delivery.getDeliveryId());
         } catch (Exception e) {
-            throw new TRBankException("Fehler bei der Erstellung des Sendungsauftrages.", e.getMessage());
             logger.error("An Error occurred while calling the external Delivery-System: " + e);
+            throw new TRBankException("Fehler bei der Erstellung des Sendungsauftrages.", e.getMessage());
         }
-         */
-        //TODO: Use Interface of Daum Delivery!
-        kontoauszug.setVersandId(new Random().nextInt(99999999));
 
         kontoauszug = kontoauszugRepository.save(kontoauszug);
         logger.info("Kontoauszug wurde erfolgreich erstellt.");

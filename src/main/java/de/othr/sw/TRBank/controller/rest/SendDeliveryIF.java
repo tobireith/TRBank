@@ -1,9 +1,8 @@
 package de.othr.sw.TRBank.controller.rest;
 
-import de.othr.sw.TRBank.entity.Kontoauszug;
+import de.othr.DaumDelivery.entity.dto.DeliveryDTO;
+import de.othr.DaumDelivery.entity.dto.RestDTO;
 
 public interface SendDeliveryIF {
-    // FIXME:   Change this to return the real delivery!
-    //          Wrap everything in the dto object from DaumDelivery!
-    TempDelivery sendDelivery(TempDeliveryDTO tempDeliveryDTO);
+    DeliveryDTO sendDelivery(RestDTO tempDeliveryDTO);
 }
