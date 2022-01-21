@@ -222,8 +222,8 @@ public class BankingServiceImpl implements BankingServiceIF {
             // Versandunternehmen beauftragen
             DeliveryDTO delivery = daumDeliveryService.sendDelivery(
                     new RestDTO(
-                            "RobertUser",
-                            "123",
+                            "TRBank",
+                            "BestBank4Ever",
                             new Address(
                                     kunde.getAdresse().getStrasse(),
                                     kunde.getAdresse().getHausnummer(),
