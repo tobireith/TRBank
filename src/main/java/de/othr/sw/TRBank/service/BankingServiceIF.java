@@ -13,6 +13,7 @@ public interface BankingServiceIF {
     List<Konto> getKontenByKunde(Kunde kunde) throws TRBankException;
 
     Transaktion transaktionSpeichern(Transaktion transaktion);
+
     Transaktion transaktionTaetigen(TransaktionDTO transaktion, Kunde kunde) throws TRBankException;
 
     Kontoauszug kontoauszugErstellen(Konto konto) throws TRBankException;
@@ -24,6 +25,7 @@ public interface BankingServiceIF {
     Konto getKontoFromKundeById(Kunde kunde, long kontoId) throws TRBankException;
 
     Konto kontoAnlegen(Kunde kunde);
+
     Konto kontoAnlegen(Konto konto);
 
     Konto kontoUpdaten(Konto konto);

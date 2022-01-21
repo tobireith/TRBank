@@ -8,11 +8,11 @@ body {
 }
 
 .alert-fixed {
-    position:fixed;
+    position: fixed;
     right: 10%;
     top: 10%;
     max-width: 40%;
-    z-index:9999;
+    z-index: 9999;
 }
 
 .trMainColor {

@@ -4,7 +4,7 @@ import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 
-public class KontoSetupPrivatkunde extends KontoSetupAbstract{
+public class KontoSetupPrivatkunde extends KontoSetupAbstract {
     @Override
     boolean setup() throws TRBankException {
         // Konten für Privatkunden hinzufügen

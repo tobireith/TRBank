@@ -14,25 +14,33 @@
             <div class="card bg-dark text-white rounded-borders w-100">
                 <div class="card-body text-center p-5">
                     <h2 class="fw-bold mb-4">Registriere dich für das TRBank Onlinebanking!</h2>
-                    <form th:action="@{/register}" th:object="${kunde}" method="post" class="form-white form-outline text-white text-start">
+                    <form class="form-white form-outline text-white text-start" method="post" th:action="@{/register}"
+                          th:object="${kunde}">
                         <div class="row mb-4">
                             <div class="form col-6">
                                 <label for="inputUsername">Username</label>
-                                <input type="text" th:field="*{username}" name="username" class="form-control" placeholder="Username" id="inputUsername">
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                                <input class="form-control" id="inputUsername" name="username" placeholder="Username"
+                                       th:field="*{username}" type="text">
+                                <div class="alert alert-danger" th:errors="*{username}"
+                                     th:if="${#fields.hasErrors('username')}"></div>
                             </div>
                         </div>
                         <div class="row mb-4">
                             <div class="form col-6">
                                 <label for="inputPasswort">Passwort</label>
-                                <input type="password" th:field="*{passwort}" name="password" class="form-control" placeholder="Passwort" id="inputPasswort" minlength="6" maxlength="20">
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('passwort')}" th:errors="*{passwort}"></div>
+                                <input class="form-control" id="inputPasswort" maxlength="20" minlength="6"
+                                       name="password" placeholder="Passwort" th:field="*{passwort}" type="password">
+                                <div class="alert alert-danger" th:errors="*{passwort}"
+                                     th:if="${#fields.hasErrors('passwort')}"></div>
                             </div>
                             <div class="form col-6">
                                 <label for="inputPasswortWiederholen">Passwort wiederholen</label>
-                                <input type="password" name="passwordWiederholen" class="form-control" placeholder="Passwort" id="inputPasswortWiederholen" minlength="6" maxlength="20">
+                                <input class="form-control" id="inputPasswortWiederholen" maxlength="20"
+                                       minlength="6" name="passwordWiederholen" placeholder="Passwort"
+                                       type="password">
                                 <div class="alert alert-danger" th:if="${#fields.hasErrors('global')}">
-                                    <div th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error"></div>
+                                    <div class="error" th:each="err : ${#fields.errors('global')}"
+                                         th:text="${err}"></div>
                                 </div>
                             </div>
                         </div>
@@ -40,19 +48,25 @@
                         <div class="row mb-4 align-items-center">
                             <div class="form col-4">
                                 <label for="inputVorname">Vorname</label>
-                                <input type="text" th:field="*{vorname}" name="vorname" class="form-control" placeholder="Vorname" id="inputVorname">
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('vorname')}" th:errors="*{vorname}"></div>
+                                <input class="form-control" id="inputVorname" name="vorname" placeholder="Vorname"
+                                       th:field="*{vorname}" type="text">
+                                <div class="alert alert-danger" th:errors="*{vorname}"
+                                     th:if="${#fields.hasErrors('vorname')}"></div>
                             </div>
                             <div class="form col-4">
                                 <label for="inputNachname">Nachname</label>
-                                <input type="text" th:field="*{nachname}" name="nachname" class="form-control" placeholder="Nachname" id="inputNachname">
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('nachname')}" th:errors="*{nachname}"></div>
+                                <input class="form-control" id="inputNachname" name="nachname" placeholder="Nachname"
+                                       th:field="*{nachname}" type="text">
+                                <div class="alert alert-danger" th:errors="*{nachname}"
+                                     th:if="${#fields.hasErrors('nachname')}"></div>
                             </div>
                             <div class="col-4">
                                 <div class="form-check">
                                     <label class="form-check-label" for="inputFirmenkunde">Firmenkunde</label>
-                                    <input type="checkbox" th:field="*{firmenkunde}" name="firmenkunde" class="form-check-input" id="inputFirmenkunde">
-                                    <div class="alert alert-danger" th:if="${#fields.hasErrors('firmenkunde')}" th:errors="*{firmenkunde}"></div>
+                                    <input class="form-check-input" id="inputFirmenkunde" name="firmenkunde"
+                                           th:field="*{firmenkunde}" type="checkbox">
+                                    <div class="alert alert-danger" th:errors="*{firmenkunde}"
+                                         th:if="${#fields.hasErrors('firmenkunde')}"></div>
                                 </div>
                             </div>
                         </div>
@@ -60,37 +74,49 @@
                         <div class="row mb-4">
                             <div class="form col-5">
                                 <label for="inputStadt">Stadt</label>
-                                <input type="text" th:field="*{adresse.stadt}" name="stadt" class="form-control" placeholder="Stadt" id="inputStadt">
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.stadt')}" th:errors="*{adresse.stadt}"></div>
+                                <input class="form-control" id="inputStadt" name="stadt" placeholder="Stadt"
+                                       th:field="*{adresse.stadt}" type="text">
+                                <div class="alert alert-danger" th:errors="*{adresse.stadt}"
+                                     th:if="${#fields.hasErrors('adresse.stadt')}"></div>
                             </div>
                             <div class="form col-4">
                                 <label for="inputLand">Land</label>
-                                <input type="text" th:field="*{adresse.land}" name="land" class="form-control" placeholder="Land" id="inputLand">
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.land')}" th:errors="*{adresse.land}"></div>
+                                <input class="form-control" id="inputLand" name="land" placeholder="Land"
+                                       th:field="*{adresse.land}" type="text">
+                                <div class="alert alert-danger" th:errors="*{adresse.land}"
+                                     th:if="${#fields.hasErrors('adresse.land')}"></div>
                             </div>
                             <div class="form col-3">
                                 <label for="inputPlz">Postleitzahl</label>
-                                <input type="text" th:field="*{adresse.plz}" name="plz" class="form-control" placeholder="12345" id="inputPlz">
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.plz')}" th:errors="*{adresse.plz}"></div>
+                                <input class="form-control" id="inputPlz" name="plz" placeholder="12345"
+                                       th:field="*{adresse.plz}" type="text">
+                                <div class="alert alert-danger" th:errors="*{adresse.plz}"
+                                     th:if="${#fields.hasErrors('adresse.plz')}"></div>
                             </div>
                         </div>
                         <div class="row mb-4">
                             <div class="form col-6">
                                 <label for="inputStrasse">Straße</label>
-                                <input type="text" th:field="*{adresse.strasse}" name="strasse" class="form-control" placeholder="Strasse" id="inputStrasse">
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.strasse')}" th:errors="*{adresse.strasse}"></div>
+                                <input class="form-control" id="inputStrasse" name="strasse" placeholder="Strasse"
+                                       th:field="*{adresse.strasse}" type="text">
+                                <div class="alert alert-danger" th:errors="*{adresse.strasse}"
+                                     th:if="${#fields.hasErrors('adresse.strasse')}"></div>
                             </div>
                             <div class="form col-6">
                                 <label for="inputHausnummer">Hausnummer</label>
-                                <input type="text" th:field="*{adresse.hausnummer}" name="hausnummer" class="form-control" placeholder="Hausnummer" id="inputHausnummer">
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('adresse.hausnummer')}" th:errors="*{adresse.hausnummer}"></div>
+                                <input class="form-control" id="inputHausnummer" name="hausnummer"
+                                       placeholder="Hausnummer" th:field="*{adresse.hausnummer}" type="text">
+                                <div class="alert alert-danger" th:errors="*{adresse.hausnummer}"
+                                     th:if="${#fields.hasErrors('adresse.hausnummer')}"></div>
                             </div>
                         </div>
 
                         <div class="container text-center mb-4">
-                            <button type="submit" class="btn btn-outline-light">Registrieren</button>
+                            <button class="btn btn-outline-light" type="submit">Registrieren</button>
                         </div>
-                        <p class="mb-0 text-center">Du bist bereits Kunde? <a href="/login" class="text-center text-white-50 fw-bold">Melde dich an!</a></p>
+                        <p class="mb-0 text-center">Du bist bereits Kunde? <a class="text-center text-white-50 fw-bold"
+                                                                              href="/login">Melde
+                            dich an!</a></p>
                     </form>
                 </div>
             </div>

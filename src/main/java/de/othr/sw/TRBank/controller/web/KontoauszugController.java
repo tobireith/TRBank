@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -23,13 +22,11 @@ import java.util.Date;
 @Controller
 @Scope("singleton")
 public class KontoauszugController {
+    private final Logger logger = LoggerFactory.getLogger(KontoauszugController.class);
     @Autowired
     private BankingServiceIF bankingService;
-
     @Autowired
     private KundeServiceIF kundeService;
-
-    private final Logger logger = LoggerFactory.getLogger(KontoauszugController.class);
 
     @RequestMapping(value = "/konto/{kontoId}/kontoauszug")
     public String kontoauszug(@PathVariable long kontoId,
@@ -38,7 +35,7 @@ public class KontoauszugController {
                               RedirectAttributes attributes
     ) {
         TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
-        if(trBankException != null) {
+        if (trBankException != null) {
             model.addAttribute("trBankException", trBankException);
         }
         try {

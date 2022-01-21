@@ -15,23 +15,21 @@ import java.util.List;
 public class SetupExecutor {
 
     private final List<SetupComponentAbstract> setupComponents = new ArrayList<>();
-
-    @Autowired @Qualifier("firmenkunde")
+    private final Logger logger = LoggerFactory.getLogger(SetupExecutor.class);
+    @Autowired
+    @Qualifier("firmenkunde")
     KundeSetupAbstract kundeSetupFirmenkunde;
-
-    @Autowired @Qualifier("privatkunde")
+    @Autowired
+    @Qualifier("privatkunde")
     KundeSetupAbstract kundeSetupPrivatkunde;
-
-    @Autowired @Qualifier("firmenkunde")
+    @Autowired
+    @Qualifier("firmenkunde")
     KontoSetupAbstract kontoSetupFirmenkunde;
-
-    @Autowired @Qualifier("privatkunde")
+    @Autowired
+    @Qualifier("privatkunde")
     KontoSetupAbstract kontoSetupPrivatkunde;
-
     @Autowired
     TransaktionSetup transaktionSetup;
-
-    private final Logger logger = LoggerFactory.getLogger(SetupExecutor.class);
 
     @PostConstruct
     public void initSetups() {
@@ -41,10 +39,10 @@ public class SetupExecutor {
 
     public void executeSetup() {
         try {
-           logger.info("Setup wird gestartet...");
-            for(int i = 0; i < setupComponents.size(); i++) {
+            logger.info("Setup wird gestartet...");
+            for (int i = 0; i < setupComponents.size(); i++) {
                 SetupComponentAbstract setupComponent = setupComponents.get(i);
-                logger.info("Setup... Schritt[" + (i+1) + " / " + setupComponents.size() + "]" );
+                logger.info("Setup... Schritt[" + (i + 1) + " / " + setupComponents.size() + "]");
                 if (setupComponent.setup()) {
                     logger.info(setupComponent.getClass().getSimpleName() + " erfolgreich!");
                 } else {

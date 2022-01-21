@@ -103,7 +103,7 @@ public class Transaktion extends SingleIdEntity<Long> {
     public String toString() {
         return "Transaktion{" +
                 "transaktionId=" + transaktionId +
-                ", quellkontoId=" + (quellkonto != null ? quellkonto.getID() : null)  +
+                ", quellkontoId=" + (quellkonto != null ? quellkonto.getID() : null) +
                 ", zielkontoId=" + (zielkonto != null ? zielkonto.getID() : null) +
                 ", betrag=" + betrag +
                 ", datum=" + datum +

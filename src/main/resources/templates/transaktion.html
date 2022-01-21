@@ -7,21 +7,25 @@
 
 <div th:replace="common/kontoDetails :: kontoDetails(${konto})"></div>
 
-<div class="container d-flex justify-content-center align-items-center w-100 p-2" >
+<div class="container d-flex justify-content-center align-items-center w-100 p-2">
     <div class="card rounded-borders w-50">
         <div class="card-body">
-            <h3 th:value="${isSender} ? 'Geld senden' : 'Geld anfordern'" class="text-center">Geld senden</h3>
+            <h3 class="text-center" th:value="${isSender} ? 'Geld senden' : 'Geld anfordern'">Geld senden</h3>
 
             <p class="text-center">Sobald Sie die Zahlung bestätigen, wird diese sofort durchgeführt.</p>
-            <form th:action="@{/konto/{id}/transaktion(id=${konto.getID()}, isSender=${isSender})}" th:object="${transaktionDTO}" method="post" class="form-white form-outline text-dark">
+            <form class="form-white form-outline text-dark"
+                  method="post" th:action="@{/konto/{id}/transaktion(id=${konto.getID()}, isSender=${isSender})}" th:object="${transaktionDTO}">
                 <div class="row gx-5 mb-2 align-items-center">
                     <div class="col-3">
                         <label>Empfänger IBAN</label>
                     </div>
                     <div class="col-9">
-                        <input type="text" th:field="*{zielIban}" name="ibanTo" class="form-control"  maxlength="22" minlength="22"  th:readonly="${!isSender}"
-                               th:value="${isSender} ? '' : ${konto.getIban()}" placeholder="DE12345678901234567890" id="inputIbanTo">
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('zielIban')}" th:errors="*{zielIban}"></div>
+                        <input class="form-control" id="inputIbanTo" maxlength="22" minlength="22" name="ibanTo"
+                               placeholder="DE12345678901234567890" th:field="*{zielIban}"
+                               th:readonly="${!isSender}" th:value="${isSender} ? '' : ${konto.getIban()}"
+                               type="text">
+                        <div class="alert alert-danger" th:errors="*{zielIban}"
+                             th:if="${#fields.hasErrors('zielIban')}"></div>
                     </div>
                 </div>
                 <div class="row gx-5 mb-2 align-items-center">
@@ -29,8 +33,10 @@
                         <label>Betrag in €</label>
                     </div>
                     <div class="col-9">
-                        <input type="number" th:field="*{betrag}" name="betrag" class="form-control" id="inputBetrag" step="0.01" min="0.01">
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('betrag')}" th:errors="*{betrag}"></div>
+                        <input class="form-control" id="inputBetrag" min="0.01" name="betrag" step="0.01"
+                               th:field="*{betrag}" type="number">
+                        <div class="alert alert-danger" th:errors="*{betrag}"
+                             th:if="${#fields.hasErrors('betrag')}"></div>
                     </div>
                 </div>
                 <div class="row gx-5 mb-2 align-items-center">
@@ -38,9 +44,11 @@
                         <label>Sender IBAN</label>
                     </div>
                     <div class="col-9">
-                        <input type="text" th:field="*{quellIban}" name="ibanFrom" maxlength="22" minlength="22" class="form-control" th:readonly="${isSender}"
-                               th:value="${isSender} ? ${konto.getIban()} : ''" id="inputIbanFrom">
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('quellIban')}" th:errors="*{quellIban}"></div>
+                        <input class="form-control" id="inputIbanFrom" maxlength="22" minlength="22" name="ibanFrom"
+                               th:field="*{quellIban}" th:readonly="${isSender}"
+                               th:value="${isSender} ? ${konto.getIban()} : ''" type="text">
+                        <div class="alert alert-danger" th:errors="*{quellIban}"
+                             th:if="${#fields.hasErrors('quellIban')}"></div>
                     </div>
                 </div>
                 <div class="row gx-5 mb-2 align-items-center">
@@ -48,16 +56,21 @@
                         <label>Verwendungszweck</label>
                     </div>
                     <div class="col-9">
-                        <textarea th:field="*{verwendungszweck}" class="form-control" id="verwendungszweckTextarea" name="verwendungszweck" rows="3"></textarea>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('verwendungszweck')}" th:errors="*{verwendungszweck}"></div>
+                        <textarea class="form-control" id="verwendungszweckTextarea" name="verwendungszweck"
+                                  rows="3" th:field="*{verwendungszweck}"></textarea>
+                        <div class="alert alert-danger" th:errors="*{verwendungszweck}"
+                             th:if="${#fields.hasErrors('verwendungszweck')}"></div>
                     </div>
                 </div>
                 <a class="btn btn-danger float-start" role="button" th:href="@{/konto/{id}(id=${konto.getID()})}">Abbrechen</a>
-                <button type="submit" name="submit" value="Submit" class="btn btn-success float-end">Zahlung Bestätigen</button>
+                <button class="btn btn-success float-end" name="submit" type="submit" value="Submit">Zahlung
+                    Bestätigen
+                </button>
             </form>
         </div>
     </div>
-    <img src="/static/images/undraw_transfer_money_rywa.svg" th:src="@{/images/undraw_transfer_money_rywa.svg}" class="my-5" height="50%" width="50%" alt="Image: Transfer Money"/>
+    <img alt="Image: Transfer Money" class="my-5"
+         height="50%" src="/static/images/undraw_transfer_money_rywa.svg" th:src="@{/images/undraw_transfer_money_rywa.svg}" width="50%"/>
 </div>
 </body>
 </html>

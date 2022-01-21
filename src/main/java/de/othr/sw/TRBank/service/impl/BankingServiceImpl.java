@@ -32,35 +32,33 @@ import static de.othr.sw.TRBank.entity.Konto.SCHULDENLIMIT;
 
 @Service
 public class BankingServiceImpl implements BankingServiceIF {
+    private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
     @Autowired
     private KontoRepository kontoRepository;
     @Autowired
     private KontoauszugRepository kontoauszugRepository;
     @Autowired
     private TransaktionRepository transaktionRepository;
-
-    @Autowired @Qualifier("default")
+    @Autowired
+    @Qualifier("default")
     private SendDeliveryIF daumDeliveryService;
 
-    private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
-
-
-    public BigDecimal transaktionenSummieren(List<Transaktion> transaktionen){
+    public BigDecimal transaktionenSummieren(List<Transaktion> transaktionen) {
         BigDecimal sum = new BigDecimal("0.0");
-        for(Transaktion element : transaktionen) {
+        for (Transaktion element : transaktionen) {
             sum = sum.add(element.getBetrag());
         }
         return sum;
     }
 
     @Override
-    @Transactional (Transactional.TxType.SUPPORTS)
+    @Transactional(Transactional.TxType.SUPPORTS)
     public Konto getKontoByIban(String Iban) throws TRBankException {
         return kontoRepository.findKontoByIban(Iban).orElseThrow(() -> new TRBankException("Fehler beim Laden des Kontos! IBAN nicht gefunden: " + Iban));
     }
 
     @Override
-    @Transactional (Transactional.TxType.SUPPORTS)
+    @Transactional(Transactional.TxType.SUPPORTS)
     public boolean kontoWithIbanExists(String Iban) {
         return kontoRepository.findKontoByIban(Iban).isPresent();
     }
@@ -85,7 +83,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         return konto;
     }
 
-    @Transactional (Transactional.TxType.REQUIRED)
+    @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public Konto kontoUpdaten(@Valid Konto konto) {
         konto = kontoRepository.save(konto);
@@ -96,14 +94,14 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Override
     public void kontoLoeschen(long kontoId) throws TRBankException {
         Konto konto = kontoRepository.findById(kontoId).orElseThrow(() -> new TRBankException("Konto zum löschen nicht gefunden."));
-        if(konto.getKontostand().compareTo(new BigDecimal("0.0")) != 0) {
+        if (konto.getKontostand().compareTo(new BigDecimal("0.0")) != 0) {
             throw new TRBankException("Kontostand muss gleich 0 sein.", "Kontostand muss gleich 0 sein. Aktueller Kontostand: " + konto.getKontostand(), "Überweisen sie Ihr restliches Geld auf ein anderes Konto, oder begleichen Sie Ihre Schulden.");
         }
-        for(Transaktion t : konto.getTransaktionenRaus()) {
+        for (Transaktion t : konto.getTransaktionenRaus()) {
             t.setQuellkonto(null);
             transaktionRepository.save(t);
         }
-        for(Transaktion t : konto.getTransaktionenRein()) {
+        for (Transaktion t : konto.getTransaktionenRein()) {
             t.setZielkonto(null);
             transaktionRepository.save(t);
         }
@@ -120,7 +118,7 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public Transaktion transaktionTaetigen(@Valid TransaktionDTO transaktionDTO, @Valid Kunde kunde) throws TRBankException {
-        Transaktion transaktion =  new Transaktion();
+        Transaktion transaktion = new Transaktion();
 
         transaktion.setBetrag(transaktionDTO.getBetrag());
         transaktion.setVerwendungszweck(transaktionDTO.getVerwendungszweck());
@@ -134,13 +132,13 @@ public class BankingServiceImpl implements BankingServiceIF {
         Konto zu = transaktion.getZielkonto();
 
         List<Konto> konten = getKontenByKunde(kunde);
-        if(!kunde.isFirmenkunde() && !konten.contains(von)) {
+        if (!kunde.isFirmenkunde() && !konten.contains(von)) {
             throw new TRBankException("Kunde ist kein Firmenkunde. Quellkonto muss das Konto des Kunden sein.");
         }
-        if(!konten.contains(von) && !konten.contains(zu)) {
+        if (!konten.contains(von) && !konten.contains(zu)) {
             throw new TRBankException("Quell- und Zielkonto gehören nicht dem Kunden!");
         }
-        if(von == zu) {
+        if (von == zu) {
             throw new TRBankException("Quell- und Zielkonto müssen unterschiedlich sein.");
         }
 
@@ -183,7 +181,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         Optional<List<Kontoauszug>> optionalKontoauszugList = kontoauszugRepository.findAllByKontoOrderByDatumBis(konto);
 
         List<Kontoauszug> kontoauszuege = optionalKontoauszugList.orElse(new ArrayList<>());
-        if(kontoauszuege.size() >= 1) {
+        if (kontoauszuege.size() >= 1) {
             letzterKontoauszug = kontoauszuege.get(kontoauszuege.size() - 1);
             kontoauszug.setKontostandAnfang(letzterKontoauszug.getKontostandEnde());
             letzteTransaktion = letzterKontoauszug.getTransaktionen().get(letzterKontoauszug.getTransaktionen().size() - 1);
@@ -207,16 +205,16 @@ public class BankingServiceImpl implements BankingServiceIF {
 
         BigDecimal summeEingehend = transaktionenSummieren(neueEingehendeTransaktionen);
         BigDecimal summeAusgehend = transaktionenSummieren(neueAusgehendeTransaktionen);
-        BigDecimal kontostandAnfang = konto.getKontostand().subtract( summeEingehend.subtract(summeAusgehend) );
+        BigDecimal kontostandAnfang = konto.getKontostand().subtract(summeEingehend.subtract(summeAusgehend));
         kontoauszug.setKontostandAnfang(kontostandAnfang);
         kontoauszug.setKontostandEnde(konto.getKontostand());
 
-        if(neueTransaktionen.size() < 1) {
+        if (neueTransaktionen.size() < 1) {
             throw new TRBankException("Keine neuen Transaktionen seit dem letzten Kontoauszug.");
         }
 
         kontoauszug.setDatumVon(neueTransaktionen.get(0).getDatum());
-        kontoauszug.setDatumBis(neueTransaktionen.get(neueTransaktionen.size()-1).getDatum());
+        kontoauszug.setDatumBis(neueTransaktionen.get(neueTransaktionen.size() - 1).getDatum());
         kontoauszug.setKonto(konto);
 
         try {
@@ -234,12 +232,12 @@ public class BankingServiceImpl implements BankingServiceIF {
                                     kunde.getAdresse().getLand()
                             ),
                             List.of(
-                                   new ParcelDTO(
+                                    new ParcelDTO(
                                             0.02,
-                                           1,
-                                           12,
-                                           23
-                                   )
+                                            1,
+                                            12,
+                                            23
+                                    )
                             )
                     )
             );
@@ -267,13 +265,13 @@ public class BankingServiceImpl implements BankingServiceIF {
     public List<Transaktion> getTransaktionenForKonten(List<Konto> konten) {
         List<Transaktion> transaktionenTotal = new ArrayList<>();
         // Alle Konten durchiterieren
-        for(Konto konto : konten) {
+        for (Konto konto : konten) {
             // Alle Transaktionen zu dem aktuellen Konto finden
             List<Transaktion> transaktionenFuerKonto = new ArrayList<>();
             Stream.of(konto.getTransaktionenRaus(), konto.getTransaktionenRein()).forEach(transaktionenFuerKonto::addAll);
-            for(Transaktion transaktion : transaktionenFuerKonto) {
+            for (Transaktion transaktion : transaktionenFuerKonto) {
                 // Nur Transaktionen hinzufügen, die noch nicht bereits in der Liste sind
-                if(!transaktionenTotal.contains(transaktion)) {
+                if (!transaktionenTotal.contains(transaktion)) {
                     transaktionenTotal.add(transaktion);
                 }
             }
@@ -299,7 +297,7 @@ public class BankingServiceImpl implements BankingServiceIF {
         String iban;
         Konto konto;
         do {
-            iban = prefix+"1234567890" + String.format("%010d", new Random().nextInt(1000000000));
+            iban = prefix + "1234567890" + String.format("%010d", new Random().nextInt(1000000000));
             konto = kontoRepository.findKontoByIban(iban).orElse(null);
         } while (konto != null);
         return iban;

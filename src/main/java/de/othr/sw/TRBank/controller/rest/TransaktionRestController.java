@@ -13,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -23,13 +26,11 @@ import javax.validation.Valid;
 @RequestMapping(value = "/api/rest")
 public class TransaktionRestController {
 
+    private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
     @Autowired
     private BankingServiceIF bankingService;
-
     @Autowired
     private KundeServiceIF kundeService;
-
-    private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
 
     @RequestMapping(value = "/transaktion", method = RequestMethod.POST)
     public TransaktionDTO transaktionTaetigen(
@@ -39,10 +40,10 @@ public class TransaktionRestController {
         Transaktion transaktion = bankingService.transaktionTaetigen(restDTO.getTransaktionDTO(), kunde);
 
         TransaktionDTO responseTransaktion = new TransaktionDTO(
-            transaktion.getQuellkonto().getIban(),
-            transaktion.getZielkonto().getIban(),
-            transaktion.getBetrag(),
-            transaktion.getVerwendungszweck()
+                transaktion.getQuellkonto().getIban(),
+                transaktion.getZielkonto().getIban(),
+                transaktion.getBetrag(),
+                transaktion.getVerwendungszweck()
         );
         responseTransaktion.setDatum(transaktion.getDatum());
 

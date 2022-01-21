@@ -28,13 +28,11 @@ import java.util.List;
 @RequestMapping("/konto")
 public class KontoController {
 
+    private final Logger logger = LoggerFactory.getLogger(KontoController.class);
     @Autowired
     private BankingServiceIF bankingService;
-
     @Autowired
     private KundeServiceIF kundeService;
-
-    private final Logger logger = LoggerFactory.getLogger(KontoController.class);
 
     @RequestMapping(value = "/{kontoId}")
     public String konto(
@@ -45,7 +43,7 @@ public class KontoController {
             RedirectAttributes attributes
     ) {
         TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
-        if(trBankException != null) {
+        if (trBankException != null) {
             model.addAttribute("trBankException", trBankException);
         }
         try {
@@ -60,9 +58,9 @@ public class KontoController {
 
             List<Transaktion> transaktionen = bankingService.getTransaktionenForKonten(List.of(konto));
             int pageSize = 10;
-            int pages = (transaktionen.size()-1) / pageSize + 1;
+            int pages = (transaktionen.size() - 1) / pageSize + 1;
 
-            if(pageNumber > pages) {
+            if (pageNumber > pages) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST
                 );

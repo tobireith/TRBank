@@ -16,11 +16,13 @@
                     </div>
                     <p class="error" th:if="${error}" th:text="'Fehlernachricht: ' + ${error}"></p>
                     <p class="error" th:if="${path}" th:text="'Pfad: ' + ${path}"></p>
-                    <p class="error">Ein Fehler ist aufgetreten. Versuchen Sie es erneut oder kehren Sie zur Startseite zurück.</p>
-                    <a class="btn btn-primary" role="button" href="/">Zurück zum Start</a>
+                    <p class="error">Ein Fehler ist aufgetreten. Versuchen Sie es erneut oder kehren Sie zur Startseite
+                        zurück.</p>
+                    <a class="btn btn-primary" href="/" role="button">Zurück zum Start</a>
                 </div>
             </div>
-            <img src="/static/images/undraw_fixing_bugs_w7gi.svg" th:src="@{/images/undraw_fixing_bugs_w7gi.svg}" class="my-5" height="60%" width="60%" alt="Image: Fixing Bugs"/>
+            <img alt="Image: Fixing Bugs" class="my-5"
+                 height="60%" src="/static/images/undraw_fixing_bugs_w7gi.svg" th:src="@{/images/undraw_fixing_bugs_w7gi.svg}" width="60%"/>
         </div>
     </div>
 </div>

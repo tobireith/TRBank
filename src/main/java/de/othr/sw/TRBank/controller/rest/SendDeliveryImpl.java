@@ -16,16 +16,15 @@ import org.springframework.web.client.RestTemplate;
 @Service("default")
 public class SendDeliveryImpl implements SendDeliveryIF {
 
+    private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
     @Autowired
     private RestTemplate restServiceClient;
-
-    private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
 
     @Override
     public DeliveryDTO sendDelivery(RestDTO restDTO) throws Exception {
         logger.info("Requesting new Delivery from DaumDeliveries.");
         DeliveryDTO deliveryDTO = restServiceClient.postForObject("http://im-codd.oth-regensburg.de:8970/api/rest/delivery", restDTO, DeliveryDTO.class);
-        if(deliveryDTO == null) {
+        if (deliveryDTO == null) {
             throw new Exception();
         }
         return deliveryDTO;

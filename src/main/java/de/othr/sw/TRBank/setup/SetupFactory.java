@@ -7,22 +7,26 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SetupFactory {
 
-    @Bean @Qualifier("privatkunde")
+    @Bean
+    @Qualifier("privatkunde")
     public KontoSetupAbstract createKontoPrivatkunde() {
         return new KontoSetupPrivatkunde();
     }
 
-    @Bean @Qualifier("firmenkunde")
+    @Bean
+    @Qualifier("firmenkunde")
     public KontoSetupAbstract createKontoFirmenkunde() {
         return new KontoSetupFirmenkunde();
     }
 
-    @Bean @Qualifier("privatkunde")
+    @Bean
+    @Qualifier("privatkunde")
     public KundeSetupAbstract createKundePrivatkunde() {
         return new KundeSetupPrivatkunde();
     }
 
-    @Bean @Qualifier("firmenkunde")
+    @Bean
+    @Qualifier("firmenkunde")
     public KundeSetupAbstract createKundeFirmenkunde() {
         return new KundeSetupFirmenkunde();
     }

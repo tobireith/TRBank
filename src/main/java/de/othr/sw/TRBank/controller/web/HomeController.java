@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
@@ -24,13 +23,11 @@ import java.util.List;
 @Scope("singleton")
 public class HomeController {
 
+    private final Logger logger = LoggerFactory.getLogger(HomeController.class);
     @Autowired
     private BankingServiceIF bankingService;
-
     @Autowired
     private KundeServiceIF kundeService;
-
-    private final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @RequestMapping(value = "/")
     public String home(
@@ -39,7 +36,7 @@ public class HomeController {
             RedirectAttributes attributes
     ) {
         TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
-        if(trBankException != null) {
+        if (trBankException != null) {
             model.addAttribute("trBankException", trBankException);
         }
         try {
@@ -49,7 +46,7 @@ public class HomeController {
             model.addAttribute("konten", aktuellerKunde.getKonten());
 
             BigDecimal kontostandTotal = new BigDecimal("0.0");
-            for(Konto konto : aktuellerKunde.getKonten()) {
+            for (Konto konto : aktuellerKunde.getKonten()) {
                 kontostandTotal = kontostandTotal.add(konto.getKontostand());
             }
             model.addAttribute("kontostandTotal", kontostandTotal);

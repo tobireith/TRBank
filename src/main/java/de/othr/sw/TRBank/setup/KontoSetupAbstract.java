@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.util.Random;
 
-public abstract class KontoSetupAbstract extends SetupComponentAbstract{
+public abstract class KontoSetupAbstract extends SetupComponentAbstract {
     @Autowired
     BankingServiceIF bankingService;
     @Autowired
@@ -18,6 +18,7 @@ public abstract class KontoSetupAbstract extends SetupComponentAbstract{
     BigDecimal generateKontostandFirmenkunde() {
         return BigDecimal.valueOf(new Random().nextDouble() * 8000000 + 25000000.0);
     }
+
     BigDecimal generateKontostandPrivatkunde() {
         return BigDecimal.valueOf(new Random().nextDouble() * 250000 + 50000.0);
     }
@@ -27,7 +28,7 @@ public abstract class KontoSetupAbstract extends SetupComponentAbstract{
         int anzahlKontos = new Random().nextInt(3) + 1;
         for (int j = 1; j <= anzahlKontos; j++) {
             BigDecimal kontostand;
-            if(kunde.isFirmenkunde()) {
+            if (kunde.isFirmenkunde()) {
                 kontostand = generateKontostandFirmenkunde();
             } else {
                 kontostand = generateKontostandPrivatkunde();

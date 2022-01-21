@@ -2,22 +2,21 @@ package de.othr.sw.TRBank.entity;
 
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.persistence.Embeddable;
+import javax.validation.constraints.NotBlank;
 
 @Embeddable
 public class Adresse {
     @NotBlank
     private String strasse;
     @NotBlank
-    @Length (min = 1, max = 20)
+    @Length(min = 1, max = 20)
     private String hausnummer;
     @NotBlank
     private String stadt;
     @NotBlank
-    @Length (min = 5, max = 5)
+    @Length(min = 5, max = 5)
     private String plz;
     @NotBlank
     @Length(min = 2, max = 50)

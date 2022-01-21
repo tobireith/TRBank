@@ -102,7 +102,7 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
         return List.of(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                if(isFirmenkunde()) {
+                if (isFirmenkunde()) {
                     return "FIRMENKUNDE";
                 } else {
                     return "STANDARD";
@@ -118,6 +118,10 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -138,10 +142,6 @@ public class Kunde extends SingleIdEntity<Long> implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPasswort() {

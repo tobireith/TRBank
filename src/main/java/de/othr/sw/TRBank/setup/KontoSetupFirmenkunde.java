@@ -4,41 +4,41 @@ import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 
-public class KontoSetupFirmenkunde extends KontoSetupAbstract{
+public class KontoSetupFirmenkunde extends KontoSetupAbstract {
     @Override
     boolean setup() throws TRBankException {
         // Konten für Firmenkunden hinzufügen
-        if(!bankingService.kontoWithIbanExists("DE12345678901234500001")) {
+        if (!bankingService.kontoWithIbanExists("DE12345678901234500001")) {
             Kunde kunde = kundeService.getKundeByUsername("TRBank");
             bankingService.kontoAnlegen(new Konto("DE12345678901234500001", kunde, generateKontostandFirmenkunde()));
             generateRandomKonten(kunde);
         }
-        if(!bankingService.kontoWithIbanExists("DE12345678901234500002")) {
+        if (!bankingService.kontoWithIbanExists("DE12345678901234500002")) {
             Kunde kunde = kundeService.getKundeByUsername("haberlRepairs");
             bankingService.kontoAnlegen(new Konto("DE12345678901234500002", kunde, generateKontostandFirmenkunde()));
             generateRandomKonten(kunde);
         }
-        if(!bankingService.kontoWithIbanExists("DE12345678901234500003")) {
+        if (!bankingService.kontoWithIbanExists("DE12345678901234500003")) {
             Kunde kunde = kundeService.getKundeByUsername("erbenAirports");
             bankingService.kontoAnlegen(new Konto("DE12345678901234500003", kunde, generateKontostandFirmenkunde()));
             generateRandomKonten(kunde);
         }
-        if(!bankingService.kontoWithIbanExists("DE12345678901234500004")) {
+        if (!bankingService.kontoWithIbanExists("DE12345678901234500004")) {
             Kunde kunde = kundeService.getKundeByUsername("gebauerSecurity");
             bankingService.kontoAnlegen(new Konto("DE12345678901234500004", kunde, generateKontostandFirmenkunde()));
             generateRandomKonten(kunde);
         }
-        if(!bankingService.kontoWithIbanExists("DE12345678901234500005")) {
+        if (!bankingService.kontoWithIbanExists("DE12345678901234500005")) {
             Kunde kunde = kundeService.getKundeByUsername("daumCompany");
             bankingService.kontoAnlegen(new Konto("DE12345678901234500005", kunde, generateKontostandFirmenkunde()));
             generateRandomKonten(kunde);
         }
-        if(!bankingService.kontoWithIbanExists("DE12345678901234500006")) {
+        if (!bankingService.kontoWithIbanExists("DE12345678901234500006")) {
             Kunde kunde = kundeService.getKundeByUsername("maierCompany");
             bankingService.kontoAnlegen(new Konto("DE12345678901234500006", kunde, generateKontostandFirmenkunde()));
             generateRandomKonten(kunde);
         }
-        if(!bankingService.kontoWithIbanExists("DE12345678901234500007")) {
+        if (!bankingService.kontoWithIbanExists("DE12345678901234500007")) {
             Kunde kunde = kundeService.getKundeByUsername("hoffmannAirways");
             bankingService.kontoAnlegen(new Konto("DE12345678901234500007", kunde, generateKontostandFirmenkunde()));
             generateRandomKonten(kunde);

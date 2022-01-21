@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 public class TRBankApplication implements ApplicationRunner {
-	@Autowired
-	SetupExecutor setupExecutor;
+    @Autowired
+    SetupExecutor setupExecutor;
 
-	public static void main(String[] args) {
-		SpringApplication.run(TRBankApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TRBankApplication.class, args);
+    }
 
-	@Override
-	public void run(ApplicationArguments args) throws Exception {
-		setupExecutor.executeSetup();
-	}
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        setupExecutor.executeSetup();
+    }
 }

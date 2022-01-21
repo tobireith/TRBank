@@ -6,39 +6,42 @@
 </head>
 
 <body>
-    <div style="
+<div style="
     display: flex;
     flex-direction: column;
     min-height: 100vh;">
-        <div th:replace="common/header :: navigation"></div>
-        <section class="w-75" style="margin: auto">
-            <div class="container d-flex justify-content-center align-items-center" >
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class="card bg-dark text-white rounded-borders">
-                        <div class="card-body text-center p-5">
-                            <div class="mb-md-5 mt-md-4 pb-5">
-                                <h2 class="fw-bold mb-4">Willkommen im TRBank Online Banking!</h2>
-                                <h3 class="fw-bold mb-2 text-uppercase">Login</h3>
-                                <form th:action="@{/login}" method="post" class="form-white form-outline text-dark">
-                                    <div class="form-floating col-auto mb-4">
-                                        <input type="text" name="username" class="form-control" placeholder="Username" id="inputUsername">
-                                        <label for="inputUsername">Username</label>
-                                    </div>
-                                    <div class="form-floating col-auto mb-4">
-                                        <input type="password" name="password" class="form-control" placeholder="Passwort" id="inputPasswort">
-                                        <label for="inputPasswort">Passwort</label>
-                                    </div>
-                                    <button type="submit" class="btn btn-outline-light">Anmelden</button>
-                                </form>
-                            </div>
-                            <div>
-                                <p class="mb-0">Du bist Neukunde? <a href="/register" class="text-white-50 fw-bold">Registriere dich!</a></p>
-                            </div>
+    <div th:replace="common/header :: navigation"></div>
+    <section class="w-75" style="margin: auto">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-dark text-white rounded-borders">
+                    <div class="card-body text-center p-5">
+                        <div class="mb-md-5 mt-md-4 pb-5">
+                            <h2 class="fw-bold mb-4">Willkommen im TRBank Online Banking!</h2>
+                            <h3 class="fw-bold mb-2 text-uppercase">Login</h3>
+                            <form class="form-white form-outline text-dark" method="post" th:action="@{/login}">
+                                <div class="form-floating col-auto mb-4">
+                                    <input class="form-control" id="inputUsername" name="username" placeholder="Username"
+                                           type="text">
+                                    <label for="inputUsername">Username</label>
+                                </div>
+                                <div class="form-floating col-auto mb-4">
+                                    <input class="form-control" id="inputPasswort" name="password" placeholder="Passwort"
+                                           type="password">
+                                    <label for="inputPasswort">Passwort</label>
+                                </div>
+                                <button class="btn btn-outline-light" type="submit">Anmelden</button>
+                            </form>
+                        </div>
+                        <div>
+                            <p class="mb-0">Du bist Neukunde? <a class="text-white-50 fw-bold" href="/register">Registriere
+                                dich!</a></p>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+</div>
 </body>
 </html>

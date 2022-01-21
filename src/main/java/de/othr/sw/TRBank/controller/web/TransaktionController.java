@@ -13,7 +13,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -24,13 +27,11 @@ import java.security.Principal;
 @RequestMapping("/konto/{kontoId}")
 public class TransaktionController {
 
+    private final Logger logger = LoggerFactory.getLogger(TransaktionController.class);
     @Autowired
     private BankingServiceIF bankingService;
-
     @Autowired
     private KundeServiceIF kundeService;
-
-    private final Logger logger = LoggerFactory.getLogger(TransaktionController.class);
 
     @RequestMapping("/transaktion")
     public String getTransaktion(
@@ -41,7 +42,7 @@ public class TransaktionController {
             RedirectAttributes attributes
     ) {
         TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
-        if(trBankException != null) {
+        if (trBankException != null) {
             model.addAttribute("trBankException", trBankException);
         }
         try {

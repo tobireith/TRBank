@@ -4,7 +4,6 @@ import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 public interface KundeServiceIF extends UserDetailsService {

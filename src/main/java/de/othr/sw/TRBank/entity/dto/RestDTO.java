@@ -4,13 +4,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 public class RestDTO {
+    @Valid
+    TransaktionDTO transaktionDTO;
     @NotBlank
     private String username;
     @NotBlank
     private String passwort;
-
-    @Valid
-    TransaktionDTO transaktionDTO;
 
     public RestDTO(String username, String passwort, TransaktionDTO transaktionDTO) {
         this.username = username;

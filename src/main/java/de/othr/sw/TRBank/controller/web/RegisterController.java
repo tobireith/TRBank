@@ -1,11 +1,9 @@
 package de.othr.sw.TRBank.controller.web;
 
-import de.othr.sw.TRBank.entity.Konto;
 import de.othr.sw.TRBank.entity.Kunde;
 import de.othr.sw.TRBank.service.BankingServiceIF;
 import de.othr.sw.TRBank.service.KundeServiceIF;
 import de.othr.sw.TRBank.service.exception.TRBankException;
-import de.othr.sw.TRBank.service.impl.BankingServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletException;
@@ -28,20 +25,18 @@ import javax.validation.Valid;
 @Scope("singleton")
 public class RegisterController {
 
+    private final Logger logger = LoggerFactory.getLogger(RegisterController.class);
     @Autowired
     private KundeServiceIF kundeService;
-
     @Autowired
     private BankingServiceIF bankingService;
-
-    private final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
     @RequestMapping(value = "register", method = RequestMethod.GET)
     public String register(Model model,
                            RedirectAttributes attributes
     ) {
         TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
-        if(trBankException != null) {
+        if (trBankException != null) {
             model.addAttribute("trBankException", trBankException);
         }
         model.addAttribute("kunde", new Kunde());
@@ -58,7 +53,7 @@ public class RegisterController {
             RedirectAttributes attributes
     ) {
         TRBankException trBankException = (TRBankException) model.asMap().get("trBankException");
-        if(trBankException != null) {
+        if (trBankException != null) {
             model.addAttribute("trBankException", trBankException);
         }
         try {

@@ -3,25 +3,25 @@
 <head th:replace="common/header :: header"><title>Konto Details</title></head>
 
 <div th:fragment="kontoDetails (konto)">
-  <div class="container py-2">
-    <div class="card rounded-borders">
-      <div class="card-body text-center">
-        <div class="row gx-5 justify-content-center align-items-center">
-          <div class="col-3">
-            <label>Kontonummer</label>
-            <p th:text="${konto.getID()}" class="mb-0"></p>
-          </div>
-          <div class="col-5">
-            <label>IBAN</label>
-            <p th:text="${konto.getIban()}" class="mb-0"></p>
-          </div>
-          <div class="col-4">
-            <label>Kontostand</label>
-            <p th:text="${#numbers.formatCurrency(konto.getKontostand())}" class="mb-0"></p>
-          </div>
+    <div class="container py-2">
+        <div class="card rounded-borders">
+            <div class="card-body text-center">
+                <div class="row gx-5 justify-content-center align-items-center">
+                    <div class="col-3">
+                        <label>Kontonummer</label>
+                        <p class="mb-0" th:text="${konto.getID()}"></p>
+                    </div>
+                    <div class="col-5">
+                        <label>IBAN</label>
+                        <p class="mb-0" th:text="${konto.getIban()}"></p>
+                    </div>
+                    <div class="col-4">
+                        <label>Kontostand</label>
+                        <p class="mb-0" th:text="${#numbers.formatCurrency(konto.getKontostand())}"></p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 </html>

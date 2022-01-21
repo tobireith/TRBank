@@ -7,29 +7,30 @@
 <!--
 Quelle: https://www.tutorialrepublic.com/twitter-bootstrap-tutorial/bootstrap-alerts.php
 -->
-<div th:fragment="errorAlert (trBankException)" class="alert-fixed" th:if="${trBankException != null}">
-    <div class="alert alert-danger alert-dismissible fade show" >
+<div class="alert-fixed" th:fragment="errorAlert (trBankException)" th:if="${trBankException != null}">
+    <div class="alert alert-danger alert-dismissible fade show">
         <div class="fs-4 alert-heading">
             <i class="bi bi-exclamation-octagon-fill m-auto"></i>
             <label th:text="${trBankException.getTitel() != null ? trBankException.getTitel() : 'Oops! Etwas ist schief gelaufen.'}"></label>
         </div>
-        <p th:text="${trBankException.getNachricht()}" class="error"></p>
+        <p class="error" th:text="${trBankException.getNachricht()}"></p>
         <div th:if="${trBankException.getVorschlag() != null}">
             <hr>
             <p class="mb-0" th:text="${trBankException.getVorschlag()}"></p>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
     </div>
 </div>
 
-<div th:fragment="successAlert (alertSuccessTitle, alertSuccessMessage)" class="alert-fixed" th:if="${alertSuccessMessage != null}">
-    <div class="alert alert-success alert-dismissible fade show" >
+<div class="alert-fixed" th:fragment="successAlert (alertSuccessTitle, alertSuccessMessage)"
+     th:if="${alertSuccessMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show">
         <div class="fs-4 alert-heading">
             <i class="bi bi-check-lg-fill m-auto"></i>
             <label th:text="${alertSuccessTitle != null ? alertSuccessTitle : 'Aktion erfolgreich durchgefühert.'}"></label>
         </div>
-        <p th:text="${alertSuccessMessage}" class="success"></p>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <p class="success" th:text="${alertSuccessMessage}"></p>
+        <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
     </div>
 </div>
 </html>

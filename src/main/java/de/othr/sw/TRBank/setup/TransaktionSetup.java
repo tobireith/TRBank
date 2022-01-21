@@ -17,7 +17,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class TransaktionSetup extends SetupComponentAbstract{
+public class TransaktionSetup extends SetupComponentAbstract {
     @Autowired
     KundeServiceIF kundeService;
 

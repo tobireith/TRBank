@@ -68,20 +68,20 @@ public class Konto extends SingleIdEntity<Long> {
         return Collections.unmodifiableList(transaktionenRaus);
     }
 
-    public List<Transaktion> getTransaktionenRein() {
-        return Collections.unmodifiableList(transaktionenRein);
-    }
-
-    public List<Kontoauszug> getKontoauszugList() {
-        return Collections.unmodifiableList(kontoauszugList);
-    }
-
     public void setTransaktionenRaus(List<Transaktion> transaktionenRaus) {
         this.transaktionenRaus = transaktionenRaus;
     }
 
+    public List<Transaktion> getTransaktionenRein() {
+        return Collections.unmodifiableList(transaktionenRein);
+    }
+
     public void setTransaktionenRein(List<Transaktion> transaktionenRein) {
         this.transaktionenRein = transaktionenRein;
+    }
+
+    public List<Kontoauszug> getKontoauszugList() {
+        return Collections.unmodifiableList(kontoauszugList);
     }
 
     public void setKontoauszugList(List<Kontoauszug> kontoauszugList) {

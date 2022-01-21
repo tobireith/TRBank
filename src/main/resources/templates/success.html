@@ -14,18 +14,20 @@
                         <i class="bi bi-check-lg-fill m-auto"></i>
                         <label th:text="${successTitle != null ? successTitle : 'Aktion erfolgreich durchgefühert.'}"></label>
                     </div>
-                    <p th:text="${successMessage}" class="success"></p>
+                    <p class="success" th:text="${successMessage}"></p>
                     <p class="success">Sie werden in Kürze zur Startseite weitergeleitet.</p>
-                    <a class="btn btn-primary" role="button" href="/">Zurück zum Start</a>
+                    <a class="btn btn-primary" href="/" role="button">Zurück zum Start</a>
                 </div>
             </div>
-            <img src="/static/images/undraw_confirmation_re_b6q5.svg" th:src="@{/images/undraw_confirmation_re_b6q5.svg}" class="my-5" height="50%" width="50%" alt="Image: Confirmation"/>
+            <img alt="Image: Confirmation"
+                 class="my-5" height="50%" src="/static/images/undraw_confirmation_re_b6q5.svg" th:src="@{/images/undraw_confirmation_re_b6q5.svg}"
+                 width="50%"/>
         </div>
     </div>
 </div>
 <script>
-    var timer = setTimeout(function() {
-        window.location='/'
+    var timer = setTimeout(function () {
+        window.location = '/'
     }, 8000);
 </script>
 </body>
