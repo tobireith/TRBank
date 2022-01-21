@@ -42,9 +42,6 @@ public class BankingServiceImpl implements BankingServiceIF {
     @Autowired @Qualifier("default")
     private SendDeliveryIF daumDeliveryService;
 
-    @Autowired @Qualifier("ownProxy")
-    private SendDeliveryIF myProxyDeliveryService;
-
     private final Logger logger = LoggerFactory.getLogger(BankingServiceImpl.class);
 
 
@@ -246,15 +243,12 @@ public class BankingServiceImpl implements BankingServiceIF {
                             )
                     )
             );
-            if(delivery == null) {
-                throw new Exception();
-            }
             kontoauszug.setVersandId(delivery.getDeliveryId());
         } catch (Exception e) {
             logger.error("An Error occurred while calling the external Delivery-System: " + e);
             throw new TRBankException("Fehler bei der Erstellung des Kontoauszuges.",
-                    "Ihr Kontoauszug konnte nicht erstellt werden.",
-                    "Versuchen Sie es später erneut.");
+                    "Ihr Kontoauszug konnte nicht erstellt werden, da das Versandunternehmen Daum Delivery nicht erreichbar ist.",
+                    "Versuchen Sie es später erneut oder prüfen Sie ggf. ob Daum Delivery erreichbar ist.");
         }
 
         kontoauszug = kontoauszugRepository.save(kontoauszug);
